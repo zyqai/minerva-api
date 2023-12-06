@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/pUvSbRQZ8vqySb2hE+/4QGreJfBvyhT+W/NC/i01FwleMWCdo9zVUXVDI87j+0baU5yiUwz5psYZNXzM+iYXg==",
+  "dgSpecHash": "Z8Sq+GcDewnOfRppPDI8i837jqPimoMv0YxQ6nopo2knVOW4x1fUvWxvQmWMnQVPSGOvCYeKrKgqC5IJlnl2zw==",
   "success": true,
-  "projectFilePath": "/Users/rp/Documents/Projects/minerva-api/MinervaApi/MinervaApi.csproj",
+  "projectFilePath": "/Users/rp/Documents/Projects/minerva-api/MinervaApi.csproj",
   "expectedPackageFiles": [
     "/Users/rp/.nuget/packages/microsoft.aspnetcore.openapi/8.0.0/microsoft.aspnetcore.openapi.8.0.0.nupkg.sha512",
     "/Users/rp/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",

@@ -465,11 +465,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/rp/Documents/Projects/minerva-api/MinervaApi/MinervaApi.csproj",
+      "projectUniqueName": "/Users/rp/Documents/Projects/minerva-api/MinervaApi.csproj",
       "projectName": "MinervaApi",
-      "projectPath": "/Users/rp/Documents/Projects/minerva-api/MinervaApi/MinervaApi.csproj",
+      "projectPath": "/Users/rp/Documents/Projects/minerva-api/MinervaApi.csproj",
       "packagesPath": "/Users/rp/.nuget/packages/",
-      "outputPath": "/Users/rp/Documents/Projects/minerva-api/MinervaApi/obj/",
+      "outputPath": "/Users/rp/Documents/Projects/minerva-api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/rp/.nuget/NuGet/NuGet.Config"
