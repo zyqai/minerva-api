@@ -20,7 +20,7 @@ dotnet run
 The Project is Developed using DotnetCore 8
 
 ```console
-cd MinervaApi
+cd MinervaApi.Tests
 dotnet build
 dotnet test
 ```
