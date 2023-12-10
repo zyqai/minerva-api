@@ -17,7 +17,6 @@ namespace Minerva.Models
         public String? Status { get; set; }
         public String? DateCreated { get; set; }
         public String? LastUpdated { get; set; }
-
         public String[]? FundingUses { get; set; }
 
      }
