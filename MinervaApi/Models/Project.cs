@@ -3,7 +3,6 @@ namespace Minerva.Models
      public class Project
      {
         public int ID { get; set; }
-
         public int FileId { get; set; }
         public String? Name { get; set; }
         public String? Lender { get; set; }

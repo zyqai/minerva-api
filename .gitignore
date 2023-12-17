@@ -2,3 +2,4 @@ MinervaApi/bin/*
 MinervaApi/obj/*
 MinervaApi.Tests/bin/*
 MinervaApi.Tests/obj/*
+.vs

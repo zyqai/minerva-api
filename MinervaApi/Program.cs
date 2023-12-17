@@ -1,3 +1,8 @@
+using Minerva.BusinessLayer;
+using Minerva.BusinessLayer.Interface;
+using Minerva.DataAccessLayer;
+using Minerva.IDataAccessLayer;
+using MySqlConnector;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +12,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 // var startup = new Startup(builder.Configuration);
 // startup.ConfigureServices(builder.Services); // calling ConfigureServices method
+
+builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString("Default")!);
+builder.Services.AddTransient<IAdminUserRepository, AdminUserRepository>();
+builder.Services.AddTransient<IAuthenticationBusinessLayer, AuthenticationBusinessLayer>();
 
 var app = builder.Build();
 // startup.Configure(app, builder.Environment);
