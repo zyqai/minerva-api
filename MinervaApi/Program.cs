@@ -18,13 +18,11 @@ builder.Services.AddTransient<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddTransient<IAuthenticationBusinessLayer, AuthenticationBusinessLayer>();
 
 var app = builder.Build();
+app.UseSwagger();
+    app.UseSwaggerUI();
 // startup.Configure(app, builder.Environment);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
 
 app.UseHttpsRedirection();
 
