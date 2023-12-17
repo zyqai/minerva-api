@@ -4,6 +4,7 @@ using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
 using MySqlConnector;
 var builder = WebApplication.CreateBuilder(args);
+var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,11 +17,21 @@ builder.Services.AddControllers();
 builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString("Default")!);
 builder.Services.AddTransient<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddTransient<IAuthenticationBusinessLayer, AuthenticationBusinessLayer>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:3000/",
+                                              "https://dev.minerva.zyq.ai/");
+                      });
+});
 
 var app = builder.Build();
 app.UseSwagger();
     app.UseSwaggerUI();
 // startup.Configure(app, builder.Environment);
+app.UseCors(MyAllowSpecificOrigins);
 
 
 
