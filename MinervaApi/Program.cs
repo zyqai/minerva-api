@@ -23,7 +23,8 @@ builder.Services.AddCors(options =>
                       policy  =>
                       {
                           policy.WithOrigins("http://localhost:3000/",
-                                              "https://dev.minerva.zyq.ai/");
+                                              "https://dev.minerva.zyq.ai/",
+                                              "*.minerva.zyq.ai/");
                       });
 });
 
