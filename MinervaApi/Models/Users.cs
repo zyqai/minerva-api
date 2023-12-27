@@ -27,7 +27,7 @@ namespace Minerva.Models
         public DateTime CreateTime { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public DateTime ModifiedTime { get; set; } = DateTime.UtcNow;
+        public DateTime? ModifiedTime { get; set; } = DateTime.UtcNow;
 
         [StringLength(36)]
         public string? CreatedBy { get; set; }

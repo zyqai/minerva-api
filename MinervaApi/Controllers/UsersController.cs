@@ -18,14 +18,18 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpPost]
-        [Route("/GetUser")]
-        public Task<User?> GetUser([FromBody] UsersRequest user)
+        [HttpGet]
+        [Route("/User/{UserId}")]
+        public Task<User?> GetUser(string UserId)
         {
+            UsersRequest user = new UsersRequest
+            {
+                UserId = UserId
+            };
             return userBL.GetUser(user);
         }
-        [HttpPost]
-        [Route("/GetUsers")]
+        [HttpGet]
+        [Route("/User")]
         public Task<List<User?>> GetUses()
         {
 
@@ -33,7 +37,7 @@ namespace Minerva.Controllers
 
         }
         [HttpPost]
-        [Route("/PostUsers")]
+        [Route("/User")]
         public IActionResult SaveUsers(UsersRequest user)
         {
             try
@@ -57,8 +61,8 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpPost]
-        [Route("/PutUser")]
+        [HttpPut]
+        [Route("/User")]
         public IActionResult UpdateUser(UsersRequest user)
         {
             try
@@ -78,6 +82,29 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        [HttpDelete]
+        [Route("/User/{UserId}")]
+        public IActionResult DeleteUser(string UserID)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    bool b = userBL.DeleteUser(UserID);
+                    if (b)
+                        return StatusCode(StatusCodes.Status200OK);
+                    else
+                        return StatusCode(StatusCodes.Status204NoContent);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

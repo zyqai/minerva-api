@@ -2,6 +2,7 @@
 using Minerva.Models;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace Minerva.DataAccessLayer
 {
@@ -29,6 +30,42 @@ namespace Minerva.DataAccessLayer
             {
                 return false;
             }
+        }
+        public async Task<Business?> GetuserAsync(int BusinessId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_ReadBusinessID";
+            command.Parameters.AddWithValue("@in_businessId", BusinessId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.FirstOrDefault();
+        }
+
+        private async Task<IReadOnlyList<Business>> ReadAllAsync(MySqlDataReader reader)
+        {
+            var bu = new List<Business>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var user = new Business
+                    {
+                        BusinessId = reader.GetInt32(0),
+                        TenantId=reader.GetInt32(1),
+                        BusinessName= reader.GetValue(2).ToString(),
+                        BusinessAddress= reader.GetValue(3).ToString(),
+                        Industry  =reader.GetValue(4).ToString(),
+                        AnnualRevenue=reader.GetDecimal(5),
+                        IncorporationDate=reader.GetDateTime(6),
+                        BusinessRegistrationNumber =reader.GetValue(7).ToString(),
+                        RootDocumentFolder=reader.GetValue(8).ToString(),
+                    };
+                }
+            }
+            return bu;
         }
 
         private void AddUserParameters(MySqlCommand command, Business bs)

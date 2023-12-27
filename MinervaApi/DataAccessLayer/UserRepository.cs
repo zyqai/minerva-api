@@ -4,6 +4,7 @@ using MySqlConnector;
 using System.Data.Common;
 using System.Reflection.PortableExecutable;
 using System.Data;
+using System.Collections.Generic;
 
 namespace Minerva.DataAccessLayer
 {
@@ -54,7 +55,7 @@ namespace Minerva.DataAccessLayer
                         IsActive = reader.GetInt16(4) == 1 ? true : false,
                         IsDeleted = reader.GetInt16(5) == 1 ? true : false,
                         CreateTime = reader.GetDateTime(6),
-                        ModifiedTime = reader.GetDateTime(7),
+                        ModifiedTime = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
                         CreatedBy = reader.GetValue(8).ToString(),
                         ModifiedBy = reader.GetValue(9).ToString(),
                         PhoneNumber = reader.GetValue(10).ToString(),
@@ -72,14 +73,13 @@ namespace Minerva.DataAccessLayer
                         {
                             TenantId= reader.GetInt16(15),
                             TenantName= reader.GetString(16),
-                            TenantDomain= reader.GetString(17),
-                            TenantLogoPath= reader.GetString(18),
-                            TenantAddress= reader.GetString(19),
+                            TenantDomain = reader.GetString(17),
+                            TenantLogoPath = reader.GetString(18),
+                            TenantAddress = reader.GetString(19),
                             TenantPhone = reader.GetString(20),
-                            TenantContactName= reader.GetString(21),
-                            TenantContactEmail= reader.GetString(22),
+                            TenantContactName = reader.GetString(21),
+                            TenantContactEmail = reader.GetString(22),
                         };
-                        
                     }
                 }
 
@@ -107,7 +107,6 @@ namespace Minerva.DataAccessLayer
         }
         public bool UpdateUser(User us)
         {
-
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_UpdateUser";
@@ -116,7 +115,7 @@ namespace Minerva.DataAccessLayer
             command.CommandType = CommandType.StoredProcedure;
             int i = command.ExecuteNonQuery();
             connection.Close();
-            return i >= 1?true:false;
+            return i >= 1 ? true : false;
         }
         private void AddUserParameters(MySqlCommand command, User us)
         {
@@ -132,7 +131,16 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_isTenantUser", us.IsTenantUser);
             command.Parameters.AddWithValue("@p_isAdminUser", us.IsAdminUser);
         }
-
-
+        public bool DeleteUser(string UserId)
+        {
+            using var connection = database.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_DeleteUser";
+            command.Parameters.AddWithValue("@in_userId", UserId);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = command.ExecuteNonQuery();
+            connection.Close();
+            return i >= 1 ? true : false;
+        }
     }
 }

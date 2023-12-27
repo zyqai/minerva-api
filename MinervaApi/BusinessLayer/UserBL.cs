@@ -31,6 +31,11 @@ namespace Minerva.BusinessLayer
             User us = MappingUsers(user);
             return UserRepository.UpdateUser(us);
         }
+        public bool DeleteUser(string UserId)
+        {
+            if (string.IsNullOrEmpty(UserId)) { return false; }
+            return UserRepository.DeleteUser(UserId);
+        }
         private User MappingUsers(UsersRequest user)
         {
             User us = new User();
