@@ -17,6 +17,10 @@ builder.Services.AddControllers();
 builder.Services.AddMySqlDataSource(builder.Configuration.GetConnectionString("Default")!);
 builder.Services.AddTransient<IAdminUserRepository, AdminUserRepository>();
 builder.Services.AddTransient<IAuthenticationBusinessLayer, AuthenticationBusinessLayer>();
+builder.Services.AddTransient<IUserBL, UserBL>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IBusinessBL,BusinessBL>();
+builder.Services.AddTransient<IBusinessRepository, BusinessRepository>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
