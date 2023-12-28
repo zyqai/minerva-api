@@ -1,4 +1,5 @@
 ﻿using Minerva.BusinessLayer.Interface;
+using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
@@ -33,6 +34,23 @@ namespace Minerva.BusinessLayer
             business.BusinessRegistrationNumber= br.BusinessRegistrationNumber;
             business.RootDocumentFolder=br.RootDocumentFolder;
             return business;
+        }
+        public Task<Business?> GetBusiness(int BusinesId)
+        {
+            return BusinessRepository.GetBussinessAsync(BusinesId);
+        }
+        public Task<List<Business?>> GetALLBusiness()
+        { 
+            return BusinessRepository.GetAllBussinessAsync();
+        }
+        public bool UpdateBusiness(BusinessRequest br)
+        {
+            Business bs = Mapping(br);
+            return BusinessRepository.UpdateBusiness(bs);
+        }
+        public bool DeleteBusiness(int BusinesId)
+        {
+            return BusinessRepository.DeleteBusiness(BusinesId);
         }
     }
 }

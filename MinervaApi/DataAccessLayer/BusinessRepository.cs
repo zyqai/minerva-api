@@ -31,7 +31,19 @@ namespace Minerva.DataAccessLayer
                 return false;
             }
         }
-        public async Task<Business?> GetuserAsync(int BusinessId)
+        public async Task<List<Business?>> GetAllBussinessAsync()
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_GetBusinessess";
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return (List<Business?>)result;
+        }
+
+        public async Task<Business?> GetBussinessAsync(int BusinessId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -57,12 +69,14 @@ namespace Minerva.DataAccessLayer
                         TenantId=reader.GetInt32(1),
                         BusinessName= reader.GetValue(2).ToString(),
                         BusinessAddress= reader.GetValue(3).ToString(),
-                        Industry  =reader.GetValue(4).ToString(),
-                        AnnualRevenue=reader.GetDecimal(5),
-                        IncorporationDate=reader.GetDateTime(6),
-                        BusinessRegistrationNumber =reader.GetValue(7).ToString(),
-                        RootDocumentFolder=reader.GetValue(8).ToString(),
+                        BusinessType=reader.GetValue(4).ToString(),
+                        Industry  =reader.GetValue(5).ToString(),
+                        AnnualRevenue= reader.IsDBNull(6) ? (decimal?)null : reader.GetDecimal(6),
+                        IncorporationDate = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+                        BusinessRegistrationNumber =reader.GetValue(8).ToString(),
+                        RootDocumentFolder=reader.GetValue(9).ToString(),
                     };
+                    bu.Add(user);
                 }
             }
             return bu;
@@ -80,6 +94,29 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@in_incorporationDate", bs.IncorporationDate);
             command.Parameters.AddWithValue("@in_businessRegistrationNumber", bs.BusinessRegistrationNumber);
             command.Parameters.AddWithValue("@in_rootDocumentFolder", bs.RootDocumentFolder);
+        }
+
+        public bool UpdateBusiness(Business bs)
+        {
+            using var connection = database.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_UpdateBusiness";
+            AddUserParameters(command, bs);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = command.ExecuteNonQuery();
+            connection.Close();
+            return i >= 1 ? true : false;
+        }
+        public bool DeleteBusiness(int BusinesId)
+        {
+            using var connection = database.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_DeleteBusiness";
+            command.Parameters.AddWithValue("@in_businessId", BusinesId);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = command.ExecuteNonQuery();
+            connection.Close();
+            return i >= 1 ? true : false;
         }
     }
 }
