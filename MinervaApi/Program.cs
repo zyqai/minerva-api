@@ -2,6 +2,7 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
+using MinervaApi.DataAccessLayer;
 using MySqlConnector;
 var builder = WebApplication.CreateBuilder(args);
 var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -21,6 +22,9 @@ builder.Services.AddTransient<IUserBL, UserBL>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IBusinessBL,BusinessBL>();
 builder.Services.AddTransient<IBusinessRepository, BusinessRepository>();
+builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
+builder.Services.AddTransient<IProjectsBL, ProjectsBL>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
