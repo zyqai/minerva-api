@@ -1,0 +1,6 @@
+DELIMITER //
+CREATE PROCEDURE `USP_GetProjects`()
+BEGIN
+    SELECT * FROM _projects;
+END//
+DELIMITER ;

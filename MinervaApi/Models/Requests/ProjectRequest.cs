@@ -1,7 +1,7 @@
-namespace Minerva.Models
+﻿namespace Minerva.Models.Requests
 {
-     public class Project
-     {
+    public class ProjectRequest
+    {
         public int Id_Projects { get; set; }
         public string? Filename { get; set; }
         public decimal? Loanamount { get; set; }
@@ -13,6 +13,6 @@ namespace Minerva.Models
         public DateTime? Startdate { get; set; }
         public DateTime? Desiredclosingdate { get; set; }
         public string? Initialphase { get; set; }
-        public DateTime? CreateDateTime { get; set; }
+        public DateTime CreateDateTime { get; set; }
     }
 }

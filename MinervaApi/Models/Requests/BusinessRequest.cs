@@ -1,7 +1,7 @@
-namespace Minerva.Models
+﻿namespace Minerva.Models.Requests
 {
-     public class Business
-     {
+    public class BusinessRequest
+    {
         public int? BusinessId { get; set; }
         public int? TenantId { get; set; }
         public string? BusinessName { get; set; }
