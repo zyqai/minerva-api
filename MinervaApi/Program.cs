@@ -24,6 +24,8 @@ builder.Services.AddTransient<IBusinessBL,BusinessBL>();
 builder.Services.AddTransient<IBusinessRepository, BusinessRepository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 builder.Services.AddTransient<IProjectsBL, ProjectsBL>();
+builder.Services.AddTransient<IClientRepository, ClientRepository>();
+builder.Services.AddTransient<IClientBL, ClientBL>();
 
 builder.Services.AddCors(options =>
 {
