@@ -38,14 +38,14 @@ namespace Minerva.Controllers
         }
         [HttpPost]
         [Route("/User")]
-        public IActionResult SaveUsers(UsersRequest user)
+        public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
 
-                    bool b = userBL.SaveUser(user);
+                    bool b = await userBL.SaveUser(user);
                     if (b)
                         return StatusCode(StatusCodes.Status201Created, user);
                     else
@@ -63,13 +63,13 @@ namespace Minerva.Controllers
         }
         [HttpPut]
         [Route("/User")]
-        public IActionResult UpdateUser(UsersRequest user)
+        public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool b = userBL.UpdateUser(user);
+                    bool b =await userBL.UpdateUser(user);
                     return StatusCode(StatusCodes.Status200OK, user);
                 }
                 else
@@ -84,13 +84,13 @@ namespace Minerva.Controllers
         }
         [HttpDelete]
         [Route("/User/{UserId}")]
-        public IActionResult DeleteUser(string UserID)
+        public async Task<IActionResult> DeleteUser(string UserID)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!string.IsNullOrEmpty(UserID))
                 {
-                    bool b = userBL.DeleteUser(UserID);
+                    bool b =await userBL.DeleteUser(UserID);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
                     else

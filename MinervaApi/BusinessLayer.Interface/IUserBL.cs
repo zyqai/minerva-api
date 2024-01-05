@@ -6,8 +6,8 @@ namespace Minerva.BusinessLayer.Interface
     {
         public Task<User?> GetUser(Models.Requests.UsersRequest user);
         public Task<List<User?>> GetALLUsers();
-        public bool SaveUser(Models.Requests.UsersRequest user);
-        public bool UpdateUser(Models.Requests.UsersRequest user);
-        public bool DeleteUser(string UserId);
+        public Task<bool> SaveUser(Models.Requests.UsersRequest user);
+        public Task<bool> UpdateUser(Models.Requests.UsersRequest user);
+        public Task<bool> DeleteUser(string UserId);
     }
 }

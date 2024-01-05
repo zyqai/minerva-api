@@ -86,7 +86,7 @@ namespace Minerva.DataAccessLayer
             }
             return users;
         }
-        public bool SaveUser(User us)
+        public async Task<bool> SaveUser(User us)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
@@ -94,7 +94,7 @@ namespace Minerva.DataAccessLayer
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
             command.CommandType = CommandType.StoredProcedure;
-            int i = command.ExecuteNonQuery();
+            int i =await command.ExecuteNonQueryAsync();
             connection.Close();
             if (i == 1)
             {
@@ -105,7 +105,7 @@ namespace Minerva.DataAccessLayer
                 return false;
             }
         }
-        public bool UpdateUser(User us)
+        public async Task<bool> UpdateUser(User us)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
@@ -113,7 +113,7 @@ namespace Minerva.DataAccessLayer
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
             command.CommandType = CommandType.StoredProcedure;
-            int i = command.ExecuteNonQuery();
+            int i =await command.ExecuteNonQueryAsync();
             connection.Close();
             return i >= 1 ? true : false;
         }
@@ -131,14 +131,14 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_isTenantUser", us.IsTenantUser);
             command.Parameters.AddWithValue("@p_isAdminUser", us.IsAdminUser);
         }
-        public bool DeleteUser(string UserId)
+        public async Task<bool> DeleteUser(string UserId)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_DeleteUser";
             command.Parameters.AddWithValue("@in_userId", UserId);
             command.CommandType = CommandType.StoredProcedure;
-            int i = command.ExecuteNonQuery();
+            int i = await command.ExecuteNonQueryAsync();
             connection.Close();
             return i >= 1 ? true : false;
         }

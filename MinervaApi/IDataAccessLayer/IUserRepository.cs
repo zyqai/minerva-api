@@ -6,8 +6,8 @@ namespace Minerva.IDataAccessLayer
     {
         public Task<User?> GetuserAsync(string ?Userid);
         public Task<List<User?>> GetALLAsync();
-        public bool SaveUser(User us);
-        public bool UpdateUser(User us);
-        public bool DeleteUser(string UserId);
+        public Task<bool> SaveUser(User us);
+        public Task<bool> UpdateUser(User us);
+        public Task<bool> DeleteUser(string UserId);
     }
 }
