@@ -55,6 +55,7 @@ namespace Minerva.BusinessLayer
             ct.ModifiedTime= c.ModifiedTime;
             ct.ModifiedBy=c.ModifiedBy;
             ct.CreatedBy=c.CreatedBy;
+            ct.PhoneNumber = c.PhoneNumber;
             return ct;
         }
     }
