@@ -8,7 +8,7 @@ using Minerva.Models.Requests;
 
 namespace Minerva.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("user")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -18,8 +18,7 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet]
-        [Route("/User/{UserId}")]
+        [HttpGet("{UserId}")]
         public Task<User?> GetUser(string UserId)
         {
             UsersRequest user = new UsersRequest
@@ -28,16 +27,16 @@ namespace Minerva.Controllers
             };
             return userBL.GetUser(user);
         }
+        
         [HttpGet]
-        [Route("/User")]
         public Task<List<User?>> GetUses()
         {
 
             return userBL.GetALLUsers();
 
         }
+        
         [HttpPost]
-        [Route("/User")]
         public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
             try
@@ -61,8 +60,8 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        
         [HttpPut]
-        [Route("/User")]
         public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
             try
@@ -82,8 +81,8 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete]
-        [Route("/User/{UserId}")]
+        
+        [HttpDelete("{UserId}")]
         public async Task<IActionResult> DeleteUser(string UserID)
         {
             try

@@ -7,7 +7,7 @@ using Minerva.Models.Requests;
 
 namespace MinervaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("project")]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -18,8 +18,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Route("/Project")]
-        public async Task<IActionResult> CreateProject (ProjectRequest request)
+        public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             try
             {
@@ -45,8 +44,8 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        
         [HttpGet]
-        [Route("/Project")]
         public async Task<IActionResult> Get()
         {
             var projects = await ProtBL.GetAllProjects();
@@ -60,8 +59,8 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
-        [HttpGet]
-        [Route("/Project/{id}")]
+        
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var projects = await ProtBL.GetProjects(id);
@@ -77,7 +76,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut]
-        [Route("/Project")]
         public async Task<IActionResult> UpdateProject(ProjectRequest request)
         {
             try
@@ -105,8 +103,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("/Project/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             try

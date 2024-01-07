@@ -7,29 +7,26 @@ using Minerva.Models;
 
 namespace MinervaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("client")]
     [ApiController]
     public class ClientsController : ControllerBase
     {
         IClientBL client;
         public ClientsController(IClientBL bL)
-        { 
+        {
             client = bL;
         }
-        [HttpGet]
-        [Route("/Client/{ClientId}")]
+        [HttpGet("{ClientId}")]
         public Task<Client?> GetUser(int ClientId)
         {
             return client.GetClient(ClientId);
         }
         [HttpGet]
-        [Route("/Client")]
         public Task<List<Client?>> GetClient()
         {
             return client.GetALLClients();
         }
         [HttpPost]
-        [Route("/Client")]
         public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
             try
@@ -55,7 +52,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut]
-        [Route("/Client")]
         public async Task<IActionResult> UpdateClient(ClientRequest c)
         {
             try
@@ -75,13 +71,12 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete]
-        [Route("/Client/{ClientId}")]
+        [HttpDelete("{ClientId}")]
         public async Task<IActionResult> DeleteClient(int ClientId)
         {
             try
             {
-                if (ClientId>0)
+                if (ClientId > 0)
                 {
                     bool b = await client.DeleteClient(ClientId);
                     if (b)
