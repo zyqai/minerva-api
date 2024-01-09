@@ -20,20 +20,19 @@ namespace Minerva.BusinessLayer
             return UserRepository.GetALLAsync();
         }
 
-        public bool SaveUser(UsersRequest user)
+        public Task<bool> SaveUser(UsersRequest user)
         {
             User us = us = MappingUsers(user);
             return UserRepository.SaveUser(us);
         }
 
-        public bool UpdateUser(UsersRequest user)
+        public Task<bool> UpdateUser(UsersRequest user)
         {
             User us = MappingUsers(user);
             return UserRepository.UpdateUser(us);
         }
-        public bool DeleteUser(string UserId)
+        public Task<bool> DeleteUser(string UserId)
         {
-            if (string.IsNullOrEmpty(UserId)) { return false; }
             return UserRepository.DeleteUser(UserId);
         }
         private User MappingUsers(UsersRequest user)

@@ -1,30 +1,27 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
-using Minerva.Models;
 using Minerva.Models.Requests;
 
-namespace MinervaApi.Controllers
+namespace Minerva.Controllers
 {
-    [Route("project")]
+    [Route("states")]
     [ApiController]
-    public class ProjectController : ControllerBase
+    public class StatesController : ControllerBase
     {
-        IProjectsBL ProtBL;
-        public ProjectController(IProjectsBL projectBL)
+        IStatesBL states;
+        public StatesController(IStatesBL _states) 
         {
-            ProtBL = projectBL;
+            states = _states;
         }
-
         [HttpPost]
-        public async Task<IActionResult> CreateProject(ProjectRequest request)
+        public async Task<IActionResult> CreateProject(StatesRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var b = await ProtBL.SaveProject(request);
+                    var b = await states.SaveState(request);
                     if (b)
                     {
                         return StatusCode(StatusCodes.Status201Created, request);
@@ -44,45 +41,43 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var projects = await ProtBL.GetAllProjects();
+            var state = await states.GetALLstates();
 
-            if (projects != null)
+            if (state != null)
             {
-                return Ok(projects);
+                return Ok(state);
             }
             else
             {
                 return NotFound(); // or another appropriate status
             }
         }
-        
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var projects = await ProtBL.GetProjects(id);
+            var state = await states.Getstates(id);
 
-            if (projects != null)
+            if (state != null)
             {
-                return Ok(projects);
+                return Ok(state);
             }
             else
             {
                 return NotFound(); // or another appropriate status
             }
         }
-
         [HttpPut]
-        public async Task<IActionResult> UpdateProject(ProjectRequest request)
+        public async Task<IActionResult> Updatestate(StatesRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var b = await ProtBL.UpdateProject(request);
+                    var b = await states.UpdateStates(request);
                     if (b)
                     {
                         return StatusCode(StatusCodes.Status201Created, request);
@@ -102,15 +97,14 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        public async Task<IActionResult> DeleteState(int id)
         {
             try
             {
-                if (ModelState.IsValid)
+                if (id>0)
                 {
-                    var b = await ProtBL.DeleteProject(id);
+                    var b = await states.DeleteStates(id);
                     if (b)
                     {
                         return StatusCode(StatusCodes.Status201Created);
@@ -130,7 +124,5 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-
     }
 }

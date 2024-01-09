@@ -7,7 +7,7 @@ using Minerva.Models.Requests;
 
 namespace Minerva.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("business")]
     [ApiController]
     public class BusinessController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace Minerva.Controllers
         {
             this.BusinessBL = _BusinessBL;
         }
+        
         [HttpPost]
-        [Route("/Business")]
         public IActionResult SaveBusines([FromBody] BusinessRequest request)
         {
             try
@@ -45,20 +45,19 @@ namespace Minerva.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("/Business/{id}")]
+        [HttpGet("{id}")]
         public Task<Business?> GetBusiness(int id)
         {
             return BusinessBL.GetBusiness(id);
         }
+        
         [HttpGet]
-        [Route("/Business")]
         public Task<List<Business?>> GetBusiness()
         {
             return BusinessBL.GetALLBusiness();
         }
+        
         [HttpPut]
-        [Route("/Business")]
         public IActionResult UpdateBusiness(BusinessRequest request)
         {
             try
@@ -78,15 +77,15 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete]
-        [Route("/Business/{BusinessId}")]
-        public IActionResult DeleteUser(int BusinessId)
+        
+        [HttpDelete("{id}")]
+        public IActionResult DeleteUser(int id)
         {
             try
             {
-                if (BusinessId > 0)
+                if (id > 0)
                 {
-                    bool b = BusinessBL.DeleteBusiness(BusinessId);
+                    bool b = BusinessBL.DeleteBusiness(id);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
                     else

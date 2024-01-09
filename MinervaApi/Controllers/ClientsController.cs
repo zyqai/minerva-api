@@ -2,53 +2,43 @@
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
-using Minerva.Controllers;
-using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models;
 
-namespace Minerva.Controllers
+namespace MinervaApi.Controllers
 {
-    [Route("user")]
+    [Route("client")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class ClientsController : ControllerBase
     {
-        IUserBL userBL;
-        public UsersController(IUserBL _userBL)
+        IClientBL client;
+        public ClientsController(IClientBL bL)
         {
-            this.userBL = _userBL;
+            client = bL;
         }
-
-        [HttpGet("{UserId}")]
-        public Task<User?> GetUser(string UserId)
+        [HttpGet("{ClientId}")]
+        public Task<Client?> GetUser(int ClientId)
         {
-            UsersRequest user = new UsersRequest
-            {
-                UserId = UserId
-            };
-            return userBL.GetUser(user);
+            return client.GetClient(ClientId);
         }
-        
         [HttpGet]
-        public Task<List<User?>> GetUses()
+        public Task<List<Client?>> GetClient()
         {
-
-            return userBL.GetALLUsers();
-
+            return client.GetALLClients();
         }
-        
         [HttpPost]
-        public async Task<IActionResult> SaveUsers(UsersRequest user)
+        public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
 
-                    bool b = await userBL.SaveUser(user);
+                    bool b = await client.SaveClient(c);
                     if (b)
-                        return StatusCode(StatusCodes.Status201Created, user);
+                        return StatusCode(StatusCodes.Status201Created, c);
                     else
-                        return StatusCode(StatusCodes.Status500InternalServerError, user);
+                        return StatusCode(StatusCodes.Status500InternalServerError, c);
                 }
                 else
                 {
@@ -60,16 +50,16 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
+
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(UsersRequest user)
+        public async Task<IActionResult> UpdateClient(ClientRequest c)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool b =await userBL.UpdateUser(user);
-                    return StatusCode(StatusCodes.Status200OK, user);
+                    bool b = await client.UpdateClient(c);
+                    return StatusCode(StatusCodes.Status200OK, c);
                 }
                 else
                 {
@@ -81,15 +71,14 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
-        [HttpDelete("{UserId}")]
-        public async Task<IActionResult> DeleteUser(string UserID)
+        [HttpDelete("{ClientId}")]
+        public async Task<IActionResult> DeleteClient(int ClientId)
         {
             try
             {
-                if (!string.IsNullOrEmpty(UserID))
+                if (ClientId > 0)
                 {
-                    bool b =await userBL.DeleteUser(UserID);
+                    bool b = await client.DeleteClient(ClientId);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
                     else
