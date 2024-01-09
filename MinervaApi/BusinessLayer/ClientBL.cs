@@ -45,7 +45,6 @@ namespace Minerva.BusinessLayer
             ct.ClientAddress = c.ClientAddress;
             ct.PreferredContact=   c.PreferredContact;
             ct.Email = c.Email;
-            ct.PreferredContact=c.PreferredContact;
             ct.CreditScore = c.CreditScore;
             ct.LendabilityScore = c.LendabilityScore;
             ct.MarriedStatus = c.MarriedStatus;
@@ -56,6 +55,12 @@ namespace Minerva.BusinessLayer
             ct.ModifiedBy=c.ModifiedBy;
             ct.CreatedBy=c.CreatedBy;
             ct.PhoneNumber = c.PhoneNumber;
+            ct.firstName = c.firstName;
+            ct.lastName=c.lastName;
+            ct.dob = c.dob;
+            ct.socialsecuritynumber=c.socialsecuritynumber;
+            ct.postalnumber = c.postalnumber;
+            ct.stateid = c.stateid;
             return ct;
         }
     }

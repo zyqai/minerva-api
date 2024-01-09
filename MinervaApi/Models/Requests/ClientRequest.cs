@@ -9,6 +9,12 @@ namespace Minerva.Models.Requests
         public string? UserId { get; set; }
         public int TenantId { get; set; }
         public string? ClientName { get; set; }
+        public string? firstName { get; set; }
+        public string? lastName { get; set; }
+        public DateTime? dob { get; set; }
+        public string? socialsecuritynumber { get; set; }
+        public string? postalnumber { get; set; }
+        public int? stateid { get; set; }
         public string? ClientAddress { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }

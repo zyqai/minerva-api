@@ -48,6 +48,12 @@ namespace Minerva.DataAccessLayer
                         TenantId = Convert.ToInt32(reader["tenantId"]),
                         ClientName = reader["clientName"].ToString(),
                         ClientAddress = reader["clientAddress"].ToString(),
+                        firstName = reader["firstName"].ToString(),
+                        lastName = reader["lastName"].ToString(),
+                        dob = reader["createdTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["dob"]),
+                        socialsecuritynumber= reader["socialsecuritynumber"].ToString(),
+                        postalnumber = reader["postalnumber"].ToString(),
+                        stateid = reader["stateid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["stateid"]),
                         PhoneNumber = reader["phoneNumber"].ToString(),
                         Email = reader["email"].ToString(),
                         PreferredContact = reader["preferredContact"].ToString(),
@@ -98,6 +104,14 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantId", client.TenantId);
             command.Parameters.AddWithValue("@p_clientName", client.ClientName);
             command.Parameters.AddWithValue("@p_clientAddress", client.ClientAddress);
+
+            command.Parameters.AddWithValue("@p_firstName", client.firstName);
+            command.Parameters.AddWithValue("@p_lastName", client.lastName);
+            command.Parameters.AddWithValue("@p_dob", client.dob);
+            command.Parameters.AddWithValue("@p_socialsecuritynumber", client.socialsecuritynumber);
+            command.Parameters.AddWithValue("@p_postalnumber", client.postalnumber);
+            command.Parameters.AddWithValue("@p_stateid", client.stateid);
+
             command.Parameters.AddWithValue("@p_phoneNumber", client.PhoneNumber);
             command.Parameters.AddWithValue("@p_email", client.Email);
             command.Parameters.AddWithValue("@p_preferredContact", client.PreferredContact);
