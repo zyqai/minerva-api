@@ -1,0 +1,8 @@
+DELIMITER //
+
+CREATE PROCEDURE USP_TenantGetAll()
+BEGIN
+    SELECT * FROM _tenants;
+END //
+
+DELIMITER ;
