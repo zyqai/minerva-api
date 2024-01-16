@@ -43,14 +43,14 @@ namespace Minerva.DataAccessLayer
                 {
                     var Client = new Client
                     {
-                        ClientId = Convert.ToInt32(reader["clientId"]),
+                        ClientId = reader["clientId"] == DBNull.Value ? (int?)null :  Convert.ToInt32(reader["clientId"]),
                         UserId = reader["userId"].ToString(),
-                        TenantId = Convert.ToInt32(reader["tenantId"]),
+                        TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
                         ClientName = reader["clientName"].ToString(),
                         ClientAddress = reader["clientAddress"].ToString(),
                         firstName = reader["firstName"].ToString(),
                         lastName = reader["lastName"].ToString(),
-                        dob = reader["createdTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["dob"]),
+                        dob = reader["dob"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["dob"]),
                         socialsecuritynumber= reader["socialsecuritynumber"].ToString(),
                         postalnumber = reader["postalnumber"].ToString(),
                         stateid = reader["stateid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["stateid"]),
