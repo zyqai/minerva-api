@@ -5,7 +5,7 @@ using Minerva.Models.Requests;
 
 namespace MinervaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("tenant")]
     [ApiController]
     public class TenantController : ControllerBase
     {
