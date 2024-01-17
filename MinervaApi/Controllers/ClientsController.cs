@@ -17,7 +17,7 @@ namespace MinervaApi.Controllers
             client = bL;
         }
         [HttpGet("{ClientId}")]
-        public Task<Client?> GetUser(int ClientId)
+        public Task<Client?> GetClient(int ClientId)
         {
             return client.GetClient(ClientId);
         }

@@ -28,6 +28,8 @@ builder.Services.AddTransient<IClientRepository, ClientRepository>();
 builder.Services.AddTransient<IClientBL, ClientBL>();
 builder.Services.AddTransient<IStatesRepository, StatesRepositiory>();
 builder.Services.AddTransient<IStatesBL, StatesBL>();
+builder.Services.AddTransient<ITenantRepositiry, TenantRepositiry>();
+builder.Services.AddTransient<ITenant, TenantBL>();
 
 builder.Services.AddCors(options =>
 {
