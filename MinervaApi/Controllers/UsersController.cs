@@ -43,6 +43,9 @@ namespace Minerva.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    user.UserName = user.Email;
+                    user.IsDeleted = false;
+                    user.IsActive = true;
 
                     bool b = await userBL.SaveUser(user);
                     if (b)
