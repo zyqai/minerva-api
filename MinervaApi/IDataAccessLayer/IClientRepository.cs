@@ -6,7 +6,7 @@ namespace Minerva.IDataAccessLayer
     {
         public Task<Client?> GetClientAsync(int? ClientId);
         public Task<List<Client?>> GetALLClientsAsync();
-        public Task<bool> SaveClient(Client us);
+        public Task<int> SaveClient(Client us);
         public Task<bool> UpdateClient(Client us);
         public Task<bool> DeleteClient(int? ClientId);
     }

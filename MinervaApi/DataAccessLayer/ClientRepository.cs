@@ -73,16 +73,27 @@ namespace Minerva.DataAccessLayer
             }
             return Clients;
         }
-        public async Task<bool> SaveClient(Client us)
+        public async Task<int> SaveClient(Client us)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_ClientCreate";
+            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(outputParameter);
+
             AddParameters(command, us);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
+            int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
-            return i >= 1 ? true : false;
+            if (i > 0)
+            {
+                i = lastInsertId;
+            }
+            return i;
         }
         public async Task<bool> UpdateClient(Client us)
         {

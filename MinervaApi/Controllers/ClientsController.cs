@@ -34,9 +34,15 @@ namespace MinervaApi.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    bool b = await client.SaveClient(c);
-                    if (b)
-                        return StatusCode(StatusCodes.Status201Created, c);
+                    int ClientId = await client.SaveClient(c);
+                    if (ClientId > 0)
+                    {
+                        Client ?clients= await client.GetClient(ClientId);
+                        List<Client?> clist = new List<Client?>();
+                        clist.Add(clients);
+                        return StatusCode(StatusCodes.Status200OK,clist);
+
+                    }
                     else
                         return StatusCode(StatusCodes.Status500InternalServerError, c);
                 }
