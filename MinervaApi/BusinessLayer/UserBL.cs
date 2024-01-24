@@ -20,7 +20,7 @@ namespace Minerva.BusinessLayer
             return UserRepository.GetALLAsync();
         }
 
-        public Task<bool> SaveUser(UsersRequest user)
+        public Task<string> SaveUser(UsersRequest user)
         {
             User us = us = MappingUsers(user);
             return UserRepository.SaveUser(us);

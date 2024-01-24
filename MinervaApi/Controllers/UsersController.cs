@@ -47,9 +47,15 @@ namespace Minerva.Controllers
                     user.IsDeleted = false;
                     user.IsActive = true;
 
-                    bool b = await userBL.SaveUser(user);
-                    if (b)
-                        return StatusCode(StatusCodes.Status201Created, user);
+                    string userid = await userBL.SaveUser(user);
+                    if (!string.IsNullOrEmpty(userid))
+                    {
+                        user.UserId = userid;
+                        User? user1 = await userBL.GetUser(user);
+                        List<User?> ulist = new List<User?>();
+                        ulist.Add(user1);
+                        return StatusCode(StatusCodes.Status201Created, ulist);
+                    }
                     else
                         return StatusCode(StatusCodes.Status500InternalServerError, user);
                 }
