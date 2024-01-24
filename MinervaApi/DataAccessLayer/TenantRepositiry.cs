@@ -52,9 +52,13 @@ namespace Minerva.DataAccessLayer
                         TenantDomain = mySqlDataReader.GetString(2),
                         TenantLogoPath = mySqlDataReader.GetString(3),
                         TenantAddress = mySqlDataReader.GetString(4),
-                        TenantPhone = mySqlDataReader.GetString(5),
-                        TenantContactName = mySqlDataReader.GetString(6),
-                        TenantContactEmail = mySqlDataReader.GetString(7),
+                        TenantAddress1 = mySqlDataReader.GetString(5),
+                        TenantPhone = mySqlDataReader.GetString(6),
+                        TenantContactName = mySqlDataReader.GetString(7),
+                        TenantContactEmail = mySqlDataReader.GetString(8),
+                        PostalCode = mySqlDataReader.GetString(9),
+                        City = mySqlDataReader.GetString(10),
+                        stateid= mySqlDataReader.GetInt32(11)
                     };
                     tenants.Add(tenant);
                 }
@@ -76,16 +80,27 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        public async Task<bool> SaveTenant(Tenant t)
+        public async Task<int> SaveTenant(Tenant t)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_TenantCreate";
+            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            
             AddUserParameters(command, t);
+            command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
+            int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
-            return i >= 1 ? true : false;
+            if (i > 0)
+            {
+                i = lastInsertId;
+            }
+            return i;
 
         }
 
@@ -99,6 +114,10 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantPhone", t.TenantPhone);
             command.Parameters.AddWithValue("@p_tenantContactName", t.TenantContactName);
             command.Parameters.AddWithValue("@p_tenantContactEmail", t.TenantContactEmail);
+            command.Parameters.AddWithValue("@p_tenentAddress1", t.TenantAddress1);
+            command.Parameters.AddWithValue("@p_postalCode", t.PostalCode);
+            command.Parameters.AddWithValue("@p_city", t.City);
+            command.Parameters.AddWithValue("@p_stateId", t.stateid);
         }
 
         public async Task<bool> UpdateTenant(Tenant t)

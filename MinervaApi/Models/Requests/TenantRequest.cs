@@ -21,13 +21,20 @@ namespace Minerva.Models.Requests
         [StringLength(1000)]
         public string? TenantAddress { get; set; }
 
+        [StringLength(1000)]
+        public string? TenantAddress1 { get; set; }
+
         [StringLength(45)]
         public string? TenantPhone { get; set; }
 
         [StringLength(45)]
         public string? TenantContactName { get; set; }
 
-        [StringLength(100)]
+        [StringLength(225)]
         public string? TenantContactEmail { get; set; }
+
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+        public int? stateid { get; set; }
     }
 }

@@ -10,9 +10,12 @@ namespace Minerva.Models
         public string? TenantDomain { get; set; }
         public string? TenantLogoPath { get; set; }
         public string? TenantAddress { get; set; }
+        public string? TenantAddress1 { get; set; }
         public string? TenantPhone { get; set; }
         public string? TenantContactName { get; set; }
         public string? TenantContactEmail { get; set; }
-
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+        public int? stateid { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `minerva` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `minerva`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: minerva
@@ -28,23 +30,20 @@ CREATE TABLE `_tenants` (
   `tenantDomain` varchar(255) DEFAULT NULL,
   `tenantLogoPath` varchar(255) DEFAULT NULL,
   `tenantAddress` varchar(1000) DEFAULT NULL,
+  `tenentAddress1` varchar(1000) DEFAULT NULL,
   `tenantPhone` varchar(45) DEFAULT NULL,
   `tenantContactName` varchar(45) DEFAULT NULL,
   `tenantContactEmail` varchar(100) DEFAULT NULL,
+  `postalCode` varchar(45) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `stateid` int DEFAULT NULL,
+  `createDateTime` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`tenantId`),
-  UNIQUE KEY `tenantId_UNIQUE` (`tenantId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `tenantId_UNIQUE` (`tenantId`),
+  KEY `FK_stateIDtenent_idx` (`stateid`),
+  CONSTRAINT `FK_stateIDtenent` FOREIGN KEY (`stateid`) REFERENCES `_states` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `_tenants`
---
-
-LOCK TABLES `_tenants` WRITE;
-/*!40000 ALTER TABLE `_tenants` DISABLE KEYS */;
-INSERT INTO `_tenants` VALUES (1,'IBC','ibc.zyq.ai','PutLogoPathHere','Address in Michigan','1234567890','IBC Contact Name','info@ibc.com');
-/*!40000 ALTER TABLE `_tenants` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -55,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-09 22:34:08
+-- Dump completed on 2024-01-24  6:04:24

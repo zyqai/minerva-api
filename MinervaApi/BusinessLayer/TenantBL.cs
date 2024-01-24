@@ -23,7 +23,7 @@ namespace Minerva.BusinessLayer
             return repositiry.GetTenantAsync(TenantId);
         }
 
-        public Task<bool> SaveTenant(TenantRequest t)
+        public Task<int> SaveTenant(TenantRequest t)
         {
             Tenant ten = Mapping(t);
             return repositiry.SaveTenant(ten);
@@ -40,7 +40,11 @@ namespace Minerva.BusinessLayer
                 TenantContactName = t.TenantContactName,
                 TenantDomain = t.TenantDomain,
                 TenantLogoPath = t.TenantLogoPath,  
-                TenantPhone = t.TenantPhone 
+                TenantPhone = t.TenantPhone,
+                TenantAddress1=t.TenantAddress1,
+                stateid=t.stateid,
+                City=t.City,    
+                PostalCode = t.PostalCode
             };
             return tenant;
         }
