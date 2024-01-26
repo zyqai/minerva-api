@@ -77,6 +77,7 @@ namespace Minerva.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    user.UserName = user.Email;
                     bool b =await userBL.UpdateUser(user);
                     return StatusCode(StatusCodes.Status200OK, user);
                 }

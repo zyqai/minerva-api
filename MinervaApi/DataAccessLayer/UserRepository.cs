@@ -123,7 +123,10 @@ namespace Minerva.DataAccessLayer
         }
         private void AddUserParameters(MySqlCommand command, User us)
         {
-            command.Parameters.AddWithValue("@p_userId", us.UserId);
+            if (!string.IsNullOrEmpty(us.UserId))
+            {
+                command.Parameters.AddWithValue("@p_userId", us.UserId);
+            }
             command.Parameters.AddWithValue("@p_tenantId", us.TenantId);
             command.Parameters.AddWithValue("@p_userName", us.UserName);
             command.Parameters.AddWithValue("@p_email", us.Email);

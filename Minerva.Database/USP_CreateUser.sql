@@ -1,10 +1,7 @@
-DELIMITER //
-DROP PROCEDURE USP_CreateUser
-GO
-DELIMITER //
 
+DELIMITER //
 CREATE PROCEDURE `USP_CreateUser`(
-    IN p_userId VARCHAR(45),
+    
     IN p_tenantId INT,
     IN p_userName VARCHAR(16),
     IN p_email VARCHAR(255),
@@ -19,9 +16,9 @@ CREATE PROCEDURE `USP_CreateUser`(
     OUT p_last_insert_id VARCHAR(45)
 )
 BEGIN
-    IF p_userId IS NULL OR p_userId = '' THEN
+    DECLARE p_userId VARCHAR(50);
         SET p_userId = UUID();
-    END IF;
+    
 
     INSERT INTO `_users` (
         `userId`, `tenantId`, `userName`, `email`, `isActive`, `isDeleted`,
@@ -34,6 +31,4 @@ BEGIN
     );
 
     SET p_last_insert_id := p_userId;
-END //
-
-DELIMITER ;
+END
