@@ -1,5 +1,6 @@
-DELIMITER //
 
+
+DELIMITER //
 CREATE PROCEDURE `USP_TenantCreate`(
     IN p_tenantName VARCHAR(255),
     IN p_tenantDomain VARCHAR(255),
@@ -11,7 +12,8 @@ CREATE PROCEDURE `USP_TenantCreate`(
     IN p_tenantContactEmail VARCHAR(100),
     IN p_postalCode VARCHAR(45),
     IN p_city VARCHAR(100),
-    IN p_stateId INT
+    IN p_stateId INT,
+    OUT p_last_insert_id INT 
 )
 BEGIN
     INSERT INTO `_tenants` (
@@ -26,6 +28,6 @@ BEGIN
         p_tenantContactName, p_tenantContactEmail, p_postalCode,
         p_city, p_stateId, CURRENT_TIMESTAMP
     );
-END //
-
+    SET p_last_insert_id := LAST_INSERT_ID();
+END//
 DELIMITER ;

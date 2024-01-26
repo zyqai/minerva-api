@@ -85,12 +85,13 @@ namespace Minerva.DataAccessLayer
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_TenantCreate";
+           
+            
+            AddUserParameters(command, t);
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
             };
-            
-            AddUserParameters(command, t);
             command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
@@ -111,10 +112,10 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantDomain", t.TenantDomain);
             command.Parameters.AddWithValue("@p_tenantLogoPath", t.TenantLogoPath);
             command.Parameters.AddWithValue("@p_tenantAddress", t.TenantAddress);
+            command.Parameters.AddWithValue("@p_tenentAddress1", t.TenantAddress1);
             command.Parameters.AddWithValue("@p_tenantPhone", t.TenantPhone);
             command.Parameters.AddWithValue("@p_tenantContactName", t.TenantContactName);
             command.Parameters.AddWithValue("@p_tenantContactEmail", t.TenantContactEmail);
-            command.Parameters.AddWithValue("@p_tenentAddress1", t.TenantAddress1);
             command.Parameters.AddWithValue("@p_postalCode", t.PostalCode);
             command.Parameters.AddWithValue("@p_city", t.City);
             command.Parameters.AddWithValue("@p_stateId", t.stateid);
