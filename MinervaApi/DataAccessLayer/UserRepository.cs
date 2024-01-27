@@ -86,24 +86,28 @@ namespace Minerva.DataAccessLayer
             }
             return users;
         }
-        public async Task<bool> SaveUser(User us)
+        public async Task<string> SaveUser(User us)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_CreateUser";
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
+            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i =await command.ExecuteNonQueryAsync();
+            string? lastInsertId = outputParameter.Value != null ? outputParameter.Value.ToString() : "";
             connection.Close();
-            if (i == 1)
+            if (i > 0)
             {
-                return true;
+                return lastInsertId;
             }
-            else
-            {
-                return false;
-            }
+            return string.Empty;
+
         }
         public async Task<bool> UpdateUser(User us)
         {
@@ -119,7 +123,10 @@ namespace Minerva.DataAccessLayer
         }
         private void AddUserParameters(MySqlCommand command, User us)
         {
-            command.Parameters.AddWithValue("@p_userId", us.UserId);
+            if (!string.IsNullOrEmpty(us.UserId))
+            {
+                command.Parameters.AddWithValue("@p_userId", us.UserId);
+            }
             command.Parameters.AddWithValue("@p_tenantId", us.TenantId);
             command.Parameters.AddWithValue("@p_userName", us.UserName);
             command.Parameters.AddWithValue("@p_email", us.Email);

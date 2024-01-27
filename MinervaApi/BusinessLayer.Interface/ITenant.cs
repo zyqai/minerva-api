@@ -7,7 +7,7 @@ namespace Minerva.BusinessLayer.Interface
     {
         public Task<Tenant?> GetTenantAsync(int? TenantId);
         public Task<List<Tenant?>> GetALLAsync();
-        public Task<bool> SaveTenant(TenantRequest t);
+        public Task<int> SaveTenant(TenantRequest t);
         public Task<bool> UpdateTenant(TenantRequest t);
         public Task<bool> DeleteTenant(int TenantId);
     }

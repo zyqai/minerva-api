@@ -21,7 +21,7 @@ namespace Minerva.BusinessLayer
         {
             return client.GetALLClientsAsync();
         }
-        public Task<bool> SaveClient(ClientRequest c)
+        public Task<int> SaveClient(ClientRequest c)
         {
             Client us = MappingClient(c);
             return client.SaveClient(us);

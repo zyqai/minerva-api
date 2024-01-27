@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer.Interface;
+using Minerva.Models;
 using Minerva.Models.Requests;
 
 namespace MinervaApi.Controllers
@@ -16,16 +17,24 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject(TenantRequest request)
+        public async Task<IActionResult> CreateTenent(TenantRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     var b = await tenant.SaveTenant(request);
-                    if (b)
+                    if (b > 0)
                     {
-                        return StatusCode(StatusCodes.Status201Created, request);
+                        Tenant? ten = await tenant.GetTenantAsync(b);
+                        if (ten != null)
+                        {
+                            return StatusCode(StatusCodes.Status201Created, ten);
+                        }
+                        else
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, ten);
+                        }
                     }
                     else
                     {

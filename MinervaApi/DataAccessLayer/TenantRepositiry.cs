@@ -47,14 +47,18 @@ namespace Minerva.DataAccessLayer
                 {
                     var tenant = new Tenant
                     {
-                        TenantId = mySqlDataReader.GetInt32(0),
-                        TenantName = mySqlDataReader.GetString(1),
-                        TenantDomain = mySqlDataReader.GetString(2),
-                        TenantLogoPath = mySqlDataReader.GetString(3),
-                        TenantAddress = mySqlDataReader.GetString(4),
-                        TenantPhone = mySqlDataReader.GetString(5),
-                        TenantContactName = mySqlDataReader.GetString(6),
-                        TenantContactEmail = mySqlDataReader.GetString(7),
+                        TenantId = mySqlDataReader.IsDBNull(0) ? 0 : mySqlDataReader.GetInt32(0),
+                        TenantName = mySqlDataReader.IsDBNull(1) ? null : mySqlDataReader.GetString(1),
+                        TenantDomain = mySqlDataReader.IsDBNull(2) ? null : mySqlDataReader.GetString(2),
+                        TenantLogoPath = mySqlDataReader.IsDBNull(3) ? null : mySqlDataReader.GetString(3),
+                        TenantAddress = mySqlDataReader.IsDBNull(4) ? null : mySqlDataReader.GetString(4),
+                        TenantAddress1 = mySqlDataReader.IsDBNull(5) ? null : mySqlDataReader.GetString(5),
+                        TenantPhone = mySqlDataReader.IsDBNull(6) ? null : mySqlDataReader.GetString(6),
+                        TenantContactName = mySqlDataReader.IsDBNull(7) ? null : mySqlDataReader.GetString(7),
+                        TenantContactEmail = mySqlDataReader.IsDBNull(8) ? null : mySqlDataReader.GetString(8),
+                        PostalCode = mySqlDataReader.IsDBNull(9) ? null : mySqlDataReader.GetString(9),
+                        City = mySqlDataReader.IsDBNull(10) ? null : mySqlDataReader.GetString(10),
+                        stateid= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader.GetInt32(11)
                     };
                     tenants.Add(tenant);
                 }
@@ -76,16 +80,28 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        public async Task<bool> SaveTenant(Tenant t)
+        public async Task<int> SaveTenant(Tenant t)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_TenantCreate";
+           
+            
             AddUserParameters(command, t);
+            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
+            int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
-            return i >= 1 ? true : false;
+            if (i > 0)
+            {
+                i = lastInsertId;
+            }
+            return i;
 
         }
 
@@ -96,9 +112,13 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantDomain", t.TenantDomain);
             command.Parameters.AddWithValue("@p_tenantLogoPath", t.TenantLogoPath);
             command.Parameters.AddWithValue("@p_tenantAddress", t.TenantAddress);
+            command.Parameters.AddWithValue("@p_tenentAddress1", t.TenantAddress1);
             command.Parameters.AddWithValue("@p_tenantPhone", t.TenantPhone);
             command.Parameters.AddWithValue("@p_tenantContactName", t.TenantContactName);
             command.Parameters.AddWithValue("@p_tenantContactEmail", t.TenantContactEmail);
+            command.Parameters.AddWithValue("@p_postalCode", t.PostalCode);
+            command.Parameters.AddWithValue("@p_city", t.City);
+            command.Parameters.AddWithValue("@p_stateId", t.stateid);
         }
 
         public async Task<bool> UpdateTenant(Tenant t)
