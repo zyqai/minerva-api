@@ -10,6 +10,7 @@ namespace Minerva.BusinessLayer.Interface
         public Task<bool> UpdateUser(Models.Requests.UsersRequest user);
         public Task<bool> DeleteUser(string UserId);
         public Task<User?> GetUserusingUserName(Models.Requests.UsersRequest user);
+        public Task<List<User?>> GetTenantUserList(int tenantId);
 
     }
 }

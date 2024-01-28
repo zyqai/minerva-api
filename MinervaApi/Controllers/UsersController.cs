@@ -127,5 +127,11 @@ namespace Minerva.Controllers
             };
             return userBL.GetUserusingUserName(user);
         }
+
+        [HttpGet("GetTenantUserList/{tenantid}")]
+        public Task<List<User?>> GetTenantUserList(int tenantid)
+        {
+            return userBL.GetTenantUserList(tenantid);
+        }
     }
 }

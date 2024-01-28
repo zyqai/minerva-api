@@ -10,6 +10,6 @@ namespace Minerva.IDataAccessLayer
         public Task<string> SaveUser(User us);
         public Task<bool> UpdateUser(User us);
         public Task<bool> DeleteUser(string UserId);
-
+        public Task<List<User?>> GetTenantUserList(int tenantId);
     }
 }

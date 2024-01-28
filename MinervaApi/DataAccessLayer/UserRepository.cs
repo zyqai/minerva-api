@@ -162,5 +162,18 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             return result.FirstOrDefault();
         }
+
+        public async Task<List<User?>> GetTenantUserList(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.Parameters.AddWithValue("@p_tenantId", tenantId);
+            command.CommandText = @"USP_GetTenantUsers";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
     }
+
 }

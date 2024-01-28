@@ -57,5 +57,9 @@ namespace Minerva.BusinessLayer
             us.ModifiedBy = user.ModifiedBy;
             return us;
         }
+        public Task<List<User?>> GetTenantUserList(int tenantId)
+        {
+            return UserRepository.GetTenantUserList(tenantId);
+        }
     }
 }
