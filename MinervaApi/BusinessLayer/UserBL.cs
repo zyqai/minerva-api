@@ -15,6 +15,10 @@ namespace Minerva.BusinessLayer
         {
             return UserRepository.GetuserAsync(u.UserId);
         }
+        public Task<User?> GetUserusingUserName(UsersRequest u)
+        {
+            return UserRepository.GetuserusingUserNameAsync(u.UserName);
+        }
         public Task<List<User?>> GetALLUsers()
         { 
             return UserRepository.GetALLAsync();

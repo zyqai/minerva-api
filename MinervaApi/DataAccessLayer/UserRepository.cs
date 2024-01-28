@@ -149,5 +149,18 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             return i >= 1 ? true : false;
         }
+
+        public async Task<User?> GetuserusingUserNameAsync(string? UserName)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_GetUserByUserName";
+            command.Parameters.AddWithValue("@p_userName", UserName);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.FirstOrDefault();
+        }
     }
 }
