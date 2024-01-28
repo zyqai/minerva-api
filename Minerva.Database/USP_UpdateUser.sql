@@ -1,7 +1,8 @@
-DELIMITER //
-CREATE PROCEDURE `USP_UpdateUser`(
-    IN p_userId VARCHAR(45),
-    IN p_userName VARCHAR(16),
+
+    DELIMITER //
+    CREATE  PROCEDURE `USP_UpdateUser`(
+    IN p_userId VARCHAR(255),
+    IN p_userName VARCHAR(255),
     IN p_email VARCHAR(255),
     IN p_isActive TINYINT,
     IN p_modifiedBy VARCHAR(100),
