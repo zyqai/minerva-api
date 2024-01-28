@@ -59,10 +59,10 @@ namespace Minerva.DataAccessLayer
                         CreatedBy = reader.GetValue(8).ToString(),
                         ModifiedBy = reader.GetValue(9).ToString(),
                         PhoneNumber = reader.GetValue(10).ToString(),
-                        NotificationsEnabled = reader.GetInt16(11) == 1 ? true : false,
-                        MfaEnabled = reader.GetInt16(12) == 1 ? true : false,
-                        IsTenantUser = reader.GetInt32(13),
-                        IsAdminUser = reader.GetInt32(14),
+                        NotificationsEnabled = reader.IsDBNull(11) ? false : (reader.GetInt16(11) == 1),
+                        MfaEnabled = reader.IsDBNull(12) ? false : (reader.GetInt16(12) == 1),
+                        IsTenantUser = reader.IsDBNull(13) ? 0:reader.GetInt32(13),
+                        IsAdminUser = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
 
 
                     };
