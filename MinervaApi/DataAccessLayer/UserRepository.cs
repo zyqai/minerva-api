@@ -6,6 +6,7 @@ using System.Reflection.PortableExecutable;
 using System.Data;
 using System.Collections.Generic;
 using MinervaApi.ExternalApi;
+using Minerva.Models.Returns;
 
 namespace Minerva.DataAccessLayer
 {
@@ -174,6 +175,24 @@ namespace Minerva.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return result.FirstOrDefault();
+        }
+
+        public async Task<Apistatus> ResetPassword(string emailid)
+        { 
+            Apistatus apistatus = new Apistatus();
+            var res=await GetuserusingUserNameAsync(emailid);
+            if (res != null)
+            {
+                KeyClientCrud crud = new KeyClientCrud();
+                var res1 = crud.GetKeyClient(emailid);
+            }
+            else
+            {
+                apistatus.code = "204";
+                apistatus.message = "user is not exists";  
+            }
+
+            return apistatus;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Minerva.Models;
 using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 
 namespace Minerva.BusinessLayer
 {
@@ -57,5 +58,11 @@ namespace Minerva.BusinessLayer
             us.ModifiedBy = user.ModifiedBy;
             return us;
         }
+
+        public Task<Apistatus> ResetPassword(string emailid)
+        { 
+            return UserRepository.ResetPassword(emailid);
+        }
+
     }
 }

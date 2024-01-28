@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Returns;
 
 namespace Minerva.IDataAccessLayer
 {
@@ -10,6 +11,6 @@ namespace Minerva.IDataAccessLayer
         public Task<string> SaveUser(User us);
         public Task<bool> UpdateUser(User us);
         public Task<bool> DeleteUser(string UserId);
-
+        public Task<Apistatus> ResetPassword(string emailid);
     }
 }

@@ -127,5 +127,11 @@ namespace Minerva.Controllers
             };
             return userBL.GetUserusingUserName(user);
         }
+
+        [HttpGet("resetpassword/emailid")]
+        public Task<IActionResult> ResetPassword(string emailid) 
+        {
+            return userBL.ResetPassword(emailid);
+        }
     }
 }

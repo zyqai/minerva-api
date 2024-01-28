@@ -1,4 +1,6 @@
-﻿using Minerva.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Minerva.Models;
+using Minerva.Models.Returns;
 
 namespace Minerva.BusinessLayer.Interface
 {
@@ -10,6 +12,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<bool> UpdateUser(Models.Requests.UsersRequest user);
         public Task<bool> DeleteUser(string UserId);
         public Task<User?> GetUserusingUserName(Models.Requests.UsersRequest user);
-
+        public Task<Apistatus> ResetPassword(string emailid);
     }
 }

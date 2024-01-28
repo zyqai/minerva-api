@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Minerva.BusinessLayer;
 using Minerva.Models;
 using MinervaApi.ExternalApi;
 using Newtonsoft.Json;
@@ -73,16 +74,16 @@ namespace MinervaApi.ExternalApi
 
     public class KeyClient
     {
-        public string id { get; set; }
-        public string username { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
-        public string email { get; set; }
-        public bool enabled { get; set; }
-        public bool emailVerified { get; set; }
-        public ClientRoles clientRoles { get; set; }
-        public List<object> realmRoles { get; set; }
-        public List<string> requiredActions { get; set; }
+        public string ?id { get; set; }
+        public string ?username { get; set; }
+        public string ?firstName { get; set; }
+        public string ?lastName { get; set; }
+        public string ?email { get; set; }
+        public bool ?enabled { get; set; }
+        public bool ?emailVerified { get; set; }
+        public ClientRoles ?clientRoles { get; set; }
+        public List<object> ?realmRoles { get; set; }
+        public List<string> ?requiredActions { get; set; }
 
 
     }
@@ -128,6 +129,36 @@ namespace MinervaApi.ExternalApi
             {
                 return ex.Message;
             }
+        }
+
+        internal object GetKeyClient(string emailid)
+        {
+            //Keycloak keycloak = new Keycloak(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build());
+            //tokenResult result = await keycloak.GetToken();
+
+            //string authorizationKey = "Bearer " + result.access_token;
+            //string userCreationEndpoint = "http://localhost:8080/admin/realms/DEV/users";
+            //using (var httpClient = new HttpClient())
+            //{
+            //    var jsonPayload = JsonConvert.SerializeObject(client);
+            //    var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)
+            //    {
+            //        Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
+            //    };
+            //    request.Headers.Add("Accept", "*/*");
+            //    request.Headers.Add("Authorization", authorizationKey);
+
+            //    var response = await httpClient.SendAsync(request);
+
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        return await response.Content.ReadAsStringAsync();
+            //    }
+            //    else
+            //    {
+            //        throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
+            //    }
+            //}
         }
     }
 }
