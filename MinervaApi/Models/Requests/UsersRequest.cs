@@ -17,11 +17,10 @@ namespace Minerva.Models.Requests
 
         public bool IsDeleted { get; set; } = false;
 
-        [Required]
-        public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+        
+        public DateTime? CreateTime { get; set; } = DateTime.UtcNow;
 
-        [Required]
-        public DateTime ModifiedTime { get; set; } = DateTime.UtcNow;
+        public DateTime? ModifiedTime { get; set; } = DateTime.UtcNow;
 
         [StringLength(36)]
         public string? CreatedBy { get; set; }
