@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
@@ -27,8 +28,9 @@ namespace Minerva.Controllers
             };
             return userBL.GetUser(user);
         }
-        
         [HttpGet]
+        [Authorize(Policy= "TenantAdmin")]
+        //[Authorize]
         public Task<List<User?>> GetUses()
         {
 
@@ -114,6 +116,16 @@ namespace Minerva.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        [HttpGet("getuser/{UserName}")]
+        public Task<User?> GetUserFromEmail(string UserName)
+        {
+            UsersRequest user = new UsersRequest
+            {
+                UserName = UserName
+            };
+            return userBL.GetUserusingUserName(user);
         }
     }
 }
