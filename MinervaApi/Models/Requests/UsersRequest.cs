@@ -39,6 +39,12 @@ namespace Minerva.Models.Requests
 
         public int? IsAdminUser { get; set; }
 
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+
+        public string? Roles { get; set; }
+
         //public Tenant Tenant { get; set; }
     }
 }
