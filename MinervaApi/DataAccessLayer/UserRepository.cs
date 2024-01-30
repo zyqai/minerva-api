@@ -19,7 +19,7 @@ namespace Minerva.DataAccessLayer
         }
 
 
-        public async Task<User?> GetuserAsync(string ?userId)
+        public async Task<User?> GetuserAsync(string? userId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -63,9 +63,9 @@ namespace Minerva.DataAccessLayer
                         PhoneNumber = reader.GetValue(10).ToString(),
                         NotificationsEnabled = reader.IsDBNull(11) ? false : (reader.GetInt16(11) == 1),
                         MfaEnabled = reader.IsDBNull(12) ? false : (reader.GetInt16(12) == 1),
-                        IsTenantUser = reader.IsDBNull(13) ? 0:reader.GetInt32(13),
+                        IsTenantUser = reader.IsDBNull(13) ? 0 : reader.GetInt32(13),
                         IsAdminUser = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
-                        FirstName = reader.IsDBNull(15)?null: reader.GetValue(15).ToString(),
+                        FirstName = reader.IsDBNull(15) ? null : reader.GetValue(15).ToString(),
                         LastName = reader.IsDBNull(16) ? null : reader.GetValue(16).ToString(),
                         Roles = reader.IsDBNull(17) ? null : reader.GetValue(17).ToString(),
 
@@ -76,8 +76,8 @@ namespace Minerva.DataAccessLayer
                     {
                         user.Tenant = new Tenant
                         {
-                            TenantId= reader.IsDBNull(18) ? 0 : reader.GetInt32(18),
-                            TenantName= reader.GetString(19),
+                            TenantId = reader.IsDBNull(18) ? 0 : reader.GetInt32(18),
+                            TenantName = reader.GetString(19),
                             TenantDomain = reader.GetString(20),
                             TenantLogoPath = reader.GetString(21),
                             TenantAddress = reader.GetString(22),
@@ -106,7 +106,7 @@ namespace Minerva.DataAccessLayer
             };
             command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
-            int i =await command.ExecuteNonQueryAsync();
+            int i = await command.ExecuteNonQueryAsync();
             string? lastInsertId = outputParameter.Value != null ? outputParameter.Value.ToString() : "";
             connection.Close();
             if (i > 0)
@@ -136,7 +136,7 @@ namespace Minerva.DataAccessLayer
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
             command.CommandType = CommandType.StoredProcedure;
-            int i =await command.ExecuteNonQueryAsync();
+            int i = await command.ExecuteNonQueryAsync();
             connection.Close();
             return i >= 1 ? true : false;
         }
@@ -196,6 +196,32 @@ namespace Minerva.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return [.. result];
+        }
+
+        public async Task<APIStatus> Forgetpassword(string emailid)
+        {
+            APIStatus status = new APIStatus();
+            User? user = await GetuserusingUserNameAsync(emailid);
+            if (user == null)
+            {
+                status.Code = "204";
+                status.Message = "email id not found!";
+            }
+            else
+            {
+                KeyClientOpr opr = new KeyClientOpr();
+                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                if (client == null)
+                {
+                    status.Code = "204";
+                    status.Message = "email id not found in AUTH!";
+                }
+                else
+                {
+                    status=await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
+                }
+            }
+            return status;
         }
     }
 

@@ -79,6 +79,7 @@ namespace MinervaApi.ExternalApi
                     return ex.Message;
                 }
             }
+           
             public async Task<List<KeyClient>> KeyClockClientGet(string email)
             {
                 List<KeyClient> clist = new List<KeyClient>();
@@ -92,10 +93,9 @@ namespace MinervaApi.ExternalApi
                     // Set headers
                     client.DefaultRequestHeaders.Add("Accept", "*/*");
                     client.DefaultRequestHeaders.Add("User-Agent", "Thunder Client (https://www.thunderclient.com)");
-
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authorizationKey}");
                     // Make GET request
                     HttpResponseMessage response = await client.GetAsync(userGetEndpoint);
-
                     if (response.IsSuccessStatusCode)
                     {
                         // Read and display the content
@@ -108,6 +108,44 @@ namespace MinervaApi.ExternalApi
                     }
                 }
                 return clist;
+            }
+
+            public async Task<APIStatus> ResetPassword(string ?id, string ?email)
+            {
+                List<KeyClient> clist = new List<KeyClient>();
+                Keycloak keycloak = new Keycloak();
+                tokenResult result = await keycloak.GetToken();
+                string accessToken = "Bearer " + result.access_token;
+                APIStatus status = new APIStatus();
+                try
+                {
+                    string apiUrl = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        // Add headers if needed
+                        client.DefaultRequestHeaders.Add("Accept", "*/*");
+                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                        // Create request
+                        HttpResponseMessage response = await client.PutAsync(apiUrl, null);
+                        // Check if the request was successful
+                        if (response.IsSuccessStatusCode)
+                        {
+                            status.Code = "201";
+                            status.Message="Password reset email sent successfully.";
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
+
+                return status;
             }
         }
     }
