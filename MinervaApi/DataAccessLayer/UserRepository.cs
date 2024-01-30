@@ -63,6 +63,9 @@ namespace Minerva.DataAccessLayer
                         MfaEnabled = reader.IsDBNull(12) ? false : (reader.GetInt16(12) == 1),
                         IsTenantUser = reader.IsDBNull(13) ? 0:reader.GetInt32(13),
                         IsAdminUser = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
+                        FirstName = reader.IsDBNull(15)?null: reader.GetValue(15).ToString(),
+                        LastName = reader.IsDBNull(16) ? null : reader.GetValue(16).ToString(),
+                        Roles = reader.IsDBNull(17) ? null : reader.GetValue(17).ToString(),
 
 
                     };
@@ -71,14 +74,16 @@ namespace Minerva.DataAccessLayer
                     {
                         user.Tenant = new Tenant
                         {
-                            TenantId= reader.GetInt16(15),
-                            TenantName= reader.GetString(16),
-                            TenantDomain = reader.GetString(17),
-                            TenantLogoPath = reader.GetString(18),
-                            TenantAddress = reader.GetString(19),
-                            TenantPhone = reader.GetString(20),
-                            TenantContactName = reader.GetString(21),
-                            TenantContactEmail = reader.GetString(22),
+                            TenantId= reader.IsDBNull(18) ? 0 : reader.GetInt32(18),
+                            TenantName= reader.GetString(19),
+                            TenantDomain = reader.GetString(20),
+                            TenantLogoPath = reader.GetString(21),
+                            TenantAddress = reader.GetString(22),
+                            TenantPhone = reader.GetString(23),
+                            TenantContactName = reader.GetString(24),
+                            TenantContactEmail = reader.GetString(25),
+                            TenantAddress1 = reader.GetString(26),
+                            PostalCode = reader.GetString(27),
                         };
                     }
                 }
@@ -90,7 +95,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_CreateUser";
+            command.CommandText = @"USP_UserCreate";
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
@@ -113,7 +118,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_UpdateUser";
+            command.CommandText = @"USP_UserUpdate";
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
             command.CommandType = CommandType.StoredProcedure;
@@ -137,12 +142,16 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_mfaEnabled", us.MfaEnabled);
             command.Parameters.AddWithValue("@p_isTenantUser", us.IsTenantUser);
             command.Parameters.AddWithValue("@p_isAdminUser", us.IsAdminUser);
+            command.Parameters.AddWithValue("@P_FirstName", us.FirstName);
+            command.Parameters.AddWithValue("@P_LastName", us.LastName);
+            command.Parameters.AddWithValue("@P_Roles", us.Roles);
+
         }
         public async Task<bool> DeleteUser(string UserId)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_DeleteUser";
+            command.CommandText = @"USP_UserDelete";
             command.Parameters.AddWithValue("@in_userId", UserId);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();

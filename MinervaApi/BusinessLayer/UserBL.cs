@@ -55,6 +55,9 @@ namespace Minerva.BusinessLayer
             us.TenantId = user.TenantId;
             us.IsDeleted = user.IsDeleted;
             us.ModifiedBy = user.ModifiedBy;
+            us.FirstName = user.FirstName;
+            us.LastName = user.LastName;    
+            us.Roles = user.Roles;
             return us;
         }
         public Task<List<User?>> GetTenantUserList(int tenantId)
