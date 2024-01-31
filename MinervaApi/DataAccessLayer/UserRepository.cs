@@ -120,7 +120,7 @@ namespace Minerva.DataAccessLayer
                 client.firstName = us.Email;
                 client.lastName = us.UserName;
                 client.enabled = us.IsActive;
-                client.realmRoles = [];
+                //client.realmRoles = [];
                 client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
                 var res = await crd.ClientInsert(client);
                 return lastInsertId;

@@ -1,6 +1,8 @@
 ﻿using Minerva.BusinessLayer;
 using Minerva.Models;
 using Newtonsoft.Json;
+using System.Net;
+using System;
 using System.Text;
 
 namespace MinervaApi.ExternalApi
@@ -15,7 +17,7 @@ namespace MinervaApi.ExternalApi
             var requestContent = new Dictionary<string, string>
             {
                 { "grant_type", "password" },
-                { "client_id", "minerva-frontend" },
+                { "client_id", "minerva-backend-local" },
                 { "username", "rajendra" },
                 { "password", "Prasads" }
             };
@@ -44,23 +46,51 @@ namespace MinervaApi.ExternalApi
 
         public class KeyClientOpr
         {
-            public async Task<string> ClientInsert(KeyClient client)
+            public async Task<string> ClientInsert(KeyClient _client)
             {
                 try
                 {
                     Keycloak keycloak = new Keycloak();
                     tokenResult result = await keycloak.GetToken();
-                    string authorizationKey = "Bearer " + result.access_token;
-                    string userCreationEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
+                  
+                    string userCreationEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
+
+                    //string json = JsonConvert.SerializeObject(_client);
+                    //byte[] jsonbyte = Encoding.UTF8.GetBytes(json);
+
+                    ////ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                    ////ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                    //HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(userCreationEndpoint);
+                    //webRequest.ContentType = "application/json";
+                    //webRequest.Method = "POST";
+                    //webRequest.Timeout = 180000;
+                    //webRequest.ContentLength = jsonbyte.Length;
+                    //webRequest.Headers.Add("Authorization", $"Bearer {result.access_token}");
+
+
+                    //var stream = webRequest.GetRequestStream();
+                    //stream.Write(jsonbyte, 0, jsonbyte.Length);
+                    //stream.Close();
+
+                    //using (var response = webRequest.GetResponse() as HttpWebResponse)
+                    //{
+                    //    if (webRequest.HaveResponse && response != null)
+                    //    {
+                    //        using (var reader = new StreamReader(response.GetResponseStream()))
+                    //        {
+                    //            return reader.ReadToEnd();
+                    //        }
+                    //    }
+                    //}
                     using (var httpClient = new HttpClient())
                     {
-                        var jsonPayload = JsonConvert.SerializeObject(client);
+                        var jsonPayload = JsonConvert.SerializeObject(_client);
                         var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)
                         {
                             Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
                         };
                         request.Headers.Add("Accept", "*/*");
-                        request.Headers.Add("Authorization", authorizationKey);
+                        request.Headers.Add("Authorization", $"Bearer {result.access_token}");
 
                         var response = await httpClient.SendAsync(request);
 
@@ -73,6 +103,7 @@ namespace MinervaApi.ExternalApi
                             throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
                         }
                     }
+
                 }
                 catch (Exception ex)
                 {
@@ -87,12 +118,12 @@ namespace MinervaApi.ExternalApi
                 tokenResult result = await keycloak.GetToken();
                 string authorizationKey = "Bearer " + result.access_token;
 
-                string userGetEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
+                string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
                 using (HttpClient client = new HttpClient())
                 {
                     // Set headers
                     client.DefaultRequestHeaders.Add("Accept", "*/*");
-                    client.DefaultRequestHeaders.Add("User-Agent", "Thunder Client (https://www.thunderclient.com)");
+                   
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authorizationKey}");
                     // Make GET request
                     HttpResponseMessage response = await client.GetAsync(userGetEndpoint);
@@ -119,7 +150,7 @@ namespace MinervaApi.ExternalApi
                 APIStatus status = new APIStatus();
                 try
                 {
-                    string apiUrl = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
+                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
 
                     using (HttpClient client = new HttpClient())
                     {
