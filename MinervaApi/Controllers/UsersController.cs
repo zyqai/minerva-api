@@ -6,6 +6,7 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.Controllers;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.Controllers
 {
@@ -128,10 +129,15 @@ namespace Minerva.Controllers
             return userBL.GetUserusingUserName(user);
         }
 
-        [HttpGet("GetTenantUserList/{tenantid}")]
+        [HttpGet("gettenantuserlist/{tenantid}")]
         public Task<List<User?>> GetTenantUserList(int tenantid)
         {
             return userBL.GetTenantUserList(tenantid);
+        }
+        [HttpGet("forgotpassword/{tenantid}")]
+        public Task<APIStatus> Forgetpassword(string emailid) 
+        {
+            return userBL.Forgetpassword(emailid);
         }
     }
 }

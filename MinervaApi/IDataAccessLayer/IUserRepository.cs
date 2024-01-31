@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.IDataAccessLayer
 {
@@ -11,5 +12,6 @@ namespace Minerva.IDataAccessLayer
         public Task<bool> UpdateUser(User us);
         public Task<bool> DeleteUser(string UserId);
         public Task<List<User?>> GetTenantUserList(int tenantId);
+        public Task<APIStatus> Forgetpassword(string emailid);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.BusinessLayer.Interface
 {
@@ -11,6 +12,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<bool> DeleteUser(string UserId);
         public Task<User?> GetUserusingUserName(Models.Requests.UsersRequest user);
         public Task<List<User?>> GetTenantUserList(int tenantId);
-
+        public Task<APIStatus> Forgetpassword(string emailid);
     }
 }
