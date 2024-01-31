@@ -35,6 +35,7 @@ builder.Services.AddTransient<ITenantRepositiry, TenantRepositiry>();
 builder.Services.AddTransient<ITenant, TenantBL>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
             .AddJwtBearer(options =>
             {
                 options.Authority = builder.Configuration.GetValue<string>("OIDC_AUTHORITY");
@@ -75,6 +76,7 @@ builder.Services.AddSwaggerGen((c =>
                     }
                 });
     // Key cloak Identity code -- end
+
 }));
 
 
@@ -89,6 +91,8 @@ builder.Services.AddCors(options =>
                                               "*.minerva.zyq.ai/");
                       });
 });
+
+builder.WebHost.UseUrls("http://localhost:7166");
 
 var app = builder.Build();
 app.UseSwagger();
