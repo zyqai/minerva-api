@@ -107,7 +107,7 @@ namespace MinervaApi.ExternalApi
                 }
                 catch (Exception ex)
                 {
-                    return ex.Message;
+                    throw ex;
                 }
             }
            
