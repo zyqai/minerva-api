@@ -53,7 +53,7 @@ namespace MinervaApi.ExternalApi
                     Keycloak keycloak = new Keycloak();
                     tokenResult result = await keycloak.GetToken();
                   
-                    string userCreationEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
+                    string userCreationEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
 
                     //string json = JsonConvert.SerializeObject(_client);
                     //byte[] jsonbyte = Encoding.UTF8.GetBytes(json);
@@ -84,24 +84,25 @@ namespace MinervaApi.ExternalApi
                     //}
                     using (var httpClient = new HttpClient())
                     {
-                        var jsonPayload = JsonConvert.SerializeObject(_client);
-                        var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)
-                        {
-                            Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json")
-                        };
-                        request.Headers.Add("Accept", "*/*");
-                        request.Headers.Add("Authorization", $"Bearer {result.access_token}");
+                        using (var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)) {
+                            var jsonPayload = JsonConvert.SerializeObject(_client);
+                            request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+                            // request.Headers.Add("Content", "application/json");
+                            request.Headers.Add("Accept", "*/*");
+                            request.Headers.Add("Authorization", $"Bearer {result.access_token}");
 
-                        var response = await httpClient.SendAsync(request);
+                            var response = await httpClient.SendAsync(request);
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return await response.Content.ReadAsStringAsync();
+                            if (response.IsSuccessStatusCode)
+                            {
+                                return await response.Content.ReadAsStringAsync();
+                            }
+                            else
+                            {
+                                throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
+                            }
                         }
-                        else
-                        {
-                            throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
-                        }
+                        
                     }
 
                 }
@@ -118,7 +119,7 @@ namespace MinervaApi.ExternalApi
                 tokenResult result = await keycloak.GetToken();
                 string authorizationKey = "Bearer " + result.access_token;
 
-                string userGetEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
+                string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
                 using (HttpClient client = new HttpClient())
                 {
                     // Set headers
@@ -150,7 +151,7 @@ namespace MinervaApi.ExternalApi
                 APIStatus status = new APIStatus();
                 try
                 {
-                    string apiUrl = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
+                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
 
                     using (HttpClient client = new HttpClient())
                     {

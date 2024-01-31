@@ -44,7 +44,48 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     ValidateAudience = false,
                 };
                 options.RequireHttpsMetadata = false;
+
+                options.Events = new JwtBearerEvents()
+                {
+                    
+                    OnMessageReceived = msg =>
+                    {
+                        var token = msg?.Request.Headers.Authorization.ToString();
+                        string path = msg?.Request.Path ?? "";
+                        if (!string.IsNullOrEmpty(token))
+
+                        {
+                            Console.WriteLine("Access token");
+                            Console.WriteLine($"URL: {path}");
+                            Console.WriteLine($"Token: {token}\r\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Access token");
+                            Console.WriteLine("URL: " + path);
+                            Console.WriteLine("Token: No access token provided\r\n");
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = authfailedmsg =>
+                    {
+                        var stackTrace = authfailedmsg.Exception.StackTrace?.ToString();
+                        if (!string.IsNullOrEmpty(stackTrace))
+                        {
+                            Console.WriteLine("Error Message");
+                            Console.WriteLine($"stackTrace: {stackTrace}\r\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error Message");
+                            Console.WriteLine("stackTrace: no data\r\n");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
+
 //builder.Services.AddAuthorization(options =>
 //{
 //options.AddPolicy("TenantAdmin",
@@ -100,7 +141,7 @@ app.UseSwaggerUI();
 // startup.Configure(app, builder.Environment);
 app.UseCors(MyAllowSpecificOrigins);
 
-
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
