@@ -10,7 +10,7 @@ namespace Minerva.Controllers
 {
     [Route("business")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class BusinessController : ControllerBase
     {
         IBusinessBL BusinessBL;
