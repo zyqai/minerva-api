@@ -46,9 +46,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            });
 builder.Services.AddAuthorization(options =>
 {
-   options.AddPolicy("TenantAdmin",
-       policy => policy.RequireRole("TenentAdmin")
-       );
+//    options.AddPolicy("TenantAdmin",
+//        policy => policy.RequireRole("TenentAdmin")
+//        );
 });
 
 builder.Services.AddSwaggerGen((c =>
@@ -89,6 +89,8 @@ builder.Services.AddCors(options =>
                                               "*.minerva.zyq.ai/");
                       });
 });
+
+builder.WebHost.UseUrls("http://localhost:7166");
 
 var app = builder.Build();
 app.UseSwagger();
