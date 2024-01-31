@@ -53,7 +53,7 @@ namespace MinervaApi.ExternalApi
                     Keycloak keycloak = new Keycloak();
                     tokenResult result = await keycloak.GetToken();
                   
-                    string userCreationEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
+                    string userCreationEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
 
                     //string json = JsonConvert.SerializeObject(_client);
                     //byte[] jsonbyte = Encoding.UTF8.GetBytes(json);
@@ -118,7 +118,7 @@ namespace MinervaApi.ExternalApi
                 tokenResult result = await keycloak.GetToken();
                 string authorizationKey = "Bearer " + result.access_token;
 
-                string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
+                string userGetEndpoint = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
                 using (HttpClient client = new HttpClient())
                 {
                     // Set headers
@@ -150,7 +150,7 @@ namespace MinervaApi.ExternalApi
                 APIStatus status = new APIStatus();
                 try
                 {
-                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
+                    string apiUrl = "http://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
 
                     using (HttpClient client = new HttpClient())
                     {
