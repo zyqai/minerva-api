@@ -5,6 +5,8 @@ using System.Data.Common;
 using System.Reflection.PortableExecutable;
 using System.Data;
 using System.Collections.Generic;
+using MinervaApi.ExternalApi;
+using static MinervaApi.ExternalApi.Keycloak;
 
 namespace Minerva.DataAccessLayer
 {
@@ -109,6 +111,18 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             if (i > 0)
             {
+                KeyClientOpr crd = new KeyClientOpr();
+                KeyClient client = new KeyClient();
+                client.id = "";
+                client.email = us.Email;
+                client.emailVerified = false;
+                client.username = us.Email;
+                client.firstName = us.Email;
+                client.lastName = us.UserName;
+                client.enabled = us.IsActive;
+                client.realmRoles = [];
+                client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
+                var res = await crd.ClientInsert(client);
                 return lastInsertId;
             }
             return string.Empty;
