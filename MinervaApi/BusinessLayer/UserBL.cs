@@ -2,6 +2,7 @@
 using Minerva.Models;
 using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.BusinessLayer
 {
@@ -63,6 +64,10 @@ namespace Minerva.BusinessLayer
         public Task<List<User?>> GetTenantUserList(int tenantId)
         {
             return UserRepository.GetTenantUserList(tenantId);
+        }
+        public Task<APIStatus> Forgetpassword(string emailid)
+        { 
+            return UserRepository.Forgetpassword(emailid);
         }
     }
 }
