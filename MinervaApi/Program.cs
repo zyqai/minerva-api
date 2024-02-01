@@ -81,6 +81,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                             Console.WriteLine("stackTrace: no data\r\n");
                         }
                         return Task.CompletedTask;
+                    },
+                    OnTokenValidated = tokenValidated =>
+                    {
+                        var stackTrace = tokenValidated.Response?.ToString();
+                        if (!string.IsNullOrEmpty(stackTrace))
+                        {
+                            Console.WriteLine("Error Message");
+                            Console.WriteLine($"stackTrace: {stackTrace}\r\n");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error Message");
+                            Console.WriteLine("stackTrace: no data\r\n");
+                        }
+                        return Task.CompletedTask;
                     }
                 };
             });
@@ -142,6 +157,7 @@ app.UseSwaggerUI();
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
