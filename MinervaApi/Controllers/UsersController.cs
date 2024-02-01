@@ -134,7 +134,7 @@ namespace Minerva.Controllers
         {
             return userBL.GetTenantUserList(tenantid);
         }
-        [HttpGet("forgotpassword/{tenantid}")]
+        [HttpGet("forgotpassword/{emailid}")]
         public Task<APIStatus> Forgetpassword(string emailid) 
         {
             return userBL.Forgetpassword(emailid);

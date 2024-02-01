@@ -148,7 +148,7 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.WebHost.UseUrls("http://localhost:7166");
+builder.WebHost.UseUrls("https://localhost:7166");
 
 var app = builder.Build();
 app.UseSwagger();

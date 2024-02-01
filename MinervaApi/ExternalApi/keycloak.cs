@@ -51,37 +51,8 @@ namespace MinervaApi.ExternalApi
                 try
                 {
                     Keycloak keycloak = new Keycloak();
-                    tokenResult result = await keycloak.GetToken();
-                  
+                    tokenResult ?result = await keycloak.GetToken();
                     string userCreationEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
-
-                    //string json = JsonConvert.SerializeObject(_client);
-                    //byte[] jsonbyte = Encoding.UTF8.GetBytes(json);
-
-                    ////ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-                    ////ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-                    //HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(userCreationEndpoint);
-                    //webRequest.ContentType = "application/json";
-                    //webRequest.Method = "POST";
-                    //webRequest.Timeout = 180000;
-                    //webRequest.ContentLength = jsonbyte.Length;
-                    //webRequest.Headers.Add("Authorization", $"Bearer {result.access_token}");
-
-
-                    //var stream = webRequest.GetRequestStream();
-                    //stream.Write(jsonbyte, 0, jsonbyte.Length);
-                    //stream.Close();
-
-                    //using (var response = webRequest.GetResponse() as HttpWebResponse)
-                    //{
-                    //    if (webRequest.HaveResponse && response != null)
-                    //    {
-                    //        using (var reader = new StreamReader(response.GetResponseStream()))
-                    //        {
-                    //            return reader.ReadToEnd();
-                    //        }
-                    //    }
-                    //}
                     using (var httpClient = new HttpClient())
                     {
                         using (var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)) {
@@ -89,7 +60,7 @@ namespace MinervaApi.ExternalApi
                             request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
                             // request.Headers.Add("Content", "application/json");
                             request.Headers.Add("Accept", "*/*");
-                            request.Headers.Add("Authorization", $"Bearer {result.access_token}");
+                            request.Headers.Add("Authorization", $"Bearer {result?.access_token}");
 
                             var response = await httpClient.SendAsync(request);
 
@@ -117,19 +88,18 @@ namespace MinervaApi.ExternalApi
                 List<KeyClient> clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
                 tokenResult result = await keycloak.GetToken();
-                string authorizationKey = "Bearer " + result.access_token;
-
                 string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
                 using (HttpClient client = new HttpClient())
                 {
                     // Set headers
                     client.DefaultRequestHeaders.Add("Accept", "*/*");
                    
-                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authorizationKey}");
+                    client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
                     // Make GET request
                     HttpResponseMessage response = await client.GetAsync(userGetEndpoint);
                     if (response.IsSuccessStatusCode)
                     {
+                        
                         // Read and display the content
                         var jsonResponse = await response.Content.ReadAsStringAsync();
                         clist= JsonConvert.DeserializeObject<List<KeyClient>>(jsonResponse);
@@ -146,8 +116,8 @@ namespace MinervaApi.ExternalApi
             {
                 List<KeyClient> clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
-                tokenResult result = await keycloak.GetToken();
-                string accessToken = "Bearer " + result.access_token;
+                tokenResult ?result = await keycloak.GetToken();
+               
                 APIStatus status = new APIStatus();
                 try
                 {
@@ -157,7 +127,7 @@ namespace MinervaApi.ExternalApi
                     {
                         // Add headers if needed
                         client.DefaultRequestHeaders.Add("Accept", "*/*");
-                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
                         // Create request
                         HttpResponseMessage response = await client.PutAsync(apiUrl, null);
                         // Check if the request was successful
@@ -168,13 +138,49 @@ namespace MinervaApi.ExternalApi
                         }
                         else
                         {
-                            Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                            throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Exception: {ex.Message}");
+                }
+
+                return status;
+            }
+            public async Task<APIStatus> sendverifyemail(string? id, string? email)
+            {
+                List<KeyClient> clist = new List<KeyClient>();
+                Keycloak keycloak = new Keycloak();
+                tokenResult ?result = await keycloak.GetToken();
+                APIStatus status = new APIStatus();
+                try
+                {
+                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/" + id + "/send-verify-email";
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        // Add headers if needed
+                        client.DefaultRequestHeaders.Add("Accept", "*/*");
+                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
+                        // Create request
+                        HttpResponseMessage response = await client.PutAsync(apiUrl, null);
+                        // Check if the request was successful
+                        if (response.IsSuccessStatusCode)
+                        {
+                            status.Code = "201";
+                            status.Message = "Password reset email sent successfully.";
+                        }
+                        else
+                        {
+                            throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
                 }
 
                 return status;
