@@ -13,5 +13,6 @@ namespace Minerva.IDataAccessLayer
         public Task<bool> DeleteUser(string UserId);
         public Task<List<User?>> GetTenantUserList(int tenantId);
         public Task<APIStatus> Forgetpassword(string emailid);
+        public Task<APIStatus> verifyemail(string emailid);
     }
 }

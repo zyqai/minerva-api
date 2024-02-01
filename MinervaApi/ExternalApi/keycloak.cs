@@ -83,9 +83,9 @@ namespace MinervaApi.ExternalApi
                 }
             }
            
-            public async Task<List<KeyClient>> KeyClockClientGet(string email)
+            public async Task<List<KeyClient?>> KeyClockClientGet(string email)
             {
-                List<KeyClient> clist = new List<KeyClient>();
+                List<KeyClient> ?clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
                 tokenResult result = await keycloak.GetToken();
                 string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
@@ -134,7 +134,7 @@ namespace MinervaApi.ExternalApi
                         if (response.IsSuccessStatusCode)
                         {
                             status.Code = "201";
-                            status.Message="Password reset email sent successfully.";
+                            status.Message= "Password reset email sent successfully.";
                         }
                         else
                         {
@@ -170,7 +170,7 @@ namespace MinervaApi.ExternalApi
                         if (response.IsSuccessStatusCode)
                         {
                             status.Code = "201";
-                            status.Message = "Password reset email sent successfully.";
+                            status.Message = "verify email sent successfully.";
                         }
                         else
                         {

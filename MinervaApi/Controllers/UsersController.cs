@@ -139,5 +139,10 @@ namespace Minerva.Controllers
         {
             return userBL.Forgetpassword(emailid);
         }
+        [HttpGet("verifyemail/{emailid}")]
+        public Task<APIStatus> verifyemail(string emailid)
+        {
+            return userBL.verifyemail(emailid);
+        }
     }
 }

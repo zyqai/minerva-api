@@ -227,6 +227,31 @@ namespace Minerva.DataAccessLayer
             }
             return status;
         }
+        public async Task<APIStatus> verifyemail(string emailid)
+        {
+            APIStatus status = new APIStatus();
+            User? user = await GetuserusingUserNameAsync(emailid);
+            if (user == null)
+            {
+                status.Code = "204";
+                status.Message = "email id not found!";
+            }
+            else
+            {
+                KeyClientOpr opr = new KeyClientOpr();
+                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                if (client == null)
+                {
+                    status.Code = "204";
+                    status.Message = "email id not found in AUTH!";
+                }
+                else
+                {
+                    status = await opr.sendverifyemail(client.FirstOrDefault()?.id, emailid);
+                }
+            }
+            return status;
+        }
     }
 
 }

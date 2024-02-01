@@ -69,5 +69,9 @@ namespace Minerva.BusinessLayer
         { 
             return UserRepository.Forgetpassword(emailid);
         }
+        public Task<APIStatus> verifyemail(string emailid)
+        {
+            return UserRepository.verifyemail(emailid);
+        }
     }
 }
