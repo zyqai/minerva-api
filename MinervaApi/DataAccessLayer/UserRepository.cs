@@ -124,7 +124,7 @@ namespace Minerva.DataAccessLayer
                 //client.realmRoles = [];
                 client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
                 var res = await crd.ClientInsert(client);
-                List<KeyClient> clientDetails = await crd.KeyClockClientGet(us.Email);
+                List<KeyClient?> clientDetails = await crd.KeyClockClientGet(us.Email);
                 APIStatus status = new APIStatus();
                 status = await crd.sendverifyemail(clientDetails.FirstOrDefault()?.id, us.Email);
                 return lastInsertId;
@@ -172,6 +172,24 @@ namespace Minerva.DataAccessLayer
             command.CommandText = @"USP_UserDelete";
             command.Parameters.AddWithValue("@in_userId", UserId);
             command.CommandType = CommandType.StoredProcedure;
+
+            User? getuser = await GetuserAsync(UserId);
+            if (getuser != null)
+            {
+                APIStatus status = new APIStatus();
+                KeyClientOpr opr = new KeyClientOpr();
+                List<KeyClient?> client = await opr.KeyClockClientGet(getuser?.Email);
+                if (client == null)
+                {
+                    status.Code = "204";
+                    status.Message = "email id not found in AUTH!";
+                    throw new Exception(status.Message);
+                }
+                else
+                {
+                    status = await opr.keyclockclientDelete(client.FirstOrDefault()?.id, getuser.Email);
+                }
+            }
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
             return i >= 1 ? true : false;

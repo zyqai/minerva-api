@@ -1,8 +1,4 @@
-﻿using Minerva.BusinessLayer;
-using Minerva.Models;
-using Newtonsoft.Json;
-using System.Net;
-using System;
+﻿using Newtonsoft.Json;
 using System.Text;
 
 namespace MinervaApi.ExternalApi
@@ -42,7 +38,7 @@ namespace MinervaApi.ExternalApi
                 }
             }
             return res;
-         }
+        }
 
         public class KeyClientOpr
         {
@@ -51,14 +47,14 @@ namespace MinervaApi.ExternalApi
                 try
                 {
                     Keycloak keycloak = new Keycloak();
-                    tokenResult ?result = await keycloak.GetToken();
+                    tokenResult? result = await keycloak.GetToken();
                     string userCreationEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users";
                     using (var httpClient = new HttpClient())
                     {
-                        using (var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint)) {
+                        using (var request = new HttpRequestMessage(HttpMethod.Post, userCreationEndpoint))
+                        {
                             var jsonPayload = JsonConvert.SerializeObject(_client);
                             request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-                            // request.Headers.Add("Content", "application/json");
                             request.Headers.Add("Accept", "*/*");
                             request.Headers.Add("Authorization", $"Bearer {result?.access_token}");
 
@@ -73,7 +69,7 @@ namespace MinervaApi.ExternalApi
                                 throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
                             }
                         }
-                        
+
                     }
 
                 }
@@ -82,27 +78,21 @@ namespace MinervaApi.ExternalApi
                     throw ex;
                 }
             }
-           
             public async Task<List<KeyClient?>> KeyClockClientGet(string email)
             {
-                List<KeyClient> ?clist = new List<KeyClient>();
+                List<KeyClient>? clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
                 tokenResult result = await keycloak.GetToken();
-                string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username="+email;
+                string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username=" + email;
                 using (HttpClient client = new HttpClient())
                 {
-                    // Set headers
                     client.DefaultRequestHeaders.Add("Accept", "*/*");
-                   
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
-                    // Make GET request
                     HttpResponseMessage response = await client.GetAsync(userGetEndpoint);
                     if (response.IsSuccessStatusCode)
                     {
-                        
-                        // Read and display the content
                         var jsonResponse = await response.Content.ReadAsStringAsync();
-                        clist= JsonConvert.DeserializeObject<List<KeyClient>>(jsonResponse);
+                        clist = JsonConvert.DeserializeObject<List<KeyClient>>(jsonResponse);
                     }
                     else
                     {
@@ -111,30 +101,26 @@ namespace MinervaApi.ExternalApi
                 }
                 return clist;
             }
-
-            public async Task<APIStatus> ResetPassword(string ?id, string ?email)
+            public async Task<APIStatus> ResetPassword(string? id, string? email)
             {
                 List<KeyClient> clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
-                tokenResult ?result = await keycloak.GetToken();
-               
+                tokenResult? result = await keycloak.GetToken();
+
                 APIStatus status = new APIStatus();
                 try
                 {
-                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/"+id+"/reset-password-email";
+                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/" + id + "/reset-password-email";
 
                     using (HttpClient client = new HttpClient())
                     {
-                        // Add headers if needed
                         client.DefaultRequestHeaders.Add("Accept", "*/*");
                         client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
-                        // Create request
                         HttpResponseMessage response = await client.PutAsync(apiUrl, null);
-                        // Check if the request was successful
                         if (response.IsSuccessStatusCode)
                         {
                             status.Code = "201";
-                            status.Message= "Password reset email sent successfully.";
+                            status.Message = "Password reset email sent successfully.";
                         }
                         else
                         {
@@ -153,20 +139,16 @@ namespace MinervaApi.ExternalApi
             {
                 List<KeyClient> clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
-                tokenResult ?result = await keycloak.GetToken();
+                tokenResult? result = await keycloak.GetToken();
                 APIStatus status = new APIStatus();
                 try
                 {
                     string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/" + id + "/send-verify-email";
-
                     using (HttpClient client = new HttpClient())
                     {
-                        // Add headers if needed
                         client.DefaultRequestHeaders.Add("Accept", "*/*");
                         client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
-                        // Create request
                         HttpResponseMessage response = await client.PutAsync(apiUrl, null);
-                        // Check if the request was successful
                         if (response.IsSuccessStatusCode)
                         {
                             status.Code = "201";
@@ -183,6 +165,38 @@ namespace MinervaApi.ExternalApi
                     throw ex;
                 }
 
+                return status;
+            }
+
+            public async Task<APIStatus> keyclockclientDelete(string? id, string? email)
+            {
+                List<KeyClient> clist = new List<KeyClient>();
+                Keycloak keycloak = new Keycloak();
+                tokenResult? result = await keycloak.GetToken();
+                APIStatus status = new APIStatus();
+                try
+                {
+                    string apiUrl = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users/" + id;
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Add("Accept", "*/*");
+                        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {result?.access_token}");
+                        HttpResponseMessage response = await client.DeleteAsync(apiUrl);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            status.Code = "201";
+                            status.Message = "deleted successfully.";
+                        }
+                        else
+                        {
+                            throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 return status;
             }
         }
