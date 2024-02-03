@@ -81,11 +81,13 @@ namespace Minerva.DataAccessLayer
                             TenantDomain = reader.GetString(20),
                             TenantLogoPath = reader.GetString(21),
                             TenantAddress = reader.GetString(22),
-                            TenantPhone = reader.GetString(23),
-                            TenantContactName = reader.GetString(24),
-                            TenantContactEmail = reader.GetString(25),
-                            TenantAddress1 = reader.GetString(26),
+                            TenantAddress1 = reader.GetString(23),
+                            TenantPhone = reader.GetString(24),
+                            TenantContactName = reader.GetString(25),
+                            TenantContactEmail = reader.GetString(26),
                             PostalCode = reader.GetString(27),
+                            City = reader.GetString(28),
+                            stateid = reader.GetInt16(29),
                         };
                     }
                 }
