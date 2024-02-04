@@ -5,7 +5,7 @@ namespace Minerva.Models
 {
     public class User
     {
-       
+
         [StringLength(45)]
         public string? UserId { get; set; }
 
@@ -45,6 +45,10 @@ namespace Minerva.Models
         public int? IsTenantUser { get; set; }
 
         public int? IsAdminUser { get; set; }
+
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Roles { get; set; }
 
         [ForeignKey("Tenant")]
         public Tenant Tenant { get; set; }

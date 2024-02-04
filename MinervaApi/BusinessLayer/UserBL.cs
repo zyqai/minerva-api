@@ -2,7 +2,7 @@
 using Minerva.Models;
 using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
-using Minerva.Models.Returns;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.BusinessLayer
 {
@@ -56,13 +56,22 @@ namespace Minerva.BusinessLayer
             us.TenantId = user.TenantId;
             us.IsDeleted = user.IsDeleted;
             us.ModifiedBy = user.ModifiedBy;
+            us.FirstName = user.FirstName;
+            us.LastName = user.LastName;    
+            us.Roles = user.Roles;
             return us;
         }
-
-        public Task<Apistatus> ResetPassword(string emailid)
-        { 
-            return UserRepository.ResetPassword(emailid);
+        public Task<List<User?>> GetTenantUserList(int tenantId)
+        {
+            return UserRepository.GetTenantUserList(tenantId);
         }
-
+        public Task<APIStatus> Forgetpassword(string emailid)
+        { 
+            return UserRepository.Forgetpassword(emailid);
+        }
+        public Task<APIStatus> verifyemail(string emailid)
+        {
+            return UserRepository.verifyemail(emailid);
+        }
     }
 }

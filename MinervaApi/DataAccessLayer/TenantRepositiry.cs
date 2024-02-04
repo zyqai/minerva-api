@@ -112,7 +112,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantDomain", t.TenantDomain);
             command.Parameters.AddWithValue("@p_tenantLogoPath", t.TenantLogoPath);
             command.Parameters.AddWithValue("@p_tenantAddress", t.TenantAddress);
-            command.Parameters.AddWithValue("@p_tenentAddress1", t.TenantAddress1);
+            command.Parameters.AddWithValue("@p_tenantAddress1", t.TenantAddress1);
             command.Parameters.AddWithValue("@p_tenantPhone", t.TenantPhone);
             command.Parameters.AddWithValue("@p_tenantContactName", t.TenantContactName);
             command.Parameters.AddWithValue("@p_tenantContactEmail", t.TenantContactEmail);

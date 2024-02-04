@@ -17,11 +17,10 @@ namespace Minerva.Models.Requests
 
         public bool IsDeleted { get; set; } = false;
 
-        [Required]
-        public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+        
+        public DateTime? CreateTime { get; set; } = DateTime.UtcNow;
 
-        [Required]
-        public DateTime ModifiedTime { get; set; } = DateTime.UtcNow;
+        public DateTime? ModifiedTime { get; set; } = DateTime.UtcNow;
 
         [StringLength(36)]
         public string? CreatedBy { get; set; }
@@ -39,6 +38,12 @@ namespace Minerva.Models.Requests
         public int? IsTenantUser { get; set; }
 
         public int? IsAdminUser { get; set; }
+
+        public string? FirstName { get; set; }
+
+        public string? LastName { get; set; }
+
+        public string? Roles { get; set; }
 
         //public Tenant Tenant { get; set; }
     }

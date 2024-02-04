@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
@@ -9,6 +10,7 @@ namespace Minerva.Controllers
 {
     [Route("business")]
     [ApiController]
+    // [Authorize]
     public class BusinessController : ControllerBase
     {
         IBusinessBL BusinessBL;

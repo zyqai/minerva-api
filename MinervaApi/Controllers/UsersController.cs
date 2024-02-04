@@ -6,6 +6,7 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.Controllers;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
 
 namespace Minerva.Controllers
 {
@@ -29,7 +30,7 @@ namespace Minerva.Controllers
             return userBL.GetUser(user);
         }
         [HttpGet]
-        [Authorize(Policy= "TenantAdmin")]
+        //[Authorize(Policy= "TenantAdmin")]
         //[Authorize]
         public Task<List<User?>> GetUses()
         {
@@ -128,10 +129,20 @@ namespace Minerva.Controllers
             return userBL.GetUserusingUserName(user);
         }
 
-        [HttpGet("resetpassword/emailid")]
-        public Task<IActionResult> ResetPassword(string emailid) 
+        [HttpGet("gettenantuserlist/{tenantid}")]
+        public Task<List<User?>> GetTenantUserList(int tenantid)
         {
-            return userBL.ResetPassword(emailid);
+            return userBL.GetTenantUserList(tenantid);
+        }
+        [HttpGet("forgotpassword/{emailid}")]
+        public Task<APIStatus> Forgetpassword(string emailid) 
+        {
+            return userBL.Forgetpassword(emailid);
+        }
+        [HttpGet("verifyemail/{emailid}")]
+        public Task<APIStatus> verifyemail(string emailid)
+        {
+            return userBL.verifyemail(emailid);
         }
     }
 }
