@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Minerva.Models;
+﻿using Minerva.Models;
 using MinervaApi.ExternalApi;
 
 namespace Minerva.BusinessLayer.Interface

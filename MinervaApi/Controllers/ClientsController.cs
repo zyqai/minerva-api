@@ -40,8 +40,6 @@ namespace MinervaApi.Controllers
                             Client ?clients= await client.GetClient(ClientId);
                             List<Client?> clist = new List<Client?>();
                             clist.Add(clients);
-                            
-                            
                             return StatusCode(StatusCodes.Status201Created,clist);
 
                         }
