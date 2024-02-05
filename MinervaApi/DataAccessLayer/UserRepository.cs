@@ -7,15 +7,18 @@ using System.Data;
 using System.Collections.Generic;
 using MinervaApi.ExternalApi;
 using static MinervaApi.ExternalApi.Keycloak;
+using MinervaApi.IDataAccessLayer;
 
 namespace Minerva.DataAccessLayer
 {
     public class UserRepository : IUserRepository
     {
         MySqlDataSource database;
-        public UserRepository(MySqlDataSource database)
+        IKeycloakApiService keycloak;
+        public UserRepository(MySqlDataSource database, IKeycloakApiService keycloakApiService)
         {
             this.database = database;
+            keycloak = keycloakApiService;
         }
 
 
@@ -113,22 +116,23 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             if (i > 0)
             {
-                KeyClientOpr crd = new KeyClientOpr();
-                KeyClient client = new KeyClient();
-                client.id = "";
-                client.email = us.Email;
-                client.emailVerified = false;
-                client.username = us.Email;
-                client.firstName = us.FirstName;
-                client.lastName = us.LastName;
-                //client.realmRoles = [us.Roles];
-                client.enabled = us.IsActive;
-                //client.realmRoles = [];
-                client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
-                var res = await crd.ClientInsert(client);
-                List<KeyClient?> clientDetails = await crd.KeyClockClientGet(us.Email);
-                APIStatus status = new APIStatus();
-                status = await crd.sendverifyemail(clientDetails.FirstOrDefault()?.id, us.Email);
+                var res =keycloak.CreateUser(us);
+                //KeyClientOpr crd = new KeyClientOpr();
+                //KeyClient client = new KeyClient();
+                //client.id = "";
+                //client.email = us.Email;
+                //client.emailVerified = false;
+                //client.username = us.Email;
+                //client.firstName = us.FirstName;
+                //client.lastName = us.LastName;
+                ////client.realmRoles = [us.Roles];
+                //client.enabled = us.IsActive;
+                ////client.realmRoles = [];
+                //client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
+                //var res = await crd.ClientInsert(client);
+                //List<KeyClient?> clientDetails = await crd.KeyClockClientGet(us.Email);
+                //APIStatus status = new APIStatus();
+                //status = await crd.sendverifyemail(clientDetails.FirstOrDefault()?.id, us.Email);
                 return lastInsertId;
             }
             return string.Empty;
@@ -178,19 +182,31 @@ namespace Minerva.DataAccessLayer
             User? getuser = await GetuserAsync(UserId);
             if (getuser != null)
             {
-                APIStatus status = new APIStatus();
-                KeyClientOpr opr = new KeyClientOpr();
-                List<KeyClient?> client = await opr.KeyClockClientGet(getuser?.Email);
-                if (client == null)
+                APIStatus ?status = new APIStatus();
+               //List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
+                List<KeyClient?> res = await keycloak.GetUser(UserId);
+                if (res == null)
                 {
                     status.Code = "204";
                     status.Message = "email id not found in AUTH!";
-                    throw new Exception(status.Message);
                 }
                 else
                 {
-                    status = await opr.keyclockclientDelete(client.FirstOrDefault()?.id, getuser.Email);
+                   // status = await keycloak.DeleteUser(res?.FirstOrDefault()?.id, "santhoshdonthi@gmail.com");
+                    status = await keycloak.DeleteUser(res?.FirstOrDefault()?.id, UserId);
                 }
+                //KeyClientOpr opr = new KeyClientOpr();
+                //List<KeyClient?> client = await opr.KeyClockClientGet(getuser?.Email);
+                //if (client == null)
+                //{
+                //    status.Code = "204";
+                //    status.Message = "email id not found in AUTH!";
+                //    throw new Exception(status.Message);
+                //}
+                //else
+                //{
+                //    status = await opr.keyclockclientDelete(client.FirstOrDefault()?.id, getuser.Email);
+                //}
             }
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
@@ -224,7 +240,7 @@ namespace Minerva.DataAccessLayer
 
         public async Task<APIStatus> Forgetpassword(string emailid)
         {
-            APIStatus status = new APIStatus();
+            APIStatus ?status = new APIStatus();
             User? user = await GetuserusingUserNameAsync(emailid);
             if (user == null)
             {
@@ -233,23 +249,34 @@ namespace Minerva.DataAccessLayer
             }
             else
             {
-                KeyClientOpr opr = new KeyClientOpr();
-                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
-                if (client == null)
+                List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
+                if (res == null)
                 {
                     status.Code = "204";
                     status.Message = "email id not found in AUTH!";
                 }
                 else
                 {
-                    status=await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
+                    status = await keycloak.ResetPassword(res?.FirstOrDefault()?.id,"santhoshdonthi@gmail.com");
                 }
+
+                //KeyClientOpr opr = new KeyClientOpr();
+                //List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                //if (client == null)
+                //{
+                //    status.Code = "204";
+                //    status.Message = "email id not found in AUTH!";
+                //}
+                //else
+                //{
+                //    status=await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
+                //}
             }
             return status;
         }
         public async Task<APIStatus> verifyemail(string emailid)
         {
-            APIStatus status = new APIStatus();
+            APIStatus ?status = new APIStatus();
             User? user = await GetuserusingUserNameAsync(emailid);
             if (user == null)
             {
@@ -258,17 +285,30 @@ namespace Minerva.DataAccessLayer
             }
             else
             {
-                KeyClientOpr opr = new KeyClientOpr();
-                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
-                if (client == null)
+                //List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
+                List<KeyClient?> res = await keycloak.GetUser(emailid);
+                if (res == null)
                 {
                     status.Code = "204";
                     status.Message = "email id not found in AUTH!";
                 }
                 else
                 {
-                    status = await opr.sendverifyemail(client.FirstOrDefault()?.id, emailid);
+                    status = await keycloak.Verifyemail(res?.FirstOrDefault()?.id, emailid);
+                    //status = await keycloak.Verifyemail(res?.FirstOrDefault()?.id, "santhoshdonthi@gmail.com");
                 }
+
+                //KeyClientOpr opr = new KeyClientOpr();
+                //List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                //if (client == null)
+                //{
+                //    status.Code = "204";
+                //    status.Message = "email id not found in AUTH!";
+                //}
+                //else
+                //{
+                //    status = await opr.sendverifyemail(client.FirstOrDefault()?.id, emailid);
+                //}
             }
             return status;
         }

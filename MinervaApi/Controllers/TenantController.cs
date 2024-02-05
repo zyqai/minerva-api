@@ -15,7 +15,6 @@ namespace MinervaApi.Controllers
         {
             tenant = _tenant;
         }
-
         [HttpPost]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {

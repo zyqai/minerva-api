@@ -30,7 +30,8 @@ namespace Minerva.Controllers
             return userBL.GetUser(user);
         }
         [HttpGet]
-        //[Authorize(Policy= "TenantAdmin")]
+        [Authorize(Policy= "TenantAdminPolicy")]
+        [Authorize(Policy= "AdminPolicy")]
         //[Authorize]
         public Task<List<User?>> GetUses()
         {
