@@ -102,7 +102,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_UserCreate";
+            command.CommandText = @"USP_CreateUser";
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)

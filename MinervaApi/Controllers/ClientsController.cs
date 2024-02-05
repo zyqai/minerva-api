@@ -4,6 +4,7 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models.Requests;
 using Minerva.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MinervaApi.Controllers
 {
@@ -17,16 +18,22 @@ namespace MinervaApi.Controllers
             client = bL;
         }
         [HttpGet("{ClientId}")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public Task<Client?> GetClient(int ClientId)
         {
             return client.GetClient(ClientId);
         }
         [HttpGet]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public Task<List<Client?>> GetClient()
         {
             return client.GetALLClients();
         }
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
             try
@@ -58,6 +65,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateClient(ClientRequest c)
         {
             try
@@ -78,6 +86,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpDelete("{ClientId}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteClient(int ClientId)
         {
             try

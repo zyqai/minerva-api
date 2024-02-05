@@ -30,8 +30,8 @@ namespace Minerva.Controllers
             return userBL.GetUser(user);
         }
         [HttpGet]
-        [Authorize(Policy= "TenantAdminPolicy")]
-        [Authorize(Policy= "AdminPolicy")]
+        //[Authorize(Policy= "TenantAdminPolicy")]
+        //[Authorize(Policy= "AdminPolicy")]
         //[Authorize]
         public Task<List<User?>> GetUses()
         {
@@ -41,6 +41,8 @@ namespace Minerva.Controllers
         }
         
         [HttpPost]
+        //[Authorize(Policy = "TenantAdminPolicy")]
+        //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
             try
@@ -75,6 +77,7 @@ namespace Minerva.Controllers
         }
         
         [HttpPut]
+        //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
             try
@@ -97,6 +100,7 @@ namespace Minerva.Controllers
         }
         
         [HttpDelete("{UserId}")]
+        //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteUser(string UserID)
         {
             try

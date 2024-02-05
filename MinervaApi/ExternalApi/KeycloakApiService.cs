@@ -28,6 +28,16 @@ namespace MinervaApi.ExternalApi
                 //client.realmRoles = [us.Roles];
                 client.enabled = us.IsActive;
                 //client.realmRoles = [];
+                client.clientRoles=new ClientRoles();
+                
+                ClientRoles _clientRoles = new ClientRoles();
+                List<string> rolesList = new List<string>();
+                _clientRoles.roles = new List<string>();
+                _clientRoles.roles.Add(us.Roles);
+
+                client.clientRoles = _clientRoles;
+
+
                 client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
                 var request = new HttpRequestMessage();
                 var jsonPayload = JsonConvert.SerializeObject(client);
