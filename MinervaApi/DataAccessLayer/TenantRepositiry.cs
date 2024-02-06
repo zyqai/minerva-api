@@ -1,6 +1,7 @@
 ﻿using Minerva.BusinessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Responce;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -10,9 +11,13 @@ namespace Minerva.DataAccessLayer
     public class TenantRepositiry : ITenantRepositiry
     {
         MySqlDataSource database;
-        public TenantRepositiry(MySqlDataSource _db)
+        IBusinessRepository business;
+        IClientRepository client;
+        public TenantRepositiry(MySqlDataSource _db, IBusinessRepository _business,IClientRepository _client)
         {
             database = _db;
+            business = _business;
+            client = _client;
         }
 
         public async Task<bool> DeleteTenant(int TenantId)
@@ -140,6 +145,21 @@ namespace Minerva.DataAccessLayer
                 throw ex;
             }
             return i >= 1 ? true : false;
+        }
+
+        public async Task<TenantBusiness> BusinessesForTenant(int tenantId)
+        {
+            TenantBusiness tenant=new TenantBusiness ();
+            tenant.tenant = await GetTenantAsync(tenantId);
+            tenant.business = await business.GetAllBussinessAsynctenant(tenantId);
+            return tenant;
+        }
+        public async Task<PeopleBusiness> PeoplesForTenant(int tenantId)
+        {
+            PeopleBusiness peoples=new PeopleBusiness ();
+            peoples.tenant = await GetTenantAsync(tenantId);
+            peoples.peoples = await client.GetAllpeoplesAsynctenant(tenantId);
+            return peoples;
         }
     }
 }

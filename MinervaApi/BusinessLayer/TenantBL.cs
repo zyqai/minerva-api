@@ -2,6 +2,7 @@
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Responce;
 using MinervaApi.DataAccessLayer;
 
 namespace Minerva.BusinessLayer
@@ -58,6 +59,15 @@ namespace Minerva.BusinessLayer
         public Task<List<Tenant?>> GetALLAsync()
         {
             return repositiry.GetALLAsync();
+        }
+
+        public Task<TenantBusiness> BusinessesForTenant(int tenantId)
+        {
+            return repositiry.BusinessesForTenant(tenantId);
+        }
+        public Task<PeopleBusiness> PeoplesForTenant(int tenantId)
+        {
+            return repositiry.PeoplesForTenant(tenantId);
         }
     }
 }

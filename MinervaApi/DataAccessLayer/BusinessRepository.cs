@@ -1,4 +1,5 @@
-﻿using Minerva.IDataAccessLayer;
+﻿using Minerva.BusinessLayer;
+using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using MySqlConnector;
 using System.Data;
@@ -117,6 +118,19 @@ namespace Minerva.DataAccessLayer
             int i = command.ExecuteNonQuery();
             connection.Close();
             return i >= 1 ? true : false;
+        }
+
+        public async Task<List<Business>> GetAllBussinessAsynctenant(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_SelectBusinessesForTenant";
+            command.Parameters.AddWithValue("@in_tenantId", tenantId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
         }
     }
 }
