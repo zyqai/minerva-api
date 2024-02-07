@@ -95,6 +95,7 @@ namespace Minerva.DataAccessLayer
             }
             return users;
         }
+       
         public async Task<string> SaveUser(User us)
         {
             using var connection = database.OpenConnection();
@@ -214,10 +215,10 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.Parameters.AddWithValue("@p_tenantId", tenantId);
+            command.Parameters.AddWithValue("@in_tenantId", tenantId);
             command.CommandText = @"USP_GetTenantUsers";
             command.CommandType = CommandType.StoredProcedure;
-            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            var result = await ReadAllUsersAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return [.. result];
         }
@@ -272,6 +273,40 @@ namespace Minerva.DataAccessLayer
             }
             return status;
         }
-    }
+        private async Task<IReadOnlyList<User>> ReadAllUsersAsync(MySqlDataReader reader)
+        {
+            var users = new List<User>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var user = new User
+                    {
+                        UserId = reader.GetValue(0).ToString(),
+                        TenantId = !reader.IsDBNull(1) ? reader.GetInt32(1) : 0,
+                        UserName = reader.GetValue(2).ToString(),
+                        Email = reader.GetValue(3).ToString(),
+                        IsActive = reader.GetInt16(4) == 1 ? true : false,
+                        IsDeleted = reader.GetInt16(5) == 1 ? true : false,
+                        CreateTime = reader.GetDateTime(6),
+                        ModifiedTime = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+                        CreatedBy = reader.GetValue(8).ToString(),
+                        ModifiedBy = reader.GetValue(9).ToString(),
+                        PhoneNumber = reader.GetValue(10).ToString(),
+                        NotificationsEnabled = reader.IsDBNull(11) ? false : (reader.GetInt16(11) == 1),
+                        MfaEnabled = reader.IsDBNull(12) ? false : (reader.GetInt16(12) == 1),
+                        IsTenantUser = reader.IsDBNull(13) ? 0 : reader.GetInt32(13),
+                        IsAdminUser = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
+                        FirstName = reader.IsDBNull(15) ? null : reader.GetValue(15).ToString(),
+                        LastName = reader.IsDBNull(16) ? null : reader.GetValue(16).ToString(),
+                        Roles = reader.IsDBNull(17) ? null : reader.GetValue(17).ToString(),
+                    };
+                    users.Add(user);
+                }
 
+            }
+            return users;
+        }
+
+    }
 }

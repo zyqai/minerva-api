@@ -10,6 +10,6 @@ namespace Minerva.IDataAccessLayer
 
         public bool UpdateBusiness(Business bs);
         public bool DeleteBusiness(int BusinesId);
-        public Task<List<Business>> GetAllBussinessAsynctenant(int tenantId);
+        public Task<List<Business?>> GetAllBussinessAsynctenant(int tenantId);
     }
 }

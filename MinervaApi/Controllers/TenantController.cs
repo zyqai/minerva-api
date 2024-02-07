@@ -165,5 +165,20 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
+
+        [HttpGet("usersByTenant/{tenantId}")]
+        public async Task<IActionResult> UsersForTenant(int tenantId)
+        {
+            TenantUsers tenantUsers=new TenantUsers ();
+            tenantUsers = await tenant.UsersForTenant(tenantId);
+            if (tenantUsers != null)
+            {
+                return Ok(tenantUsers);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
     }
 }
