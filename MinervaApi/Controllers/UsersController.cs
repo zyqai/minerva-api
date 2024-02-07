@@ -20,7 +20,7 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet("{UserId}")]
+        [HttpGet("{userId}")]
         public Task<User?> GetUser(string UserId)
         {
             UsersRequest user = new UsersRequest
@@ -95,14 +95,14 @@ namespace Minerva.Controllers
             }
         }
         
-        [HttpDelete("{UserId}")]
-        public async Task<IActionResult> DeleteUser(string UserID)
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUser(string userId)
         {
             try
             {
-                if (!string.IsNullOrEmpty(UserID))
+                if (!string.IsNullOrEmpty(userId))
                 {
-                    bool b =await userBL.DeleteUser(UserID);
+                    bool b =await userBL.DeleteUser(userId);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
                     else
@@ -119,30 +119,30 @@ namespace Minerva.Controllers
             }
         }
 
-        [HttpGet("getuser/{UserName}")]
-        public Task<User?> GetUserFromEmail(string UserName)
+        [HttpGet("getUser/{userName}")]
+        public Task<User?> GetUserFromEmail(string userName)
         {
             UsersRequest user = new UsersRequest
             {
-                UserName = UserName
+                UserName = userName
             };
             return userBL.GetUserusingUserName(user);
         }
 
-        [HttpGet("gettenantuserlist/{tenantid}")]
-        public Task<List<User?>> GetTenantUserList(int tenantid)
+        [HttpGet("getTenantUserList/{tenantId}")]
+        public Task<List<User?>> GetTenantUserList(int tenantId)
         {
-            return userBL.GetTenantUserList(tenantid);
+            return userBL.GetTenantUserList(tenantId);
         }
-        [HttpGet("forgotpassword/{emailid}")]
-        public Task<APIStatus> Forgetpassword(string emailid) 
+        [HttpGet("forgotPassword/{emailId}")]
+        public Task<APIStatus> Forgetpassword(string emailId) 
         {
-            return userBL.Forgetpassword(emailid);
+            return userBL.Forgetpassword(emailId);
         }
-        [HttpGet("verifyemail/{emailid}")]
-        public Task<APIStatus> verifyemail(string emailid)
+        [HttpGet("verifyEmail/{emailId}")]
+        public Task<APIStatus> verifyemail(string emailId)
         {
-            return userBL.verifyemail(emailid);
+            return userBL.verifyemail(emailId);
         }
     }
 }
