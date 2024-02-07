@@ -17,4 +17,5 @@ namespace Minerva.Models.Responce
         public Tenant ?tenant { get; set; }
         public List<User?> ?users { get; set; }
     }
+    
 }
