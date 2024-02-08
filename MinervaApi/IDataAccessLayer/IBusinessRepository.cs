@@ -4,7 +4,7 @@ namespace Minerva.IDataAccessLayer
 {
     public interface IBusinessRepository
     {
-        public bool SaveBusiness(Business bs);
+        public int SaveBusiness(Business bs);
         public Task<Business?> GetBussinessAsync(int businesId);
         public Task<List<Business?>> GetAllBussinessAsync();
 

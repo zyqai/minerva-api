@@ -14,7 +14,7 @@ namespace Minerva.BusinessLayer
             BusinessRepository = _repository;
         }
 
-        public bool SaveBusines(BusinessRequest request)
+        public int SaveBusines(BusinessRequest request)
         {
             Business business = Mapping(request);
             return BusinessRepository.SaveBusiness(business);
@@ -27,6 +27,7 @@ namespace Minerva.BusinessLayer
             business.TenantId = br.TenantId;
             business.AnnualRevenue  = br.AnnualRevenue;
             business.BusinessAddress= br.BusinessAddress;
+            business.BusinessAddress1= br.BusinessAddress1;
             business.BusinessType  = br.BusinessType;
             business.Industry = br.Industry;
             business.AnnualRevenue =br.AnnualRevenue;

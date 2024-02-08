@@ -5,7 +5,7 @@ namespace Minerva.BusinessLayer.Interface
 {
     public interface IBusinessBL
     {
-        public bool SaveBusines(BusinessRequest request);
+        public int SaveBusines(BusinessRequest request);
         public Task<Business?> GetBusiness(int BusinesId);
         public Task<List<Business?>> GetALLBusiness();
         public bool UpdateBusiness(BusinessRequest request);

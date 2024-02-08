@@ -20,16 +20,17 @@ namespace Minerva.Controllers
         }
         
         [HttpPost]
-        public IActionResult SaveBusines([FromBody] BusinessRequest request)
+        public async Task<IActionResult> SaveBusines([FromBody] BusinessRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    bool b = BusinessBL.SaveBusines(request);
-                    if (b)
+                    int b = BusinessBL.SaveBusines(request);
+                    if (b>0)
                     {
-                        return StatusCode(StatusCodes.Status201Created, request);
+                        Business ?res = await BusinessBL.GetBusiness(b);
+                        return StatusCode(StatusCodes.Status201Created, res);
                     }
                     else
                     {
