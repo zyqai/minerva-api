@@ -13,7 +13,7 @@ namespace Minerva.Controllers
     public class ClientBusinessRelationController : ControllerBase
     {
         ICBRelation relation;
-        public ClientBusinessRelationController(ICBRelation cBRelation) 
+        public ClientBusinessRelationController(ICBRelation cBRelation)
         {
             relation = cBRelation;
         }
@@ -32,34 +32,31 @@ namespace Minerva.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Create(CBRelationRequest request)
+        public async Task<IActionResult> Create(List<CBRelationRequest?> requests)
         {
+            List<CBRelation?> resList = new List<CBRelation?>();
             try
             {
-                if (ModelState.IsValid)
+                foreach (var request in requests)
                 {
-                    var b = await relation.Save(request);
-                    if (b > 0)
+                    if (ModelState.IsValid)
                     {
-                        CBRelation? res = await relation.GetAync(b);
-                        if (res != null)
+                        var b = await relation.Save(request);
+
+                        if (b > 0)
                         {
-                            return StatusCode(StatusCodes.Status201Created, res);
+                            CBRelation? res = await relation.GetAync(b);
+                            if (res != null)
+                            {
+                                resList.Add(res);
+                            }
                         }
-                        else
-                        {
-                            return StatusCode(StatusCodes.Status400BadRequest, res);
-                        }
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, request);
                     }
                 }
+                if (resList != null)
+                    return StatusCode(StatusCodes.Status201Created, resList);
                 else
-                {
                     return BadRequest();
-                }
             }
             catch (Exception ex)
             {
@@ -68,20 +65,25 @@ namespace Minerva.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(CBRelationRequest request)
+        public async Task<IActionResult> Update(List<CBRelationRequest> requests)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var b = await relation.Update(request);
+                    bool b = false;
+                    foreach (var request in requests)
+                    {
+                        b = await relation.Update(request);
+                    }
+                   
                     if (b)
                     {
-                        return StatusCode(StatusCodes.Status201Created, request);
+                        return StatusCode(StatusCodes.Status205ResetContent, requests);
                     }
                     else
                     {
-                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                        return StatusCode(StatusCodes.Status500InternalServerError, requests);
                     }
                 }
                 else
