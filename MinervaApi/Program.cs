@@ -36,6 +36,9 @@ builder.Services.AddTransient<ITenant, TenantBL>();
 builder.Services.AddTransient<IPersonaRepository,PersonaRepository>();
 builder.Services.AddTransient<IPersona, PersonaBL>();
 
+builder.Services.AddTransient<ICBRelationRepository, CBRelationRepository>();
+builder.Services.AddTransient<ICBRelation, CBRelationBL>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             .AddJwtBearer(options =>
