@@ -37,30 +37,34 @@ namespace Minerva.BusinessLayer
         }
         private Client MappingClient(ClientRequest c)
         {
-            Client ct = new Client();
-            ct.ClientId = c.ClientId;
-            ct.UserId= c.UserId;
-            ct.TenantId = c.TenantId;
-            ct.ClientName  = c.ClientName;
-            ct.ClientAddress = c.ClientAddress;
-            ct.PreferredContact=   c.PreferredContact;
-            ct.Email = c.Email;
-            ct.CreditScore = c.CreditScore;
-            ct.LendabilityScore = c.LendabilityScore;
-            ct.MarriedStatus = c.MarriedStatus;
-            ct.SpouseClientId = c.SpouseClientId;
-            ct.RootFolder  =    c.RootFolder;
-            ct.CreatedTime= c.CreatedTime;
-            ct.ModifiedTime= c.ModifiedTime;
-            ct.ModifiedBy=c.ModifiedBy;
-            ct.CreatedBy=c.CreatedBy;
-            ct.PhoneNumber = c.PhoneNumber;
-            ct.firstName = c.firstName;
-            ct.lastName=c.lastName;
-            ct.dob = c.dob;
-            ct.socialsecuritynumber=c.socialsecuritynumber;
-            ct.postalnumber = c.postalnumber;
-            ct.stateid = c.stateid;
+            Client ct = new Client
+            {
+                ClientId = c.ClientId,
+                UserId = c.UserId,
+                TenantId = c.TenantId,
+                ClientName = c.ClientName,
+                ClientAddress = c.ClientAddress,
+                PreferredContact = c.PreferredContact,
+                Email = c.Email,
+                CreditScore = c.CreditScore,
+                LendabilityScore = c.LendabilityScore,
+                MarriedStatus = c.MarriedStatus,
+                SpouseClientId = c.SpouseClientId,
+                RootFolder = c.RootFolder,
+                CreatedTime = c.CreatedTime,
+                ModifiedTime = c.ModifiedTime,
+                ModifiedBy = c.ModifiedBy,
+                CreatedBy = c.CreatedBy,
+                PhoneNumber = c.PhoneNumber,
+                firstName = c.firstName,
+                lastName = c.lastName,
+                dob = c.dob,
+                socialsecuritynumber = c.socialsecuritynumber,
+                postalnumber = c.postalnumber,
+                stateid = c.stateid,
+                City = c.City,
+                ClientAddress1 = c.ClientAddress1
+            };
             return ct;
         }
     }

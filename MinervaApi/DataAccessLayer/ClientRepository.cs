@@ -67,7 +67,10 @@ namespace Minerva.DataAccessLayer
                         CreatedTime = reader["createdTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdTime"]),
                         ModifiedTime = reader["modifiedTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["modifiedTime"]),
                         CreatedBy = reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
-                        ModifiedBy = reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"])
+                        ModifiedBy = reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
+                        City = reader["city"].ToString(),
+                        ClientAddress1 = reader["clientAddress"].ToString(),
+
                     };
                     Clients.Add(Client);
                 }
@@ -117,6 +120,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantId", client.TenantId);
             command.Parameters.AddWithValue("@p_clientName", client.ClientName);
             command.Parameters.AddWithValue("@p_clientAddress", client.ClientAddress);
+            command.Parameters.AddWithValue("@p_clientAddress1", client.ClientAddress1);
 
             command.Parameters.AddWithValue("@p_firstName", client.firstName);
             command.Parameters.AddWithValue("@p_lastName", client.lastName);
@@ -134,6 +138,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_spouseClientId", client.SpouseClientId);
             command.Parameters.AddWithValue("@p_rootFolder", client.RootFolder);
             command.Parameters.AddWithValue("@p_createdBy", client.CreatedBy);
+            command.Parameters.AddWithValue("@p_city", client.City);
         }
         public async Task<bool> DeleteClient(int? Id)
         {
