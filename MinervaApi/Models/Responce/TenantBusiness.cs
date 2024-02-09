@@ -17,5 +17,14 @@ namespace Minerva.Models.Responce
         public Tenant ?tenant { get; set; }
         public List<User?> ?users { get; set; }
     }
+    public class ClientPersonas : Client
+    { 
+        public Personas Personas { get; set; }
+    }
+    public class BusinessRelation 
+    {
+        public Business Business { get; set; }
+        public List<ClientPersonas> ClientPersonas { get; set; }
+    }
     
 }

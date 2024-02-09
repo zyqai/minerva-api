@@ -4,7 +4,9 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
 using MinervaApi.Models.Requests;
+using Newtonsoft.Json;
 
 namespace Minerva.Controllers
 {
@@ -20,15 +22,24 @@ namespace Minerva.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var ten = await relation.GetAync(id);
-
-            if (ten != null)
+            comman.logEvent("clientBusinessRelationGet", id.ToString());
+            try
             {
-                return Ok(ten);
+                var ten = await relation.GetAync(id);
+                if (ten != null)
+                {
+                    comman.logRes("clientBusinessRelationGet", JsonConvert.SerializeObject(ten));
+                    return Ok(ten);
+                }
+                else
+                {
+                    return NotFound(); // or another appropriate status
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound(); // or another appropriate status
+                comman.logError("clientBusinessRelationGet", ex.Message.ToString());
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost]
@@ -76,7 +87,7 @@ namespace Minerva.Controllers
                     {
                         b = await relation.Update(request);
                     }
-                   
+
                     if (b)
                     {
                         return StatusCode(StatusCodes.Status205ResetContent, requests);
@@ -136,6 +147,20 @@ namespace Minerva.Controllers
             else
             {
                 return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpGet("businessRelation/{businessId}")]
+        public async Task<IActionResult> GetBusinessRelation(int ?businessId)
+        {
+            var BusinessRelationList = await relation.GetBusinessRelationList(businessId);
+            if (BusinessRelationList != null)
+            {
+                return Ok(BusinessRelationList);
+            }
+            else
+            {
+                return NotFound();
             }
         }
     }

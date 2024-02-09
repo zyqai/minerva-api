@@ -1,6 +1,7 @@
 ﻿using Minerva.BusinessLayer.Interface;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Responce;
 using MinervaApi.Models.Requests;
 
 namespace Minerva.BusinessLayer
@@ -8,9 +9,13 @@ namespace Minerva.BusinessLayer
     public class CBRelationBL : ICBRelation
     {
         ICBRelationRepository CBRelationRepository;
-        public CBRelationBL(ICBRelationRepository _cB) 
+        IClientRepository ClientRepository;
+        IBusinessRepository businessRepository;
+        public CBRelationBL(ICBRelationRepository _cB, IClientRepository _clientRepository, IBusinessRepository _businessRepository) 
         {
             CBRelationRepository = _cB;
+            ClientRepository = _clientRepository;
+            businessRepository = _businessRepository;
         }
 
         public Task<bool> Delete(int id)
@@ -48,6 +53,14 @@ namespace Minerva.BusinessLayer
                 personaId = relation.personaId  
             };
             return cB;
+        }
+        public async Task<BusinessRelation> GetBusinessRelationList(int ?businessId)
+        {
+            BusinessRelation br = new BusinessRelation();
+            br.ClientPersonas = new List<ClientPersonas>();
+            br.ClientPersonas = await ClientRepository.GetClientPersonasAsync(businessId);
+            br.Business = await businessRepository.GetBussinessAsync(businessId);
+            return br;
         }
     }
 }

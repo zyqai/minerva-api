@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Responce;
 
 namespace Minerva.IDataAccessLayer
 {
@@ -10,5 +11,6 @@ namespace Minerva.IDataAccessLayer
         public Task<bool> UpdateClient(Client us);
         public Task<bool> DeleteClient(int? ClientId);
         public Task<List<Client?>> GetAllpeoplesAsynctenant(int tenantId);
+        public Task<List<ClientPersonas>> GetClientPersonasAsync(int ?businessId);
     }
 }

@@ -4,7 +4,6 @@ namespace Minerva.Models.Requests
 {
     public class ClientRequest
     {
-        [Required]
         public int ClientId { get; set; }
         public string? UserId { get; set; }
         public int TenantId { get; set; }
@@ -28,5 +27,7 @@ namespace Minerva.Models.Requests
         public DateTime? ModifiedTime { get; set; }
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
+        public string? ClientAddress1 { get; set; }
+        public string? City { get; }
     }
 }

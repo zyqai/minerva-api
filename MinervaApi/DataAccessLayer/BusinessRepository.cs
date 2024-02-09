@@ -51,7 +51,7 @@ namespace Minerva.DataAccessLayer
             return (List<Business?>)result;
         }
 
-        public async Task<Business?> GetBussinessAsync(int BusinessId)
+        public async Task<Business?> GetBussinessAsync(int ?BusinessId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
