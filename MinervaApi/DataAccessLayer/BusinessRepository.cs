@@ -1,6 +1,7 @@
 ﻿using Minerva.BusinessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Responce;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -140,6 +141,45 @@ namespace Minerva.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return result.ToList();
+        }
+
+        public async Task<List<BusinessPersonas>> GetBussinessPersonasAsync(int? clientId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_BusinessesPersonasByclientIds ";
+            command.Parameters.AddWithValue("@p_clientId", clientId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllBussinessPersonasAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+        }
+
+        private async Task<List<BusinessPersonas>> ReadAllBussinessPersonasAsync(MySqlDataReader reader)
+        {
+            var bu =  new List<BusinessPersonas> ();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var b = new BusinessPersonas
+                    {
+                        BusinessId = reader["businessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["businessId"]),
+                        TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        BusinessName = reader["businessName"].ToString(),
+                        BusinessAddress = reader["businessAddress"].ToString(),
+                        BusinessType = reader["businessType"].ToString(),
+                        Industry = reader["industry"].ToString(),
+                    };
+                    b.Personas = new Personas { 
+                    personaId= reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
+                    personaName= reader["personaName"].ToString()
+                    };
+                    bu.Add(b);
+                }
+            }
+            return bu;
         }
     }
 }

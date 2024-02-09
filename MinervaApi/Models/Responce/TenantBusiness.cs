@@ -21,10 +21,19 @@ namespace Minerva.Models.Responce
     { 
         public Personas Personas { get; set; }
     }
+    public class BusinessPersonas : Business
+    {
+        public Personas Personas { get; set; }
+    }
     public class BusinessRelation 
     {
         public Business Business { get; set; }
         public List<ClientPersonas> ClientPersonas { get; set; }
+    }
+    public class ClientRelation
+    {
+        public Client Client{ get; set; }
+        public List<BusinessPersonas> businesses { get; set; }
     }
     
 }

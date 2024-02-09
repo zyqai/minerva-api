@@ -62,5 +62,14 @@ namespace Minerva.BusinessLayer
             br.Business = await businessRepository.GetBussinessAsync(businessId);
             return br;
         }
+
+        public async Task<ClientRelation> GetClientRelationList(int? clientId)
+        {
+            ClientRelation clientRelation = new ClientRelation();
+            clientRelation.Client = await ClientRepository.GetClientAsync(clientId);
+            clientRelation.businesses = new List<BusinessPersonas>();
+            clientRelation.businesses = await businessRepository.GetBussinessPersonasAsync(clientId);
+            return clientRelation;
+        }
     }
 }

@@ -163,5 +163,18 @@ namespace Minerva.Controllers
                 return NotFound();
             }
         }
+        [HttpGet("clientsRelation/{clientId}")]
+        public async Task<IActionResult> GetClientsRelation(int? clientId)
+        {
+            var BusinessRelationList = await relation.GetClientRelationList(clientId);
+            if (BusinessRelationList != null)
+            {
+                return Ok(BusinessRelationList);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

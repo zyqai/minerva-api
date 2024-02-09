@@ -13,6 +13,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<int?> Save(CBRelationRequest ? relation);
         public Task<bool> Update(CBRelationRequest? request);
         public Task<BusinessRelation> GetBusinessRelationList(int ?businessId);
-
+        public Task<ClientRelation> GetClientRelationList(int? clientId);
     }
 }
