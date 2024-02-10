@@ -69,7 +69,7 @@ namespace Minerva.DataAccessLayer
                         CreatedBy = reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
                         ModifiedBy = reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
                         City = reader["city"].ToString(),
-                        ClientAddress1 = reader["clientAddress"].ToString(),
+                        ClientAddress1 = reader["clientAddress1"].ToString(),
 
                     };
                     Clients.Add(Client);
