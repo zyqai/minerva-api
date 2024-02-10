@@ -18,11 +18,13 @@ namespace Minerva.Models.Responce
         public List<User?> ?users { get; set; }
     }
     public class ClientPersonas : Client
-    { 
+    {
+        public int? clientBusinessId { get; set; }
         public Personas Personas { get; set; }
     }
     public class BusinessPersonas : Business
     {
+        public int? clientBusinessId { get; set; }
         public Personas Personas { get; set; }
     }
     public class BusinessRelation 

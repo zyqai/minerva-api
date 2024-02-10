@@ -171,6 +171,7 @@ namespace Minerva.DataAccessLayer
                         BusinessAddress = reader["businessAddress"].ToString(),
                         BusinessType = reader["businessType"].ToString(),
                         Industry = reader["industry"].ToString(),
+                        clientBusinessId= reader["clientBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientBusinessId"])
                     };
                     b.Personas = new Personas { 
                     personaId= reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
