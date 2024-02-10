@@ -195,6 +195,7 @@ namespace Minerva.DataAccessLayer
                         stateid = reader["stateid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["stateid"]),
                         PhoneNumber = reader["phoneNumber"].ToString(),
                         Email = reader["email"].ToString(),
+                        clientBusinessId= reader["clientBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientBusinessId"])
                     };
                     Client.Personas = new Personas();
                     Client.Personas.personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]);
