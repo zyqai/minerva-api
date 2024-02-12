@@ -63,6 +63,7 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
+        
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
         [HttpGet("{id}")]

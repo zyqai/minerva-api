@@ -1,3 +1,4 @@
+-- DROP PROCEDURE `USP_ClientCreate`
 DELIMITER //
 CREATE PROCEDURE `USP_ClientCreate`(
      IN p_userId VARCHAR(45),
@@ -19,6 +20,8 @@ CREATE PROCEDURE `USP_ClientCreate`(
      IN p_spouseClientId INT,
      IN p_rootFolder VARCHAR(255),
      IN p_createdBy INT,
+     IN p_City VARCHAR(100),
+     IN p_clientAddress1 VARCHAR(255),
      OUT p_last_insert_id INT
 )
 BEGIN
@@ -27,16 +30,16 @@ BEGIN
          `socialsecuritynumber`, `postalnumber`, `stateid`, `clientAddress`,
          `phoneNumber`, `email`, `preferredContact`, `creditScore`, `lendabilityScore`,
          `marriedStatus`, `spouseClientId`, `rootFolder`, `createdTime`,
-         `createdBy`, `modifiedBy`
+         `createdBy`, `modifiedBy`,`city`,`clientAddress1`
      )
      VALUES (
          p_userId, p_tenantId, p_clientName, p_firstName, p_lastName, p_dob,
          p_socialsecuritynumber, p_postalnumber, p_stateid, p_clientAddress,
          p_phoneNumber, p_email, p_preferredContact, p_creditScore, p_lendabilityScore,
          p_marriedStatus, p_spouseClientId, p_rootFolder, NOW(),  p_createdBy,
-         p_createdBy);
+         p_createdBy,p_city,p_clientAddress1);
 
     SET p_last_insert_id := LAST_INSERT_ID();
-END //
+END//
 
 DELIMITER ;

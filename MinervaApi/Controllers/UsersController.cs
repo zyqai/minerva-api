@@ -20,7 +20,7 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet("{UserId}")]
+        [HttpGet("{userid}")]
         public Task<User?> GetUser(string UserId)
         {
             UsersRequest user = new UsersRequest
@@ -99,7 +99,7 @@ namespace Minerva.Controllers
             }
         }
         
-        [HttpDelete("{UserId}")]
+        [HttpDelete("{userid}")]
         //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteUser(string UserID)
         {
@@ -124,7 +124,7 @@ namespace Minerva.Controllers
             }
         }
 
-        [HttpGet("getuser/{UserName}")]
+        [HttpGet("getuser/{username}")]
         public Task<User?> GetUserFromEmail(string UserName)
         {
             UsersRequest user = new UsersRequest

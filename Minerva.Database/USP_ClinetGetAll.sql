@@ -1,8 +1,6 @@
--- DROP PROCEDURE `USP_ClinetGetById`
+-- DROP PROCEDURE `USP_ClinetGetAll`
 DELIMITER //
-CREATE PROCEDURE `USP_ClinetGetById`(
-    IN p_clientId INT
-)
+CREATE PROCEDURE `USP_ClinetGetAll`()
 BEGIN
     SELECT 
 clientId
@@ -30,7 +28,7 @@ clientId
 ,modifiedBy
 ,City
 ,clientAddress1
-    FROM `_clients` WHERE `clientId` = p_clientId;
+    FROM `_clients`;
 END
 //
 
