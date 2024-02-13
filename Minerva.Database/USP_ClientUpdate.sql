@@ -1,5 +1,19 @@
-DELIMITER //
-CREATE PROCEDURE USP_ClientUpdate(
+
+
+USE `minerva`;
+DROP procedure IF EXISTS `minerva`.`USP_ClientUpdate`;
+;
+
+DELIMITER $$
+USE `minerva`$$
+/*
+Author: [Santhosh]
+Created Date: [2024-02-01]
+Purpose: This procedure updates client information in the '_clients' table.
+Modified Date: [2024-02-13]  modfied by chaged int to varchar
+*/
+
+CREATE DEFINER=`minerva_admin_dev`@`%` PROCEDURE `USP_ClientUpdate`(
     IN p_clientId INT,
     IN p_userId VARCHAR(45),
     IN p_tenantId INT,
@@ -19,7 +33,9 @@ CREATE PROCEDURE USP_ClientUpdate(
     IN p_marriedStatus INT,
     IN p_spouseClientId INT,
     IN p_rootFolder VARCHAR(255),
-    IN p_modifiedBy INT
+    IN p_modifiedBy varchar(50),
+    IN p_City VARCHAR(100),
+	IN p_clientAddress1 VARCHAR(255)
 )
 BEGIN
     UPDATE `_clients`
@@ -43,7 +59,12 @@ BEGIN
         `spouseClientId` = p_spouseClientId,
         `rootFolder` = p_rootFolder,
         `modifiedTime` = NOW(),
-        `modifiedBy` = p_modifiedBy
-    WHERE `clientId` = p_clientId;
-END//
+        `modifiedBy` = p_modifiedBy,
+        `city`=p_city,
+        `clientAddress1` = p_clientAddress1 
+	WHERE `clientId` = p_clientId;
+END$$
+
 DELIMITER ;
+;
+

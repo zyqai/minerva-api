@@ -23,8 +23,8 @@
         public string? RootFolder { get; set; }
         public DateTime? CreatedTime { get; set; }
         public DateTime? ModifiedTime { get; set; }
-        public int? CreatedBy { get; set; }
-        public int? ModifiedBy { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? ModifiedBy { get; set; }
         public string? ClientAddress1 { get; set; }
         public string? City { get; set; }
 

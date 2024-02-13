@@ -66,8 +66,8 @@ namespace Minerva.DataAccessLayer
                         RootFolder = reader["rootFolder"].ToString(),
                         CreatedTime = reader["createdTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdTime"]),
                         ModifiedTime = reader["modifiedTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["modifiedTime"]),
-                        CreatedBy = reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
-                        ModifiedBy = reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
+                        CreatedBy = reader["createdBy"].ToString(),//reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
+                        ModifiedBy = reader["modifiedBy"].ToString(),//reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
                         City = reader["city"].ToString(),
                         ClientAddress1 = reader["clientAddress1"].ToString(),
 
