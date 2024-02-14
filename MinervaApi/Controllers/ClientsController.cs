@@ -5,6 +5,7 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.Models.Requests;
 using Minerva.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MinervaApi.Controllers
 {
@@ -24,11 +25,14 @@ namespace MinervaApi.Controllers
         {
             return client.GetClient(clientid);
         }
+        
+
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
         public Task<List<Client?>> GetClient()
         {
+            string ?email = User.FindFirstValue(ClaimTypes.Email).ToString();
             return client.GetALLClients();
         }
         [HttpPost]
@@ -36,11 +40,13 @@ namespace MinervaApi.Controllers
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
+
             try
             {
                 if (ModelState.IsValid)
                 {
-
+                    //string email = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    //c.CreatedBy = email;
                     int ClientId = await client.SaveClient(c);
                         if (ClientId > 0)
                         {

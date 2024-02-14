@@ -1,7 +1,9 @@
 ﻿using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Responce;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace Minerva.DataAccessLayer
 {
@@ -64,8 +66,11 @@ namespace Minerva.DataAccessLayer
                         RootFolder = reader["rootFolder"].ToString(),
                         CreatedTime = reader["createdTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdTime"]),
                         ModifiedTime = reader["modifiedTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["modifiedTime"]),
-                        CreatedBy = reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
-                        ModifiedBy = reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"])
+                        CreatedBy = reader["createdBy"].ToString(),//reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
+                        ModifiedBy = reader["modifiedBy"].ToString(),//reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
+                        City = reader["city"].ToString(),
+                        ClientAddress1 = reader["clientAddress1"].ToString(),
+
                     };
                     Clients.Add(Client);
                 }
@@ -115,6 +120,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_tenantId", client.TenantId);
             command.Parameters.AddWithValue("@p_clientName", client.ClientName);
             command.Parameters.AddWithValue("@p_clientAddress", client.ClientAddress);
+            command.Parameters.AddWithValue("@p_clientAddress1", client.ClientAddress1);
 
             command.Parameters.AddWithValue("@p_firstName", client.firstName);
             command.Parameters.AddWithValue("@p_lastName", client.lastName);
@@ -132,6 +138,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_spouseClientId", client.SpouseClientId);
             command.Parameters.AddWithValue("@p_rootFolder", client.RootFolder);
             command.Parameters.AddWithValue("@p_createdBy", client.CreatedBy);
+            command.Parameters.AddWithValue("@p_city", client.City);
         }
         public async Task<bool> DeleteClient(int? Id)
         {
@@ -143,6 +150,61 @@ namespace Minerva.DataAccessLayer
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
             return i >= 1 ? true : false;
+        }
+        public async Task<List<Client>> GetAllpeoplesAsynctenant(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_ClientsForTenant";
+            command.Parameters.AddWithValue("@in_tenantId", tenantId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+        }
+
+        public async Task<List<ClientPersonas>> GetClientPersonasAsync(int? businessId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_ClientPersonasByBusinessId";
+            command.Parameters.AddWithValue("@in_businessId", businessId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadClientPersonasAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+        }
+
+        private async Task<IReadOnlyList<ClientPersonas>>  ReadClientPersonasAsync(MySqlDataReader reader)
+        {
+            var Clients = new List<ClientPersonas>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var Client = new ClientPersonas
+                    {
+                        ClientId = reader["clientId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientId"]),
+                        UserId = reader["userId"].ToString(),
+                        TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        ClientName = reader["clientName"].ToString(),
+                        firstName = reader["firstName"].ToString(),
+                        lastName = reader["lastName"].ToString(),
+                        stateid = reader["stateid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["stateid"]),
+                        PhoneNumber = reader["phoneNumber"].ToString(),
+                        Email = reader["email"].ToString(),
+                        clientBusinessId= reader["clientBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientBusinessId"])
+                    };
+                    Client.Personas = new Personas();
+                    Client.Personas.personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]);
+                    Client.Personas.personaName= reader["personaName"].ToString();
+                    Clients.Add(Client);
+                }
+
+            }
+            return Clients;
         }
     }
 }

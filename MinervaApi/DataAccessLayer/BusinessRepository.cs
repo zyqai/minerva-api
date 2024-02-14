@@ -1,5 +1,7 @@
-﻿using Minerva.IDataAccessLayer;
+﻿using Minerva.BusinessLayer;
+using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Responce;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -13,29 +15,36 @@ namespace Minerva.DataAccessLayer
         {
             this.database = database;
         }
-        public bool SaveBusiness(Business bs)
+        public int SaveBusiness(Business bs)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_CreateBusiness";
+            command.CommandText = @"USP_BusinessCreate";
             AddUserParameters(command, bs);
+            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = command.ExecuteNonQuery();
+            int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
             if (i == 1)
             {
-                return true;
+                i = lastInsertId;
             }
             else
             {
-                return false;
+                i = 0;
             }
+            return i;
         }
         public async Task<List<Business?>> GetAllBussinessAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_GetBusinessess";
+            command.CommandText = @"USP_BusinessesGet";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -43,11 +52,11 @@ namespace Minerva.DataAccessLayer
             return (List<Business?>)result;
         }
 
-        public async Task<Business?> GetBussinessAsync(int BusinessId)
+        public async Task<Business?> GetBussinessAsync(int ?BusinessId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ReadBusinessID";
+            command.CommandText = @"USP_BusinessGetID";
             command.Parameters.AddWithValue("@in_businessId", BusinessId);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
@@ -69,12 +78,13 @@ namespace Minerva.DataAccessLayer
                         TenantId=reader.GetInt32(1),
                         BusinessName= reader.GetValue(2).ToString(),
                         BusinessAddress= reader.GetValue(3).ToString(),
-                        BusinessType=reader.GetValue(4).ToString(),
+                        BusinessType =reader.GetValue(4).ToString(),
                         Industry  =reader.GetValue(5).ToString(),
                         AnnualRevenue= reader.IsDBNull(6) ? (decimal?)null : reader.GetDecimal(6),
                         IncorporationDate = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
                         BusinessRegistrationNumber =reader.GetValue(8).ToString(),
                         RootDocumentFolder=reader.GetValue(9).ToString(),
+                        BusinessAddress1 = reader.GetValue(10).ToString(),
                     };
                     bu.Add(user);
                 }
@@ -88,6 +98,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@in_tenantId", bs.TenantId);
             command.Parameters.AddWithValue("@in_businessName", bs.BusinessName);
             command.Parameters.AddWithValue("@in_businessAddress", bs.BusinessAddress);
+            command.Parameters.AddWithValue("@in_businessAddress1", bs.BusinessAddress1);
             command.Parameters.AddWithValue("@in_businessType", bs.BusinessType);
             command.Parameters.AddWithValue("@in_industry", bs.Industry);
             command.Parameters.AddWithValue("@in_annualRevenue", bs.AnnualRevenue);
@@ -117,6 +128,59 @@ namespace Minerva.DataAccessLayer
             int i = command.ExecuteNonQuery();
             connection.Close();
             return i >= 1 ? true : false;
+        }
+
+        public async Task<List<Business>> GetAllBussinessAsynctenant(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_BusinessesForTenant";
+            command.Parameters.AddWithValue("@in_tenantId", tenantId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+        }
+
+        public async Task<List<BusinessPersonas>> GetBussinessPersonasAsync(int? clientId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_BusinessesPersonasByclientIds ";
+            command.Parameters.AddWithValue("@p_clientId", clientId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllBussinessPersonasAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+        }
+
+        private async Task<List<BusinessPersonas>> ReadAllBussinessPersonasAsync(MySqlDataReader reader)
+        {
+            var bu =  new List<BusinessPersonas> ();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var b = new BusinessPersonas
+                    {
+                        BusinessId = reader["businessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["businessId"]),
+                        TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        BusinessName = reader["businessName"].ToString(),
+                        BusinessAddress = reader["businessAddress"].ToString(),
+                        BusinessType = reader["businessType"].ToString(),
+                        Industry = reader["industry"].ToString(),
+                        clientBusinessId= reader["clientBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientBusinessId"])
+                    };
+                    b.Personas = new Personas { 
+                    personaId= reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
+                    personaName= reader["personaName"].ToString()
+                    };
+                    bu.Add(b);
+                }
+            }
+            return bu;
         }
     }
 }

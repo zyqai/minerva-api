@@ -12,5 +12,6 @@
         public DateTime? IncorporationDate { get; set; }
         public string? BusinessRegistrationNumber { get; set; }
         public string? RootDocumentFolder { get; set; }
+        public string? BusinessAddress1 { get; set; }
     }
 }

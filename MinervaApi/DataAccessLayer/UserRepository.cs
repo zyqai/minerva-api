@@ -102,7 +102,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_CreateUser";
+            command.CommandText = @"USP_UserCreate";
             AddUserParameters(command, us);
             command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
@@ -183,7 +183,6 @@ namespace Minerva.DataAccessLayer
             if (getuser != null)
             {
                 APIStatus ?status = new APIStatus();
-               //List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
                 List<KeyClient?> res = await keycloak.GetUser(UserId);
                 if (res == null)
                 {
@@ -192,21 +191,8 @@ namespace Minerva.DataAccessLayer
                 }
                 else
                 {
-                   // status = await keycloak.DeleteUser(res?.FirstOrDefault()?.id, "santhoshdonthi@gmail.com");
                     status = await keycloak.DeleteUser(res?.FirstOrDefault()?.id, UserId);
                 }
-                //KeyClientOpr opr = new KeyClientOpr();
-                //List<KeyClient?> client = await opr.KeyClockClientGet(getuser?.Email);
-                //if (client == null)
-                //{
-                //    status.Code = "204";
-                //    status.Message = "email id not found in AUTH!";
-                //    throw new Exception(status.Message);
-                //}
-                //else
-                //{
-                //    status = await opr.keyclockclientDelete(client.FirstOrDefault()?.id, getuser.Email);
-                //}
             }
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
@@ -230,17 +216,17 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.Parameters.AddWithValue("@p_tenantId", tenantId);
+            command.Parameters.AddWithValue("@in_tenantId", tenantId);
             command.CommandText = @"USP_GetTenantUsers";
             command.CommandType = CommandType.StoredProcedure;
-            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            var result = await ReadAllUsersAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return [.. result];
         }
 
         public async Task<APIStatus> Forgetpassword(string emailid)
         {
-            APIStatus ?status = new APIStatus();
+            APIStatus status = new APIStatus();
             User? user = await GetuserusingUserNameAsync(emailid);
             if (user == null)
             {
@@ -249,28 +235,17 @@ namespace Minerva.DataAccessLayer
             }
             else
             {
-                List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
-                if (res == null)
+                KeyClientOpr opr = new KeyClientOpr();
+                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                if (client == null)
                 {
                     status.Code = "204";
                     status.Message = "email id not found in AUTH!";
                 }
                 else
                 {
-                    status = await keycloak.ResetPassword(res?.FirstOrDefault()?.id,"santhoshdonthi@gmail.com");
+                    status = await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
                 }
-
-                //KeyClientOpr opr = new KeyClientOpr();
-                //List<KeyClient> client = await opr.KeyClockClientGet(emailid);
-                //if (client == null)
-                //{
-                //    status.Code = "204";
-                //    status.Message = "email id not found in AUTH!";
-                //}
-                //else
-                //{
-                //    status=await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
-                //}
             }
             return status;
         }
@@ -285,7 +260,6 @@ namespace Minerva.DataAccessLayer
             }
             else
             {
-                //List<KeyClient?> res = await keycloak.GetUser("santhoshdonthi@gmail.com");
                 List<KeyClient?> res = await keycloak.GetUser(emailid);
                 if (res == null)
                 {
@@ -295,23 +269,44 @@ namespace Minerva.DataAccessLayer
                 else
                 {
                     status = await keycloak.Verifyemail(res?.FirstOrDefault()?.id, emailid);
-                    //status = await keycloak.Verifyemail(res?.FirstOrDefault()?.id, "santhoshdonthi@gmail.com");
                 }
-
-                //KeyClientOpr opr = new KeyClientOpr();
-                //List<KeyClient> client = await opr.KeyClockClientGet(emailid);
-                //if (client == null)
-                //{
-                //    status.Code = "204";
-                //    status.Message = "email id not found in AUTH!";
-                //}
-                //else
-                //{
-                //    status = await opr.sendverifyemail(client.FirstOrDefault()?.id, emailid);
-                //}
             }
             return status;
         }
-    }
+        private async Task<IReadOnlyList<User>> ReadAllUsersAsync(MySqlDataReader reader)
+        {
+            var users = new List<User>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var user = new User
+                    {
+                        UserId = reader.GetValue(0).ToString(),
+                        TenantId = !reader.IsDBNull(1) ? reader.GetInt32(1) : 0,
+                        UserName = reader.GetValue(2).ToString(),
+                        Email = reader.GetValue(3).ToString(),
+                        IsActive = reader.GetInt16(4) == 1 ? true : false,
+                        IsDeleted = reader.GetInt16(5) == 1 ? true : false,
+                        CreateTime = reader.GetDateTime(6),
+                        ModifiedTime = reader.IsDBNull(7) ? (DateTime?)null : reader.GetDateTime(7),
+                        CreatedBy = reader.GetValue(8).ToString(),
+                        ModifiedBy = reader.GetValue(9).ToString(),
+                        PhoneNumber = reader.GetValue(10).ToString(),
+                        NotificationsEnabled = reader.IsDBNull(11) ? false : (reader.GetInt16(11) == 1),
+                        MfaEnabled = reader.IsDBNull(12) ? false : (reader.GetInt16(12) == 1),
+                        IsTenantUser = reader.IsDBNull(13) ? 0 : reader.GetInt32(13),
+                        IsAdminUser = reader.IsDBNull(14) ? 0 : reader.GetInt32(14),
+                        FirstName = reader.IsDBNull(15) ? null : reader.GetValue(15).ToString(),
+                        LastName = reader.IsDBNull(16) ? null : reader.GetValue(16).ToString(),
+                        Roles = reader.IsDBNull(17) ? null : reader.GetValue(17).ToString(),
+                    };
+                    users.Add(user);
+                }
 
+            }
+            return users;
+        }
+
+    }
 }

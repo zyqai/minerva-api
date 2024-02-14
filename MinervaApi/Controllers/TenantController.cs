@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Responce;
 
 namespace MinervaApi.Controllers
 {
@@ -135,6 +136,52 @@ namespace MinervaApi.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("businessesByTenant/{tenantId}")]
+        public async Task<IActionResult> BusinessesForTenant(int tenantId)
+        {
+            TenantBusiness res=new TenantBusiness ();
+            res = await tenant.BusinessesForTenant(tenantId);
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpGet("peoplesByTenant/{tenantId}")]
+        public async Task<IActionResult> PeoplesForTenant(int tenantId)
+        {
+            PeopleBusiness peopleBusiness = new PeopleBusiness ();
+            peopleBusiness = await tenant.PeoplesForTenant(tenantId);
+            if (peopleBusiness != null)
+            {
+                return Ok(peopleBusiness);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpGet("usersByTenant/{tenantId}")]
+        public async Task<IActionResult> UsersForTenant(int tenantId)
+        {
+            TenantUsers tenantUsers=new TenantUsers ();
+            tenantUsers = await tenant.UsersForTenant(tenantId);
+            if (tenantUsers != null)
+            {
+                return Ok(tenantUsers);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
             }
         }
     }
