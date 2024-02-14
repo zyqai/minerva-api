@@ -25,16 +25,18 @@ namespace Minerva.BusinessLayer
         }
         public async Task<int> SaveClient(ClientRequest c)
         {
-            //var users = await userRepository.GetuserusingUserNameAsync(c.CreatedBy);
-            //c.CreatedBy = users?.UserId;
-            //c.UserId = users?.UserId;
+            var users = await userRepository.GetuserusingUserNameAsync(c.CreatedBy);
+            c.CreatedBy = users?.UserId;
+            c.UserId = users?.UserId;
             Client us = MappingClient(c);
             return await client.SaveClient(us);
         }
-        public Task<bool> UpdateClient(ClientRequest c)
+        public async Task<bool> UpdateClient(ClientRequest c)
         {
+            var users = await userRepository.GetuserusingUserNameAsync(c.ModifiedBy);
+            c.ModifiedBy = users?.UserId;
             Client us = MappingClient(c);
-            return client.UpdateClient(us);
+            return await client.UpdateClient(us);
         }
         public Task<bool> DeleteClient(int ClientId)
         {
