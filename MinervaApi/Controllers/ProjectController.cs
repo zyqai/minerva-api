@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
@@ -18,6 +19,9 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             try
@@ -60,6 +64,8 @@ namespace MinervaApi.Controllers
             }
         }
         
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -75,6 +81,8 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateProject(ProjectRequest request)
         {
@@ -103,6 +111,7 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [Authorize(Policy = "TenantAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {

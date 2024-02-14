@@ -39,7 +39,7 @@ namespace MinervaApi.ExternalApi
     }
     public class ClientRoles
     {
-
+        public List<string> roles { get; set; }    
     }
     public class Access
     {

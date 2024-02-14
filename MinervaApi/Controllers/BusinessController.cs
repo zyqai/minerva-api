@@ -20,7 +20,9 @@ namespace Minerva.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> SaveBusines([FromBody] BusinessRequest request)
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        public IActionResult SaveBusines([FromBody] BusinessRequest request)
         {
             try
             {
@@ -49,18 +51,23 @@ namespace Minerva.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public Task<Business?> GetBusiness(int id)
         {
             return BusinessBL.GetBusiness(id);
         }
         
         [HttpGet]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public Task<List<Business?>> GetBusiness()
         {
             return BusinessBL.GetALLBusiness();
         }
         
         [HttpPut]
+        [Authorize(Policy = "AdminPolicy")]
         public IActionResult UpdateBusiness(BusinessRequest request)
         {
             try
@@ -82,6 +89,7 @@ namespace Minerva.Controllers
         }
         
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public IActionResult DeleteUser(int id)
         {
             try

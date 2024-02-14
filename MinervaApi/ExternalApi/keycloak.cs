@@ -167,7 +167,6 @@ namespace MinervaApi.ExternalApi
 
                 return status;
             }
-
             public async Task<APIStatus> keyclockclientDelete(string? id, string? email)
             {
                 List<KeyClient> clist = new List<KeyClient>();

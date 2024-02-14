@@ -20,7 +20,7 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userid}")]
         public Task<User?> GetUser(string UserId)
         {
             UsersRequest user = new UsersRequest
@@ -30,7 +30,8 @@ namespace Minerva.Controllers
             return userBL.GetUser(user);
         }
         [HttpGet]
-        //[Authorize(Policy= "TenantAdmin")]
+        //[Authorize(Policy= "TenantAdminPolicy")]
+        //[Authorize(Policy= "AdminPolicy")]
         //[Authorize]
         public Task<List<User?>> GetUses()
         {
@@ -40,6 +41,8 @@ namespace Minerva.Controllers
         }
         
         [HttpPost]
+        //[Authorize(Policy = "TenantAdminPolicy")]
+        //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
             try
@@ -74,6 +77,7 @@ namespace Minerva.Controllers
         }
         
         [HttpPut]
+        //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
             try
@@ -94,9 +98,10 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
-        [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUser(string userId)
+        [HttpDelete("{userid}")]
+        //[Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> DeleteUser(string UserID)
+
         {
             try
             {
@@ -118,9 +123,9 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpGet("getuser/{username}")]
+        public Task<User?> GetUserFromEmail(string UserName)
 
-        [HttpGet("getUser/{userName}")]
-        public Task<User?> GetUserFromEmail(string userName)
         {
             UsersRequest user = new UsersRequest
             {
