@@ -54,7 +54,6 @@ namespace Minerva.BusinessLayer
                 TenantAddress1 = t.TenantAddress1,
                 stateid = t.stateid,
                 City = t.City,
-                PostalCode = t.PostalCode
                 PostalCode = t.PostalCode,
                 UpdatedBY=t.UpdatedBY,
                 CreatedBY=t.CreatedBY,

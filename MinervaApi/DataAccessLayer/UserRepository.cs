@@ -98,7 +98,6 @@ namespace Minerva.DataAccessLayer
             }
             return users;
         }
-       
         public async Task<string> SaveUser(User us)
         {
             using var connection = database.OpenConnection();

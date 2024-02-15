@@ -135,6 +135,7 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
         [HttpGet("getUser/{userName}")]
         public Task<User?> GetUserFromEmail(string userName)
         {
