@@ -9,15 +9,19 @@ namespace Minerva.BusinessLayer
     public class BusinessBL : IBusinessBL
     {
         IBusinessRepository BusinessRepository;
-        public BusinessBL(IBusinessRepository _repository)
+        IUserRepository UserRepository;
+        public BusinessBL(IBusinessRepository _repository,IUserRepository user)
         {
             BusinessRepository = _repository;
+            UserRepository = user;  
         }
 
-        public int SaveBusines(BusinessRequest request)
+        public async Task<int?> SaveBusines(BusinessRequest request)
         {
+            User ?u= await UserRepository.GetuserusingUserNameAsync(request.CreatedBy);
+            request.CreatedBy = u?.UserId;
             Business business = Mapping(request);
-            return BusinessRepository.SaveBusiness(business);
+            return await BusinessRepository.SaveBusiness(business);
         }
         private Business Mapping(BusinessRequest br)
         {
@@ -34,6 +38,8 @@ namespace Minerva.BusinessLayer
             business.IncorporationDate=br.IncorporationDate;
             business.BusinessRegistrationNumber= br.BusinessRegistrationNumber;
             business.RootDocumentFolder=br.RootDocumentFolder;
+            business.CreatedBy=br.CreatedBy;
+            business.UpdatedBy=br.UpdatedBy;
             return business;
         }
         public Task<Business?> GetBusiness(int BusinesId)
@@ -44,8 +50,10 @@ namespace Minerva.BusinessLayer
         { 
             return BusinessRepository.GetAllBussinessAsync();
         }
-        public bool UpdateBusiness(BusinessRequest br)
+        public async Task<bool> UpdateBusiness(BusinessRequest br)
         {
+            User? u = await UserRepository.GetuserusingUserNameAsync(br.UpdatedBy);
+            br.UpdatedBy = u?.UserId;
             Business bs = Mapping(br);
             return BusinessRepository.UpdateBusiness(bs);
         }

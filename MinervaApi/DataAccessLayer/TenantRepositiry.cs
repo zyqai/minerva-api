@@ -63,7 +63,9 @@ namespace Minerva.DataAccessLayer
                         TenantContactEmail = mySqlDataReader.IsDBNull(8) ? null : mySqlDataReader.GetString(8),
                         PostalCode = mySqlDataReader.IsDBNull(9) ? null : mySqlDataReader.GetString(9),
                         City = mySqlDataReader.IsDBNull(10) ? null : mySqlDataReader.GetString(10),
-                        stateid= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader.GetInt32(11)
+                        stateid= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader.GetInt32(11),
+                        CreatedBY= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader["CreatedBY"].ToString(),
+                        UpdatedBY= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader["modifiedBy"].ToString(),
                     };
                     tenants.Add(tenant);
                 }
@@ -97,6 +99,8 @@ namespace Minerva.DataAccessLayer
             {
                 Direction = ParameterDirection.Output
             };
+            command.Parameters.AddWithValue("@p_createdBy", t.CreatedBY);
+
             command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
@@ -135,14 +139,15 @@ namespace Minerva.DataAccessLayer
                 using var command = connection.CreateCommand();
                 command.CommandText = @"USP_TenantUpdate";
                 command.Parameters.AddWithValue("@p_tenantId", t.TenantId);
+                command.Parameters.AddWithValue("@p_modifiedBy", t.UpdatedBY);
                 AddUserParameters(command, t);
                 command.CommandType = CommandType.StoredProcedure;
                 i = await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             return i >= 1 ? true : false;
         }

@@ -34,7 +34,7 @@ namespace MinervaApi.DataAccessLayer
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -135,7 +135,7 @@ namespace MinervaApi.DataAccessLayer
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -167,7 +167,7 @@ namespace MinervaApi.DataAccessLayer
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

@@ -22,13 +22,13 @@ namespace Minerva.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            comman.logEvent("clientBusinessRelationGet", id.ToString());
+            Comman.logEvent("clientBusinessRelationGet", id.ToString());
             try
             {
                 var ten = await relation.GetAync(id);
                 if (ten != null)
                 {
-                    comman.logRes("clientBusinessRelationGet", JsonConvert.SerializeObject(ten));
+                    Comman.logRes("clientBusinessRelationGet", JsonConvert.SerializeObject(ten));
                     return Ok(ten);
                 }
                 else
@@ -38,7 +38,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                comman.logError("clientBusinessRelationGet", ex.Message.ToString());
+                Comman.logError("clientBusinessRelationGet", ex.Message.ToString());
                 return BadRequest(ex.Message);
             }
         }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Minerva.BusinessLayer;
@@ -6,7 +7,15 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
 using MinervaApi.DataAccessLayer;
+using MinervaApi.ExternalApi;
+using MinervaApi.IDataAccessLayer;
 using MySqlConnector;
+using Newtonsoft.Json.Linq;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.Registry;
+using System.Net;
+using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -39,73 +48,141 @@ builder.Services.AddTransient<IPersona, PersonaBL>();
 builder.Services.AddTransient<ICBRelationRepository, CBRelationRepository>();
 builder.Services.AddTransient<ICBRelation, CBRelationBL>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
+var configuration = builder.Configuration;
+var authority = configuration.GetValue<string>("OIDC_AUTHORITY");
+var metada_address = configuration.GetValue<string>("OIDC_METADATA");
+var client_id = configuration.GetValue<string>("OIDC_CLIENT_ID");
+var client_secret = configuration.GetValue<string>("OIDC_CLIENT_SECRET");
+var tokenEndpoint = configuration.GetValue<string>("OIDC_TOKEN_ENDPOINT");
+var baseURL = configuration.GetValue<string>("KC_API_URL");
+
+var registry = new PolicyRegistry()
+{
+    { "defaultretrystrategy", HttpPolicyExtensions.HandleTransientHttpError()
+    .OrResult(msg => msg.StatusCode == HttpStatusCode.TooManyRequests)
+    .WaitAndRetryAsync(
+        retryCount: 3,
+        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+    ) },
+    { "defaultcircuitbreaker", HttpPolicyExtensions.HandleTransientHttpError()
+    .OrResult(msg => msg.StatusCode == HttpStatusCode.TooManyRequests)
+    .CircuitBreakerAsync(
+        handledEventsAllowedBeforeBreaking: 3,
+        durationOfBreak: TimeSpan.FromSeconds(30)
+    ) },
+};
+builder.Services.AddPolicyRegistry(registry);
+// Add AccessTokenManagement
+builder.Services.AddClientAccessTokenManagement()
+                .ConfigureBackchannelHttpClient()
+                .AddTransientHttpErrorPolicy(builder =>
+                builder.WaitAndRetryAsync(
+                    retryCount: 3,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                ));
+// Add keycloak client
+builder.Services.AddHttpClient<IKeycloakApiService, KeycloakApiService>(client =>
+{
+    client.BaseAddress = new Uri(baseURL);
+})
+                .AddClientAccessTokenHandler()
+                .AddPolicyHandlerFromRegistry("defaultretrystrategy")
+                .AddPolicyHandlerFromRegistry("defaultcircuitbreaker");
+
+
+const string openIdConnectAuthenticationScheme = OpenIdConnectDefaults.AuthenticationScheme;
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultChallengeScheme = openIdConnectAuthenticationScheme;
+})
+.AddOpenIdConnect(openIdConnectAuthenticationScheme, options =>
+{
+    options.Authority = authority;
+    options.MetadataAddress = metada_address;
+    options.ClientId = client_id;
+    options.ClientSecret = client_secret;
+})
+
 
             .AddJwtBearer(options =>
             {
                 options.Authority = builder.Configuration.GetValue<string>("OIDC_AUTHORITY");
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ClockSkew = TimeSpan.Zero,
                     ValidateAudience = false,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
                 };
-                options.RequireHttpsMetadata = false;
+                // options.Audience = authorizationConfig["Audience"];
+                options.IncludeErrorDetails = true;
 
                 options.Events = new JwtBearerEvents()
                 {
-                    
-                    OnMessageReceived = msg =>
+                    OnTokenValidated = ctx =>
                     {
-                        var token = msg?.Request.Headers.Authorization.ToString();
-                        string path = msg?.Request.Path ?? "";
-                        if (!string.IsNullOrEmpty(token))
+                        string? clientId = ctx.Principal?.FindFirstValue("azp");
 
+                        ClaimsIdentity claimsIdentity = (ClaimsIdentity)ctx.Principal!.Identity!;
+
+                        var resource_access = claimsIdentity.FindFirst((claim) => claim.Type == "resource_access")?.Value;
+                        var realm_access = claimsIdentity.FindFirst((claim) => claim.Type == "realm_access")?.Value;
+
+                        JObject resourceObj = JObject.Parse(resource_access!);
+                        // JObject realmObj = JObject.Parse(realm_access!);
+
+                        var resource_roles = resourceObj.GetValue(clientId)!.ToObject<JObject>()!.GetValue("roles");
+                        foreach (JToken role in resource_roles!)
                         {
-                            Console.WriteLine("Access token");
-                            Console.WriteLine($"URL: {path}");
-                            Console.WriteLine($"Token: {token}\r\n");
+                            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.ToString()));
                         }
-                        else
-                        {
-                            Console.WriteLine("Access token");
-                            Console.WriteLine("URL: " + path);
-                            Console.WriteLine("Token: No access token provided\r\n");
-                        }
-                        return Task.CompletedTask;
-                    },
-                    OnAuthenticationFailed = authfailedmsg =>
-                    {
-                        var stackTrace = authfailedmsg.Exception.StackTrace?.ToString();
-                        if (!string.IsNullOrEmpty(stackTrace))
-                        {
-                            Console.WriteLine("Error Message");
-                            Console.WriteLine($"stackTrace: {stackTrace}\r\n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error Message");
-                            Console.WriteLine("stackTrace: no data\r\n");
-                        }
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = tokenValidated =>
-                    {
-                        var stackTrace = tokenValidated.Response?.ToString();
-                        if (!string.IsNullOrEmpty(stackTrace))
-                        {
-                            Console.WriteLine("Error Message");
-                            Console.WriteLine($"stackTrace: {stackTrace}\r\n");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Error Message");
-                            Console.WriteLine("stackTrace: no data\r\n");
-                        }
+
+                        // var realm_roles = resourceObj.GetValue("roles");
                         return Task.CompletedTask;
                     }
+
                 };
             });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TenantAdminPolicy",
+        builder =>
+        {
+            builder.AuthenticationSchemes = new List<string>
+            {
+                JwtBearerDefaults.AuthenticationScheme
+            };
+            builder.RequireAuthenticatedUser();
+            builder.RequireRole("TenantAdmin");
+        }
+        );
+    options.AddPolicy("AdminPolicy",
+        builder =>
+        {
+            builder.AuthenticationSchemes = new List<string>
+            {
+                JwtBearerDefaults.AuthenticationScheme
+            };
+            builder.RequireAuthenticatedUser();
+            builder.RequireRole("Admin");
+        }
+        );
+    options.AddPolicy("StaffPolicy",
+        builder =>
+        {
+            builder.AuthenticationSchemes = new List<string>
+            {
+                JwtBearerDefaults.AuthenticationScheme
+            };
+            builder.RequireAuthenticatedUser();
+            builder.RequireRole("Staff");
+        }
+        );
 
+});
 //builder.Services.AddAuthorization(options =>
 //{
 //options.AddPolicy("TenantAdmin",
@@ -140,7 +217,7 @@ builder.Services.AddSwaggerGen((c =>
 
 }));
 
-
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {

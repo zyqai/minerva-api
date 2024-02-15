@@ -82,7 +82,7 @@ namespace MinervaApi.ExternalApi
             {
                 List<KeyClient>? clist = new List<KeyClient>();
                 Keycloak keycloak = new Keycloak();
-                tokenResult result = await keycloak.GetToken();
+                tokenResult? result = await keycloak.GetToken();
                 string userGetEndpoint = "https://login.dev.minerva.zyq.ai/auth/admin/realms/minerva/users?username=" + email;
                 using (HttpClient client = new HttpClient())
                 {
@@ -167,7 +167,6 @@ namespace MinervaApi.ExternalApi
 
                 return status;
             }
-
             public async Task<APIStatus> keyclockclientDelete(string? id, string? email)
             {
                 List<KeyClient> clist = new List<KeyClient>();
