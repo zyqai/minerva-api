@@ -51,7 +51,7 @@ namespace Minerva.Models
         public string? Roles { get; set; }
 
         [ForeignKey("Tenant")]
-        public Tenant Tenant { get; set; }
+        public Tenant? Tenant { get; set; }
     }
 
 }

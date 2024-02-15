@@ -145,9 +145,9 @@ namespace Minerva.DataAccessLayer
                 i = await command.ExecuteNonQueryAsync();
                 connection.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
             return i >= 1 ? true : false;
         }

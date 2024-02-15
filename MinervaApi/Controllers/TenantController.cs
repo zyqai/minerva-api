@@ -27,7 +27,7 @@ namespace MinervaApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string email = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    string? email = User.FindFirstValue(ClaimTypes.Email);
                     request.CreatedBY = email;
                     var b = await tenant.SaveTenant(request);
                     if (b > 0)
@@ -93,7 +93,7 @@ namespace MinervaApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email);
                     var b = await tenant.UpdateTenant(request);
                     if (b)
                     {

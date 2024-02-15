@@ -117,22 +117,6 @@ namespace Minerva.DataAccessLayer
             if (i > 0)
             {
                 var res =keycloak.CreateUser(us);
-                //KeyClientOpr crd = new KeyClientOpr();
-                //KeyClient client = new KeyClient();
-                //client.id = "";
-                //client.email = us.Email;
-                //client.emailVerified = false;
-                //client.username = us.Email;
-                //client.firstName = us.FirstName;
-                //client.lastName = us.LastName;
-                ////client.realmRoles = [us.Roles];
-                //client.enabled = us.IsActive;
-                ////client.realmRoles = [];
-                //client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
-                //var res = await crd.ClientInsert(client);
-                //List<KeyClient?> clientDetails = await crd.KeyClockClientGet(us.Email);
-                //APIStatus status = new APIStatus();
-                //status = await crd.sendverifyemail(clientDetails.FirstOrDefault()?.id, us.Email);
                 return lastInsertId;
             }
             return string.Empty;
@@ -236,7 +220,7 @@ namespace Minerva.DataAccessLayer
             else
             {
                 KeyClientOpr opr = new KeyClientOpr();
-                List<KeyClient> client = await opr.KeyClockClientGet(emailid);
+                List<KeyClient?> client = await opr.KeyClockClientGet(emailid);
                 if (client == null)
                 {
                     status.Code = "204";

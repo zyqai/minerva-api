@@ -32,7 +32,6 @@ namespace MinervaApi.Controllers
         [Authorize(Policy = "TenantAdminPolicy")]
         public Task<List<Client?>> GetClient()
         {
-            string ?email = User.FindFirstValue(ClaimTypes.Email).ToString();
             return client.GetALLClients();
         }
         [HttpPost]
@@ -45,7 +44,7 @@ namespace MinervaApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string email = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    string? email = User.FindFirstValue(ClaimTypes.Email);
                     c.CreatedBy = email;
                     int ClientId = await client.SaveClient(c);
                         if (ClientId > 0)
@@ -78,7 +77,7 @@ namespace MinervaApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string email = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    string? email = User.FindFirstValue(ClaimTypes.Email);
                     c.ModifiedBy = email;
                     bool b = await client.UpdateClient(c);
                     return StatusCode(StatusCodes.Status200OK, c);
