@@ -15,7 +15,7 @@ namespace Minerva.DataAccessLayer
         {
             this.database = database;
         }
-        public int SaveBusiness(Business bs)
+        public async Task<int?> SaveBusiness(Business bs)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
@@ -28,7 +28,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@in_CreateBy", bs.CreatedBy);
             command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
-            int i = command.ExecuteNonQuery();
+            int ?i = command.ExecuteNonQuery();
             int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
             if (i == 1)

@@ -35,10 +35,10 @@ namespace Minerva.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    int b = BusinessBL.SaveBusines(request);
+                    int? b = await BusinessBL.SaveBusines(request);
                     if (b > 0)
                     {
-                        Business? res = await BusinessBL.GetBusiness(b);
+                        Business? res = await BusinessBL.GetBusiness((int)b);
                         Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(res));
                         return StatusCode(StatusCodes.Status201Created, res);
                     }
@@ -78,7 +78,7 @@ namespace Minerva.Controllers
 
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
-        public IActionResult UpdateBusiness(BusinessRequest request)
+        public async Task<IActionResult> UpdateBusiness(BusinessRequest request)
         {
             request.UpdatedBy = User.FindFirstValue(ClaimTypes.Email);
             Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
@@ -86,7 +86,7 @@ namespace Minerva.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    bool b = BusinessBL.UpdateBusiness(request);
+                    bool ?b = await BusinessBL.UpdateBusiness(request);
                     return StatusCode(StatusCodes.Status200OK, request);
                 }
                 else
