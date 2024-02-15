@@ -5,6 +5,10 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
+using Newtonsoft.Json;
+using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Minerva.Controllers
 {
@@ -18,7 +22,7 @@ namespace Minerva.Controllers
         {
             this.BusinessBL = _BusinessBL;
         }
-        
+
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
@@ -26,12 +30,16 @@ namespace Minerva.Controllers
         {
             try
             {
+                request.CreatedBy = User.FindFirstValue(ClaimTypes.Email);
+                Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
                 if (ModelState.IsValid)
                 {
+
                     int b = BusinessBL.SaveBusines(request);
-                    if (b>0)
+                    if (b > 0)
                     {
-                        Business ?res = await BusinessBL.GetBusiness(b);
+                        Business? res = await BusinessBL.GetBusiness(b);
+                        Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(res));
                         return StatusCode(StatusCodes.Status201Created, res);
                     }
                     else
@@ -46,6 +54,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -55,9 +64,10 @@ namespace Minerva.Controllers
         [Authorize(Policy = "TenantAdminPolicy")]
         public Task<Business?> GetBusiness(int id)
         {
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id.ToString());
             return BusinessBL.GetBusiness(id);
         }
-        
+
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
@@ -65,11 +75,13 @@ namespace Minerva.Controllers
         {
             return BusinessBL.GetALLBusiness();
         }
-        
+
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
         public IActionResult UpdateBusiness(BusinessRequest request)
         {
+            request.UpdatedBy = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -84,18 +96,20 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        
+
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
-        public IActionResult DeleteUser(int id)
+        public IActionResult DeleteBusiness(int id)
         {
             try
             {
                 if (id > 0)
                 {
+                    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
                     bool b = BusinessBL.DeleteBusiness(id);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
@@ -109,6 +123,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, id + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

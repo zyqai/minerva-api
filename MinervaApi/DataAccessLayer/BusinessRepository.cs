@@ -25,6 +25,7 @@ namespace Minerva.DataAccessLayer
             {
                 Direction = ParameterDirection.Output
             };
+            command.Parameters.AddWithValue("@in_CreateBy", bs.CreatedBy);
             command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = command.ExecuteNonQuery();
@@ -85,6 +86,8 @@ namespace Minerva.DataAccessLayer
                         BusinessRegistrationNumber =reader.GetValue(8).ToString(),
                         RootDocumentFolder=reader.GetValue(9).ToString(),
                         BusinessAddress1 = reader.GetValue(10).ToString(),
+                        CreatedBy= reader["CreatedBy"].ToString(),
+                        UpdatedBy = reader["modifiedBy"].ToString()
                     };
                     bu.Add(user);
                 }
@@ -112,6 +115,7 @@ namespace Minerva.DataAccessLayer
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_UpdateBusiness";
+            command.Parameters.AddWithValue("@in_UpdatedBy", bs.UpdatedBy);
             AddUserParameters(command, bs);
             command.CommandType = CommandType.StoredProcedure;
             int i = command.ExecuteNonQuery();

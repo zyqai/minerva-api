@@ -34,6 +34,8 @@ namespace Minerva.BusinessLayer
             business.IncorporationDate=br.IncorporationDate;
             business.BusinessRegistrationNumber= br.BusinessRegistrationNumber;
             business.RootDocumentFolder=br.RootDocumentFolder;
+            business.CreatedBy=br.CreatedBy;
+            business.UpdatedBy=br.UpdatedBy;
             return business;
         }
         public Task<Business?> GetBusiness(int BusinesId)
