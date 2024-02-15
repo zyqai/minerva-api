@@ -5,6 +5,7 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
 using Minerva.Models.Responce;
+using System.Security.Claims;
 
 namespace MinervaApi.Controllers
 {
@@ -19,13 +20,15 @@ namespace MinervaApi.Controllers
         }
         
         [HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    string email = User.FindFirstValue(ClaimTypes.Email).ToString();
+                    request.CreatedBY = email;
                     var b = await tenant.SaveTenant(request);
                     if (b > 0)
                     {
@@ -83,16 +86,18 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpPut]
-        //[Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> UpdateProject(TenantRequest request)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email).ToString();
                     var b = await tenant.UpdateTenant(request);
                     if (b)
                     {
+                        
                         return StatusCode(StatusCodes.Status201Created, request);
                     }
                     else

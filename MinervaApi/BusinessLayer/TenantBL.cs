@@ -31,10 +31,12 @@ namespace Minerva.BusinessLayer
             return repositiry.GetTenantAsync(TenantId);
         }
 
-        public Task<int> SaveTenant(TenantRequest t)
+        public async Task<int> SaveTenant(TenantRequest t)
         {
+            User ?user = await userRepository.GetuserusingUserNameAsync(t.CreatedBY);
+            t.CreatedBY = user?.UserId;
             Tenant ten = Mapping(t);
-            return repositiry.SaveTenant(ten);
+            return await repositiry.SaveTenant(ten);
         }
 
         private Tenant Mapping(TenantRequest t)
@@ -52,15 +54,19 @@ namespace Minerva.BusinessLayer
                 TenantAddress1 = t.TenantAddress1,
                 stateid = t.stateid,
                 City = t.City,
-                PostalCode = t.PostalCode
+                PostalCode = t.PostalCode,
+                UpdatedBY=t.UpdatedBY,
+                CreatedBY=t.CreatedBY,
             };
             return tenant;
         }
 
-        public Task<bool> UpdateTenant(TenantRequest t)
+        public async Task<bool> UpdateTenant(TenantRequest t)
         {
+            User? user = await userRepository.GetuserusingUserNameAsync(t.UpdatedBY);
+            t.UpdatedBY = user?.UserId;
             Tenant tr = Mapping(t);
-            return repositiry.UpdateTenant(tr);
+            return await repositiry.UpdateTenant(tr);
         }
 
         public Task<List<Tenant?>> GetALLAsync()
