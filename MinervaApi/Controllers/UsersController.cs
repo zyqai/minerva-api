@@ -100,7 +100,7 @@ namespace Minerva.Controllers
         }
         [HttpDelete("{userid}")]
         //[Authorize(Policy = "AdminPolicy")]
-        public async Task<IActionResult> DeleteUser(string UserID)
+        public async Task<IActionResult> DeleteUser(string userId)
 
         {
             try
@@ -124,7 +124,7 @@ namespace Minerva.Controllers
             }
         }
         [HttpGet("getuser/{username}")]
-        public Task<User?> GetUserFromEmail(string UserName)
+        public Task<User?> GetUserFromEmail(string userName)
 
         {
             UsersRequest user = new UsersRequest
