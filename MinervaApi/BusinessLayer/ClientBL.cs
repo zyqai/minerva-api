@@ -9,9 +9,11 @@ namespace Minerva.BusinessLayer
     public class ClientBL :IClientBL
     {
         IClientRepository client;
-        public ClientBL(IClientRepository _client)
+        IUserRepository userRepository;
+        public ClientBL(IClientRepository _client,IUserRepository user)
         { 
             client = _client;
+            userRepository = user;
         }
         public Task<Client?> GetClient(int ClientId)
         {
@@ -21,15 +23,20 @@ namespace Minerva.BusinessLayer
         {
             return client.GetALLClientsAsync();
         }
-        public Task<int> SaveClient(ClientRequest c)
+        public async Task<int> SaveClient(ClientRequest c)
         {
+            var users = await userRepository.GetuserusingUserNameAsync(c.CreatedBy);
+            c.CreatedBy = users?.UserId;
+            c.UserId = users?.UserId;
             Client us = MappingClient(c);
-            return client.SaveClient(us);
+            return await client.SaveClient(us);
         }
-        public Task<bool> UpdateClient(ClientRequest c)
+        public async Task<bool> UpdateClient(ClientRequest c)
         {
+            var users = await userRepository.GetuserusingUserNameAsync(c.ModifiedBy);
+            c.ModifiedBy = users?.UserId;
             Client us = MappingClient(c);
-            return client.UpdateClient(us);
+            return await client.UpdateClient(us);
         }
         public Task<bool> DeleteClient(int ClientId)
         {

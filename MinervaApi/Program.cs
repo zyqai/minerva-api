@@ -123,7 +123,7 @@ builder.Services.AddAuthentication(options =>
                 {
                     OnTokenValidated = ctx =>
                     {
-                        string clientId = ctx.Principal.FindFirstValue("azp");
+                        string? clientId = ctx.Principal?.FindFirstValue("azp");
 
                         ClaimsIdentity claimsIdentity = (ClaimsIdentity)ctx.Principal!.Identity!;
 
@@ -217,7 +217,7 @@ builder.Services.AddSwaggerGen((c =>
 
 }));
 
-
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {

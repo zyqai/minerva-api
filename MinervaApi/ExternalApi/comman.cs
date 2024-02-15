@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 namespace MinervaApi.ExternalApi
 {
-    public class comman
+    public class Comman
     {
         public static void logEvent(string MethodName, string values)
         {
@@ -23,15 +23,14 @@ namespace MinervaApi.ExternalApi
                 {
                     File.Create(Filepath).Close();
                 }
-                StreamWriter sw = null;
-                sw = new StreamWriter(Filepath, true);
+                StreamWriter sw = new StreamWriter(Filepath, true);
                 sw.WriteLine(DateTime.Now.ToString("dd/MM/yyyy  h:mm:ss tt") + ":" + values);
                 sw.Flush();
                 sw.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         public static void logError(string MethodName, string values)
@@ -53,15 +52,14 @@ namespace MinervaApi.ExternalApi
                 {
                     File.Create(Filepath).Close();
                 }
-                StreamWriter sw = null;
-                sw = new StreamWriter(Filepath, true);
+                StreamWriter sw = new StreamWriter(Filepath, true);
                 sw.WriteLine(DateTime.Now.ToString("dd/MM/yyyy  h:mm:ss tt") + ":" + values);
                 sw.Flush();
                 sw.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         public static void logRes(string MethodName, string values)
@@ -83,21 +81,20 @@ namespace MinervaApi.ExternalApi
                 {
                     File.Create(Filepath).Close();
                 }
-                StreamWriter sw = null;
-                sw = new StreamWriter(Filepath, true);
+                StreamWriter sw = new StreamWriter(Filepath, true);
                 sw.WriteLine(DateTime.Now.ToString("dd/MM/yyyy  h:mm:ss tt") + ":" + values);
                 sw.Flush();
                 sw.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
     }
     public class APIStatus
     {
-        public string Code { get; set; }    
-        public string Message { get; set; }
+        public string? Code { get; set; }    
+        public string? Message { get; set; }
     }
 }

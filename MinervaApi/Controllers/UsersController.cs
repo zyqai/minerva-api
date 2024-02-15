@@ -7,6 +7,8 @@ using Minerva.Controllers;
 using Minerva.Models;
 using Minerva.Models.Requests;
 using MinervaApi.ExternalApi;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace Minerva.Controllers
 {
@@ -20,7 +22,7 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet("{userid}")]
+        [HttpGet("{userId}")]
         public Task<User?> GetUser(string UserId)
         {
             UsersRequest user = new UsersRequest
@@ -41,12 +43,16 @@ namespace Minerva.Controllers
         }
         
         [HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            user.CreatedBy = email;
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user));
             try
             {
+
                 if (ModelState.IsValid)
                 {
                     user.UserName = user.Email;
@@ -72,14 +78,19 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
         
         [HttpPut]
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            user.ModifiedBy = email;
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user));
+
             try
             {
                 if (ModelState.IsValid)
@@ -95,13 +106,14 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete("{userid}")]
+        
+        [HttpDelete("{userId}")]
         //[Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteUser(string userId)
-
         {
             try
             {
@@ -123,9 +135,8 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("getuser/{username}")]
+        [HttpGet("getUser/{userName}")]
         public Task<User?> GetUserFromEmail(string userName)
-
         {
             UsersRequest user = new UsersRequest
             {

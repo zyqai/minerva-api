@@ -25,16 +25,20 @@ namespace Minerva.BusinessLayer
             return UserRepository.GetALLAsync();
         }
 
-        public Task<string> SaveUser(UsersRequest user)
+        public async Task<string> SaveUser(UsersRequest user)
         {
+            User ?user1 = await UserRepository.GetuserusingUserNameAsync(user.CreatedBy);
+            user.CreatedBy = user1?.UserId;
             User us = us = MappingUsers(user);
-            return UserRepository.SaveUser(us);
+            return await UserRepository.SaveUser(us);
         }
 
-        public Task<bool> UpdateUser(UsersRequest user)
+        public async Task<bool> UpdateUser(UsersRequest user)
         {
+            User? user1 = await UserRepository.GetuserusingUserNameAsync(user.ModifiedBy);
+            user.ModifiedBy = user1?.UserId;
             User us = MappingUsers(user);
-            return UserRepository.UpdateUser(us);
+            return await UserRepository.UpdateUser(us);
         }
         public Task<bool> DeleteUser(string UserId)
         {

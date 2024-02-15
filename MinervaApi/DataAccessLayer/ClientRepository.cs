@@ -151,7 +151,7 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             return i >= 1 ? true : false;
         }
-        public async Task<List<Client>> GetAllpeoplesAsynctenant(int tenantId)
+        public async Task<List<Client?>> GetAllpeoplesAsynctenant(int tenantId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -161,7 +161,7 @@ namespace Minerva.DataAccessLayer
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return result.ToList();
+            return [.. result];
         }
 
         public async Task<List<ClientPersonas>> GetClientPersonasAsync(int? businessId)

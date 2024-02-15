@@ -27,7 +27,7 @@ namespace Minerva.Models.Requests
         public DateTime? ModifiedTime { get; set; }
         public string? CreatedBy { get; set; }
         public string? ModifiedBy { get; set; }
+        public string? City { get; set; }
         public string? ClientAddress1 { get; set; }
-        public string? City { get; set;}
     }
 }

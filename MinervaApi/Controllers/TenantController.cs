@@ -5,6 +5,9 @@ using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
 using Minerva.Models.Responce;
+using MinervaApi.ExternalApi;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace MinervaApi.Controllers
 {
@@ -19,9 +22,12 @@ namespace MinervaApi.Controllers
         }
         
         [HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            request.CreatedBY = email;
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -51,6 +57,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -83,16 +90,20 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpPut]
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        public async Task<IActionResult> UpdateProject(TenantRequest request)
+        [Authorize(Policy = "TenantAdminPolicy")]
+        public async Task<IActionResult> UpdateTenant(TenantRequest request)
         {
+            request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
                 {
+                    
                     var b = await tenant.UpdateTenant(request);
                     if (b)
                     {
+                        
                         return StatusCode(StatusCodes.Status201Created, request);
                     }
                     else
@@ -107,6 +118,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

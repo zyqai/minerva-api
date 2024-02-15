@@ -54,20 +54,18 @@ namespace MinervaApi.ExternalApi
             }
             catch   (Exception ex)
             {
-                throw ex;
+                throw new HttpRequestException($"Error Reset Password: {ex}");
             }
         }
-        public async Task<List<KeyClient>> GetUser(string email)
+        public async Task<List<KeyClient?>> GetUser(string email)
         {
             try
             {
-                List<KeyClient>? clist = new List<KeyClient>();
-               
                 var response=await _httpClient.GetAsync("users?username=" + email);
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
-                    clist = JsonConvert.DeserializeObject<List<KeyClient>>(jsonResponse);
+                    List<KeyClient?>? clist = JsonConvert.DeserializeObject<List<KeyClient?>>(jsonResponse);
                     return clist;
                 }
                 else
@@ -78,10 +76,10 @@ namespace MinervaApi.ExternalApi
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new HttpRequestException($"Error Reset Password: {ex}");
             }
         }
-        public async Task<APIStatus> ResetPassword(string id, string email)
+        public async Task<APIStatus?> ResetPassword(string? id, string email)
         { 
             APIStatus status = new APIStatus();
             try
@@ -100,11 +98,11 @@ namespace MinervaApi.ExternalApi
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new HttpRequestException($"Error Reset Password: {ex}");
             }
 
         }
-        public async Task<APIStatus> Verifyemail(string id, string email)
+        public async Task<APIStatus?> Verifyemail(string? id, string email)
         {
             APIStatus status = new APIStatus();
             try
@@ -123,11 +121,11 @@ namespace MinervaApi.ExternalApi
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new HttpRequestException($"Error Reset Password: {ex}");
             }
 
         }
-        public async Task<APIStatus> DeleteUser(string id, string email)
+        public async Task<APIStatus?> DeleteUser(string? id, string email)
         {
             APIStatus status = new APIStatus();
             try
@@ -146,7 +144,7 @@ namespace MinervaApi.ExternalApi
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new HttpRequestException($"Error Reset Password: {ex}");
             }
 
         }

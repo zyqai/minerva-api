@@ -17,5 +17,7 @@ namespace Minerva.Models
         public string? City { get; set; }
         public string? PostalCode { get; set; }
         public int? stateid { get; set; }
+        public string? CreatedBY { get; set; }
+        public string? UpdatedBY { get; set; }
     }
 }
