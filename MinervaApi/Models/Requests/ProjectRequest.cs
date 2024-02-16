@@ -14,5 +14,22 @@
         public DateTime? Desiredclosingdate { get; set; }
         public string? Initialphase { get; set; }
         public DateTime CreateDateTime { get; set; }
+
+
+        //public int ProjectId { get; set; }
+        //public int TenantId { get; set; }
+        //public string ProjectName { get; set; }
+        //public string ProjectDescription { get; set; }
+        //public int IndustryId { get; set; }
+        //public string Amount { get; set; }
+        //public string Purpose { get; set; }
+        //public int CreatedByUserId { get; set; }
+        //public DateTime CreatedDateTime { get; set; }
+        //public int AssignedToUserId { get; set; }
+        //public int ModifiedByUserId { get; set; }
+        //public DateTime ModifiedDateTime { get; set; }
+        //public int LoanTypeAutoId { get; set; }
+        //public int StatusAutoId { get; set; }
+        //public string ProjectFilesPath { get; set; }
     }
 }
