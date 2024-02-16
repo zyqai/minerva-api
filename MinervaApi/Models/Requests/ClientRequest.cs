@@ -4,7 +4,7 @@ namespace Minerva.Models.Requests
 {
     public class ClientRequest
     {
-        [Required]
+      
         public int ClientId { get; set; }
         public string? UserId { get; set; }
         public int TenantId { get; set; }

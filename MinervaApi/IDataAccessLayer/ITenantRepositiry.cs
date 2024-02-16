@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Responce;
 
 namespace Minerva.IDataAccessLayer
 {
