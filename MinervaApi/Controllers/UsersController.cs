@@ -112,7 +112,7 @@ namespace Minerva.Controllers
         }
         
         [HttpDelete("{userId}")]
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             try
@@ -146,11 +146,11 @@ namespace Minerva.Controllers
             return userBL.GetUserusingUserName(user);
         }
 
-        [HttpGet("getTenantUserList/{tenantId}")]
-        public Task<List<User?>> GetTenantUserList(int tenantId)
-        {
-            return userBL.GetTenantUserList(tenantId);
-        }
+        //[HttpGet("getTenantUserList/{tenantId}")]
+        //public Task<List<User?>> GetTenantUserList(int tenantId)
+        //{
+        //    return userBL.GetTenantUserList(tenantId);
+        //}
         [HttpGet("forgotPassword/{emailId}")]
         public Task<APIStatus> Forgetpassword(string emailId) 
         {

@@ -26,7 +26,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_GetUserById";
+            command.CommandText = @"usp_user";
             command.Parameters.AddWithValue("@p_userId", userId);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
@@ -38,7 +38,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_GetUsers";
+            command.CommandText = @"usp_users";
             command.CommandType = CommandType.StoredProcedure;
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
@@ -75,24 +75,7 @@ namespace Minerva.DataAccessLayer
 
                     };
                     users.Add(user);
-                    if (user.TenantId != 0)
-                    {
-                        user.Tenant = new Tenant
-                        {
-                            TenantId = reader.IsDBNull(18) ? 0 : reader.GetInt32(18),
-                            TenantName = reader.GetString(19),
-                            TenantDomain = reader.GetString(20),
-                            TenantLogoPath = reader.GetString(21),
-                            TenantAddress = reader.GetString(22),
-                            TenantAddress1 = reader.GetString(23),
-                            TenantPhone = reader.GetString(24),
-                            TenantContactName = reader.GetString(25),
-                            TenantContactEmail = reader.GetString(26),
-                            PostalCode = reader.GetString(27),
-                            City = reader.GetString(28),
-                            stateid = reader.GetInt16(29),
-                        };
-                    }
+                    
                 }
 
             }
@@ -102,9 +85,9 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_UserCreate";
+            command.CommandText = @"usp_userInsert";
             AddUserParameters(command, us);
-            command.Parameters.AddWithValue("@p_createdBy", us.CreatedBy);
+            command.Parameters.AddWithValue("@in_createdBy", us.CreatedBy);
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
@@ -138,28 +121,28 @@ namespace Minerva.DataAccessLayer
         {
             if (!string.IsNullOrEmpty(us.UserId))
             {
-                command.Parameters.AddWithValue("@p_userId", us.UserId);
+                command.Parameters.AddWithValue("@in_userId", us.UserId);
             }
-            command.Parameters.AddWithValue("@p_tenantId", us.TenantId);
-            command.Parameters.AddWithValue("@p_userName", us.UserName);
-            command.Parameters.AddWithValue("@p_email", us.Email);
-            command.Parameters.AddWithValue("@p_isActive", us.IsActive);
-            command.Parameters.AddWithValue("@p_isDeleted", us.IsDeleted);
-            command.Parameters.AddWithValue("@p_phoneNumber", us.PhoneNumber);
-            command.Parameters.AddWithValue("@p_notificationsEnabled", us.NotificationsEnabled);
-            command.Parameters.AddWithValue("@p_mfaEnabled", us.MfaEnabled);
-            command.Parameters.AddWithValue("@p_isTenantUser", us.IsTenantUser);
-            command.Parameters.AddWithValue("@p_isAdminUser", us.IsAdminUser);
-            command.Parameters.AddWithValue("@P_FirstName", us.FirstName);
-            command.Parameters.AddWithValue("@P_LastName", us.LastName);
-            command.Parameters.AddWithValue("@P_Roles", us.Roles);
+            command.Parameters.AddWithValue("@in_tenantId", us.TenantId);
+            command.Parameters.AddWithValue("@in_userName", us.UserName);
+            command.Parameters.AddWithValue("@in_email", us.Email);
+            command.Parameters.AddWithValue("@in_isActive", us.IsActive);
+            command.Parameters.AddWithValue("@in_isDeleted", us.IsDeleted);
+            command.Parameters.AddWithValue("@in_phoneNumber", us.PhoneNumber);
+            command.Parameters.AddWithValue("@in_notificationsEnabled", us.NotificationsEnabled);
+            command.Parameters.AddWithValue("@in_mfaEnabled", us.MfaEnabled);
+            command.Parameters.AddWithValue("@in_isTenantUser", us.IsTenantUser);
+            command.Parameters.AddWithValue("@in_isAdminUser", us.IsAdminUser);
+            command.Parameters.AddWithValue("@in_FirstName", us.FirstName);
+            command.Parameters.AddWithValue("@in_LastName", us.LastName);
+            command.Parameters.AddWithValue("@in_Roles", us.Roles);
 
         }
         public async Task<bool> DeleteUser(string UserId)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_UserDelete";
+            command.CommandText = @"usp_userDelete";
             command.Parameters.AddWithValue("@in_userId", UserId);
             command.CommandType = CommandType.StoredProcedure;
 
@@ -167,7 +150,7 @@ namespace Minerva.DataAccessLayer
             if (getuser != null)
             {
                 APIStatus ?status = new APIStatus();
-                List<KeyClient?> res = await keycloak.GetUser(UserId);
+                List<KeyClient?> res = await keycloak.GetUser(getuser.Email);
                 if (res == null)
                 {
                     status.Code = "204";
@@ -210,7 +193,7 @@ namespace Minerva.DataAccessLayer
 
         public async Task<APIStatus> Forgetpassword(string emailid)
         {
-            APIStatus status = new APIStatus();
+            APIStatus ?status = new APIStatus();
             User? user = await GetuserusingUserNameAsync(emailid);
             if (user == null)
             {
@@ -220,7 +203,7 @@ namespace Minerva.DataAccessLayer
             else
             {
                 KeyClientOpr opr = new KeyClientOpr();
-                List<KeyClient?> client = await opr.KeyClockClientGet(emailid);
+                List<KeyClient?> client = await keycloak.GetUser(emailid); //await opr.KeyClockClientGet(emailid);
                 if (client == null)
                 {
                     status.Code = "204";
@@ -228,7 +211,7 @@ namespace Minerva.DataAccessLayer
                 }
                 else
                 {
-                    status = await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
+                    status = await keycloak.ResetPassword(client.FirstOrDefault()?.id, emailid);  //await opr.ResetPassword(client.FirstOrDefault()?.id, emailid);
                 }
             }
             return status;

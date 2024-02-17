@@ -111,7 +111,7 @@ namespace MinervaApi.ExternalApi
                 var response = await _httpClient.PutAsync("users/" + id + "/send-verify-email", request.Content);
                 if (response.IsSuccessStatusCode)
                 {
-                    status = new APIStatus { Code = "200", Message = "password is reset successfully! check your registered email address" };
+                    status = new APIStatus { Code = "200", Message = "email sent successfully! check your registered email address" };
                     return status;
                 }
                 else

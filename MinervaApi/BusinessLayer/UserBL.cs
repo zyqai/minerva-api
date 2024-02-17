@@ -27,9 +27,9 @@ namespace Minerva.BusinessLayer
 
         public async Task<string> SaveUser(UsersRequest user)
         {
-            User ?user1 = await UserRepository.GetuserusingUserNameAsync(user.CreatedBy);
+            User? user1 = await UserRepository.GetuserusingUserNameAsync(user.CreatedBy);
             user.CreatedBy = user1?.UserId;
-            User us = us = MappingUsers(user);
+            User us = MappingUsers(user);
             return await UserRepository.SaveUser(us);
         }
 
