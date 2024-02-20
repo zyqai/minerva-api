@@ -7,6 +7,7 @@ namespace Minerva.Models
     {
         public int TenantId { get; set; }
         public string? TenantName { get; set; }
+        public string? tenantDescription { get; set; }
         public string? TenantDomain { get; set; }
         public string? TenantLogoPath { get; set; }
         public string? TenantAddress { get; set; }

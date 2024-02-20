@@ -57,6 +57,7 @@ namespace Minerva.BusinessLayer
                 PostalCode = t.PostalCode,
                 UpdatedBY=t.UpdatedBY,
                 CreatedBY=t.CreatedBY,
+                tenantDescription=t.tenantDescription,
             };
             return tenant;
         }

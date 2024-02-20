@@ -155,7 +155,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientsForTenant";
+            command.CommandText = @"usp_peopleForTenants";
             command.Parameters.AddWithValue("@in_tenantId", tenantId);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);

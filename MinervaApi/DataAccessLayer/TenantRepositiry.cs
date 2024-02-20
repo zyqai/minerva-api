@@ -52,20 +52,22 @@ namespace Minerva.DataAccessLayer
                 {
                     var tenant = new Tenant
                     {
-                        TenantId = mySqlDataReader.IsDBNull(0) ? 0 : mySqlDataReader.GetInt32(0),
-                        TenantName = mySqlDataReader.IsDBNull(1) ? null : mySqlDataReader.GetString(1),
-                        TenantDomain = mySqlDataReader.IsDBNull(2) ? null : mySqlDataReader.GetString(2),
-                        TenantLogoPath = mySqlDataReader.IsDBNull(3) ? null : mySqlDataReader.GetString(3),
-                        TenantAddress = mySqlDataReader.IsDBNull(4) ? null : mySqlDataReader.GetString(4),
-                        TenantAddress1 = mySqlDataReader.IsDBNull(5) ? null : mySqlDataReader.GetString(5),
-                        TenantPhone = mySqlDataReader.IsDBNull(6) ? null : mySqlDataReader.GetString(6),
-                        TenantContactName = mySqlDataReader.IsDBNull(7) ? null : mySqlDataReader.GetString(7),
-                        TenantContactEmail = mySqlDataReader.IsDBNull(8) ? null : mySqlDataReader.GetString(8),
-                        PostalCode = mySqlDataReader.IsDBNull(9) ? null : mySqlDataReader.GetString(9),
-                        City = mySqlDataReader.IsDBNull(10) ? null : mySqlDataReader.GetString(10),
-                        stateid= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader.GetInt32(11),
-                        CreatedBY= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader["CreatedBY"].ToString(),
-                        UpdatedBY= mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader["modifiedBy"].ToString(),
+                        TenantId = mySqlDataReader.IsDBNull(0) ? 0 : mySqlDataReader.GetInt32("TenantId"),
+                        TenantName = mySqlDataReader.IsDBNull(1) ? null : mySqlDataReader["TenantName"].ToString(),
+                        tenantDescription = mySqlDataReader.IsDBNull(14) ? null : mySqlDataReader["tenantDescription"].ToString(),
+                        TenantDomain = mySqlDataReader.IsDBNull(3) ? null : mySqlDataReader.GetString(3),
+                        TenantLogoPath = mySqlDataReader.IsDBNull(4) ? null : mySqlDataReader.GetString(4),
+                        TenantAddress = mySqlDataReader.IsDBNull(5) ? null : mySqlDataReader.GetString(5),
+                        TenantAddress1 = mySqlDataReader.IsDBNull(6) ? null : mySqlDataReader.GetString(6),
+                        TenantPhone = mySqlDataReader.IsDBNull(7) ? null : mySqlDataReader.GetString(7),
+                        TenantContactName = mySqlDataReader.IsDBNull(8) ? null : mySqlDataReader.GetString(8),
+                        TenantContactEmail = mySqlDataReader.IsDBNull(9) ? null : mySqlDataReader.GetString(9),
+                        PostalCode = mySqlDataReader.IsDBNull(10) ? null : mySqlDataReader.GetString(10),
+                        City = mySqlDataReader.IsDBNull(11) ? null : mySqlDataReader.GetString(11),
+                        stateid=  mySqlDataReader.GetInt32(12),
+                        CreatedBY= mySqlDataReader.IsDBNull(13) ? null : mySqlDataReader["CreatedBY"].ToString(),
+                        UpdatedBY= mySqlDataReader.IsDBNull(14) ? null : mySqlDataReader["updatedBy"].ToString(),
+                       
                     };
                     tenants.Add(tenant);
                 }
@@ -128,6 +130,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_postalCode", t.PostalCode);
             command.Parameters.AddWithValue("@p_city", t.City);
             command.Parameters.AddWithValue("@p_stateId", t.stateid);
+            command.Parameters.AddWithValue("@p_tenantDescription", t.tenantDescription);
         }
 
         public async Task<bool> UpdateTenant(Tenant t)
