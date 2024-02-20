@@ -114,8 +114,8 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_UpdateBusiness";
-            command.Parameters.AddWithValue("@in_UpdatedBy", bs.UpdatedBy);
+            command.CommandText = @"usp_businessUpdate";
+            command.Parameters.AddWithValue("@in_updateBy", bs.UpdatedBy);
             AddUserParameters(command, bs);
             command.CommandType = CommandType.StoredProcedure;
             int i = command.ExecuteNonQuery();
