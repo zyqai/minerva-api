@@ -18,8 +18,8 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClinetGetById";
-            command.Parameters.AddWithValue("@p_clientId", id);
+            command.CommandText = @"usp_peopleGetById";
+            command.Parameters.AddWithValue("@p_peopleId", id);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -30,7 +30,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClinetGetAll";
+            command.CommandText = @"usp_peopleGetAll";
             command.CommandType = CommandType.StoredProcedure;
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
@@ -45,7 +45,7 @@ namespace Minerva.DataAccessLayer
                 {
                     var Client = new Client
                     {
-                        ClientId = reader["clientId"] == DBNull.Value ? (int?)null :  Convert.ToInt32(reader["clientId"]),
+                        ClientId = reader["peopleId"] == DBNull.Value ? (int?)null :  Convert.ToInt32(reader["peopleId"]),
                         UserId = reader["userId"].ToString(),
                         TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
                         ClientName = reader["clientName"].ToString(),
@@ -82,7 +82,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientCreate";
+            command.CommandText = @"usp_peopleCreate";
             MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
             {
                 Direction = ParameterDirection.Output
@@ -104,7 +104,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientUpdate";
+            command.CommandText = @"usp_peopleUpdate";
             AddParameters(command, us);
             command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
             command.Parameters.AddWithValue("@p_clientId", us.ClientId);
@@ -144,8 +144,8 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientDelete";
-            command.Parameters.AddWithValue("@p_clientId", Id);
+            command.CommandText = @"usp_peopleDelete";
+            command.Parameters.AddWithValue("@p_peopleId", Id);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
