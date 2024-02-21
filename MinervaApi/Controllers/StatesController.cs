@@ -14,7 +14,7 @@ namespace Minerva.Controllers
         {
             states = _states;
         }
-        [HttpPost]
+        //[HttpPost]
         //public async Task<IActionResult> CreateProject(StatesRequest request)
         //{
         //    try
