@@ -20,8 +20,8 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await con.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientBusinessRelationSelect";
-            command.Parameters.AddWithValue("@in_clientBusinessId", id);
+            command.CommandText = @"usp_peopleBusinessRelation";
+            command.Parameters.AddWithValue("@p_peopleBusinessId", id);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -32,21 +32,21 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = con.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientBusinessRelationInsert";
+            command.CommandText = @"usp_peopleBusinessRelationInsert";
             AddUserParameters(command, t);
-            MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
-            {
-                Direction = ParameterDirection.Output
-            };
-            command.Parameters.Add(outputParameter);
+            //MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+            //{
+            //    Direction = ParameterDirection.Output
+            //};
+            //command.Parameters.Add(outputParameter);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
-            int lastInsertId = Convert.ToInt32(outputParameter.Value);
+            //int lastInsertId = Convert.ToInt32(outputParameter.Value);
             connection.Close();
-            if (i > 0)
-            {
-                i = lastInsertId;
-            }
+            //if (i > 0)
+            //{
+            //    i = lastInsertId;
+            //}
             return i;
         }
 
@@ -59,10 +59,12 @@ namespace Minerva.DataAccessLayer
                 {
                     var relation = new CBRelation
                     {
-                        clientBusinessId= reader["clientBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientBusinessId"]),
-                        clientId = reader["clientId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["clientId"]),
+                        clientBusinessId= reader["peopleBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleBusinessId"]),
+                        clientId = reader["peopleId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleId"]),
                         businessId = reader["businessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["businessId"]),
                         personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
+                        tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        details = reader["details"] == DBNull.Value ?string.Empty : reader["details"].ToString(),
                     };
                     res.Add(relation);
                 }
@@ -71,9 +73,12 @@ namespace Minerva.DataAccessLayer
         }
         private void AddUserParameters(MySqlCommand command, CBRelation t)
         {
-            command.Parameters.AddWithValue("@in_clientId", t.clientId);
-            command.Parameters.AddWithValue("@in_businessId", t.businessId);
-            command.Parameters.AddWithValue("@in_personaId", t.personaId);
+            command.Parameters.AddWithValue("@p_peopleId", t.clientId);
+            command.Parameters.AddWithValue("@p_businessId", t.businessId);
+            command.Parameters.AddWithValue("@p_personaAutoId", t.personaId);
+            command.Parameters.AddWithValue("@p_tenantId", t.tenantId);
+            command.Parameters.AddWithValue("@p_details", t.details);
+
         }
 
         public async Task<bool> Update(CBRelation relation)
@@ -83,8 +88,8 @@ namespace Minerva.DataAccessLayer
             {
                 using var connection = con.OpenConnection();
                 using var command = connection.CreateCommand();
-                command.CommandText = @"USP_ClientBusinessRelationUpdate";
-                command.Parameters.AddWithValue("@in_clientBusinessId", relation.clientBusinessId);
+                command.CommandText = @"USP_peopleBusinessRelationUpdate";
+                command.Parameters.AddWithValue("@p_peopleBusinessId", relation.clientBusinessId);
                 AddUserParameters(command, relation);
                 command.CommandType = CommandType.StoredProcedure;
                 i = await command.ExecuteNonQueryAsync();
@@ -101,8 +106,8 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = con.OpenConnection();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientBusinessRelationDelete";
-            command.Parameters.AddWithValue("@in_clientBusinessId", id);
+            command.CommandText = @"usp_peopleBusinessRelationDelete";
+            command.Parameters.AddWithValue("@p_peopleBusinessId", id);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
@@ -113,7 +118,7 @@ namespace Minerva.DataAccessLayer
         {
             using var connection = await con.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_ClientBusinessRelationSelectALL";
+            command.CommandText = @"usp_peopleBusinessRelations";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());

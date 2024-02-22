@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Minerva.Controllers
 {
-    [Route("clientBusinessRelation")]
+    [Route("peopleBusinessRelation")]
     [ApiController]
     public class ClientBusinessRelationController : ControllerBase
     {
@@ -33,7 +33,7 @@ namespace Minerva.Controllers
                 }
                 else
                 {
-                    return NotFound(); // or another appropriate status
+                    return NoContent(); // or another appropriate status
                 }
             }
             catch (Exception ex)
@@ -54,14 +54,14 @@ namespace Minerva.Controllers
                     {
                         var b = await relation.Save(request);
 
-                        if (b > 0)
-                        {
-                            CBRelation? res = await relation.GetAync(b);
-                            if (res != null)
-                            {
-                                resList.Add(res);
-                            }
-                        }
+                        //if (b > 0)
+                        //{
+                        //    CBRelation? res = await relation.GetAync(b);
+                        //    if (res != null)
+                        //    {
+                        //        resList.Add(res);
+                        //    }
+                        //}
                     }
                 }
                 if (resList != null)
@@ -117,7 +117,7 @@ namespace Minerva.Controllers
                     var b = await relation.Delete(id);
                     if (b)
                     {
-                        return StatusCode(StatusCodes.Status201Created);
+                        return StatusCode(StatusCodes.Status202Accepted);
                     }
                     else
                     {

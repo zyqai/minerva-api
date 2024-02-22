@@ -3,3 +3,5 @@ MinervaApi/obj/*
 MinervaApi.Tests/bin/*
 MinervaApi.Tests/obj/*
 .vs
+/MinervaApi/logs/Req/MoveNext
+/MinervaApi/~/logs/Error/MoveNext
