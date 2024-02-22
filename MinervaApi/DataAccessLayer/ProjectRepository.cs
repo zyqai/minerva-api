@@ -21,7 +21,7 @@ namespace MinervaApi.DataAccessLayer
             try
             {
                 using var command = connection.CreateCommand();
-                command.CommandText = "USP_InsertProject";
+                command.CommandText = "USP_ProjectCreate";
                 AddParameters(command, p);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
@@ -49,16 +49,17 @@ namespace MinervaApi.DataAccessLayer
         
         private void AddParameters(MySqlCommand command, Project p)
         {
-            command.Parameters.AddWithValue("@p_Filename", p.Filename);
-            command.Parameters.AddWithValue("@p_Loanamount", p.Loanamount);
-            command.Parameters.AddWithValue("@p_Assignrdstaff", p.Assignrdstaff);
-            command.Parameters.AddWithValue("@p_Filedescription", p.Filedescription);
-            command.Parameters.AddWithValue("@p_staffnote", p.Staffnote);
-            command.Parameters.AddWithValue("@p_primaryborrower", p.Primaryborrower);
-            command.Parameters.AddWithValue("@p_Primarybusiness", p.Primarybusiness);
-            command.Parameters.AddWithValue("@p_startdate", p.Startdate);
-            command.Parameters.AddWithValue("@p_desiredclosingdate", p.Desiredclosingdate);
-            command.Parameters.AddWithValue("@p_initialphase", p.Initialphase);
+            command.Parameters.AddWithValue("@in_tenantId", p.TenantId);
+            command.Parameters.AddWithValue("@in_projectName", p.ProjectName);
+            command.Parameters.AddWithValue("@in_projectDescription", p.ProjectDescription);
+            command.Parameters.AddWithValue("@in_industryId", p.IndustryId);
+            command.Parameters.AddWithValue("@in_amount", p.Amount);
+            command.Parameters.AddWithValue("@in_purpose", p.Purpose);
+            command.Parameters.AddWithValue("@in_createdByUserId", p.CreatedByUserId);
+            command.Parameters.AddWithValue("@in_assignedToUserId", p.AssignedToUserId);
+            command.Parameters.AddWithValue("@in_loanTypeAutoId", p.LoanTypeAutoId);
+            command.Parameters.AddWithValue("@in_statusAutoId", p.StatusAutoId);
+            command.Parameters.AddWithValue("@in_projectFilesPath", p.ProjectFilesPath);
         }
 
         public async Task<Project?> GetProjectAsync(int Id_Projects)
@@ -83,18 +84,21 @@ namespace MinervaApi.DataAccessLayer
                 {
                     var user = new Project
                     {
-                        Id_Projects = reader.GetInt32(0),
-                        Filename = reader.GetValue(1).ToString(),
-                        Loanamount = reader.IsDBNull(2) ? (decimal?)null : reader.GetDecimal(2),
-                        Assignrdstaff = reader.GetValue(3).ToString(),
-                        Filedescription = reader.GetValue(4).ToString(),
-                        Staffnote = reader.GetValue(5).ToString(),
-                        Primaryborrower = reader.GetValue(6).ToString(),
-                        Primarybusiness = reader.GetValue(7).ToString(),
-                        Startdate = reader.IsDBNull(8) ? (DateTime?)null : reader.GetDateTime(8),
-                        Desiredclosingdate= reader.IsDBNull(9) ? (DateTime?)null : reader.GetDateTime(9),
-                        Initialphase = reader.GetValue(10).ToString(),
-                        CreateDateTime= reader.IsDBNull(11) ? (DateTime?)null : reader.GetDateTime(11),
+                        ProjectId = reader["ProjectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["ProjectId"]),
+                        TenantId = reader["TenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["TenantId"]),
+                        ProjectName = reader["ProjectName"] == DBNull.Value ? string.Empty : reader["ProjectName"].ToString(),
+                        ProjectDescription = reader["ProjectDescription"] == DBNull.Value ? string.Empty : reader["ProjectDescription"].ToString(),
+                        IndustryId= reader["industryId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industryId"]),
+                        Amount= reader["Amount"] == DBNull.Value ? string.Empty : reader["Amount"].ToString(),
+                        Purpose = reader["purpose"] == DBNull.Value ? string.Empty : reader["purpose"].ToString(),
+                        CreatedByUserId= reader["CreatedByUserId"] == DBNull.Value ? string.Empty : reader["CreatedByUserId"].ToString(),
+                        CreatedDateTime = reader["createdDateTime"] == DBNull.Value ? (DateTime?)null :Convert.ToDateTime(reader["createdDateTime"].ToString()),
+                        AssignedToUserId = reader["assignedToUserId"] == DBNull.Value ? string.Empty : reader["assignedToUserId"].ToString(),
+                        ModifiedByUserId = reader["modifiedByUserId"] == DBNull.Value ? string.Empty : reader["modifiedByUserId"].ToString(),
+                        ModifiedDateTime = reader["modifiedDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["modifiedDateTime"].ToString()),
+                        LoanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
+                        StatusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
+                        ProjectFilesPath = reader["projectFilesPath"] == DBNull.Value ? string.Empty : reader["projectFilesPath"].ToString(),
                     };
                     bu.Add(user);
                 }
@@ -106,7 +110,7 @@ namespace MinervaApi.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"USP_GetProjects";
+            command.CommandText = @"USP_ProjectGetAll";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -121,8 +125,8 @@ namespace MinervaApi.DataAccessLayer
             {
                 using var command = connection.CreateCommand();
 
-                command.CommandText = "USP_UpdateProject";
-                command.Parameters.AddWithValue("@p_id", p.Id_Projects);
+                command.CommandText = "USP_ProjectUpdate";
+                command.Parameters.AddWithValue("@in_projectId", p.ProjectId);
                 AddParameters(command, p);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
@@ -155,7 +159,7 @@ namespace MinervaApi.DataAccessLayer
             {
                 using var command = connection.CreateCommand();
                 command.CommandText = "USP_DeleteProject";
-                command.Parameters.AddWithValue("@p_id", Id_Projects);
+                command.Parameters.AddWithValue("@in_projectId", Id_Projects);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 if (rowsAffected == 1)
