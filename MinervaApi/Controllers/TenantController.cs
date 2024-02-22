@@ -92,7 +92,7 @@ namespace MinervaApi.Controllers
         [HttpPut]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> UpdateTenant(TenantRequest request)
-        {
+         {
             request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email);
             Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try

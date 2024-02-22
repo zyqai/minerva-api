@@ -1,0 +1,14 @@
+
+
+ ALTER TABLE `_zyq`.`_tenants`
+    ADD COLUMN `tenantAddress1` VARCHAR(1000) NULL DEFAULT NULL AFTER `tenantAddress`,
+    ADD COLUMN `postalCode` VARCHAR(45) NULL DEFAULT NULL AFTER `tenantContactEmail`,
+    ADD COLUMN `city` VARCHAR(45) NULL DEFAULT NULL AFTER `postalCode`,
+    ADD COLUMN `stateid` INT NULL DEFAULT NULL AFTER `city`;
+    
+    
+ALTER TABLE `_zyq`.`_tenants` 
+ADD COLUMN `createdBy` VARCHAR(45) NULL DEFAULT NULL AFTER `stateid`,
+ADD COLUMN `createdDateTime` DATETIME DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN `updatedBy` VARCHAR(45) NULL DEFAULT NULL AFTER `createdDateTime`,
+ADD COLUMN `updateDateTime` VARCHAR(45) NULL DEFAULT NULL AFTER `updatedBy`;

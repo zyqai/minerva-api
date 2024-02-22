@@ -50,7 +50,9 @@ namespace Minerva.BusinessLayer
                 businessId = relation.businessId,
                 clientBusinessId=relation.clientBusinessId, 
                 clientId=relation.clientId,
-                personaId = relation.personaId  
+                personaId = relation.personaId,
+                details=relation.details,
+                tenantId=relation.tenantId,
             };
             return cB;
         }

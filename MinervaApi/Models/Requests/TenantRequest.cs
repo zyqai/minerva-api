@@ -15,6 +15,9 @@ namespace Minerva.Models.Requests
         [StringLength(255)]
         public string? TenantDomain { get; set; }
 
+        [StringLength(1000)]
+        public string? tenantDescription { get; set; }
+
         [StringLength(255)]
         public string? TenantLogoPath { get; set; }
 

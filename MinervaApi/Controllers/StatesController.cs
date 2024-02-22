@@ -14,33 +14,33 @@ namespace Minerva.Controllers
         {
             states = _states;
         }
-        [HttpPost]
-        public async Task<IActionResult> CreateProject(StatesRequest request)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var b = await states.SaveState(request);
-                    if (b)
-                    {
-                        return StatusCode(StatusCodes.Status201Created, request);
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, request);
-                    }
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> CreateProject(StatesRequest request)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var b = await states.SaveState(request);
+        //            if (b)
+        //            {
+        //                return StatusCode(StatusCodes.Status201Created, request);
+        //            }
+        //            else
+        //            {
+        //                return StatusCode(StatusCodes.Status500InternalServerError, request);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return BadRequest();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -70,59 +70,59 @@ namespace Minerva.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
-        [HttpPut]
-        public async Task<IActionResult> Updatestate(StatesRequest request)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var b = await states.UpdateStates(request);
-                    if (b)
-                    {
-                        return StatusCode(StatusCodes.Status201Created, request);
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, request);
-                    }
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteState(int id)
-        {
-            try
-            {
-                if (id>0)
-                {
-                    var b = await states.DeleteStates(id);
-                    if (b)
-                    {
-                        return StatusCode(StatusCodes.Status201Created);
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError);
-                    }
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+        //[HttpPut]
+        //public async Task<IActionResult> Updatestate(StatesRequest request)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var b = await states.UpdateStates(request);
+        //            if (b)
+        //            {
+        //                return StatusCode(StatusCodes.Status201Created, request);
+        //            }
+        //            else
+        //            {
+        //                return StatusCode(StatusCodes.Status500InternalServerError, request);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return BadRequest();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteState(int id)
+        //{
+        //    try
+        //    {
+        //        if (id>0)
+        //        {
+        //            var b = await states.DeleteStates(id);
+        //            if (b)
+        //            {
+        //                return StatusCode(StatusCodes.Status201Created);
+        //            }
+        //            else
+        //            {
+        //                return StatusCode(StatusCodes.Status500InternalServerError);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return BadRequest();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
+        //}
     }
 }

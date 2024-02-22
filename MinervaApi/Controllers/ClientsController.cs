@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace MinervaApi.Controllers
 {
-    [Route("client")]
+    [Route("people")]
     [ApiController]
     public class ClientsController : ControllerBase
     {
@@ -20,12 +20,14 @@ namespace MinervaApi.Controllers
         {
             client = bL;
         }
-        [HttpGet("{clientId}")]
+
+
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
-        public Task<Client?> GetClient(int clientid)
+        [HttpGet("{id}")]
+        public Task<Client?> GetClient(int id)
         {
-            return client.GetClient(clientid);
+            return client.GetClient(id);
         }
         
 
@@ -95,15 +97,16 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete("{clientId}")]
+
+        [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<IActionResult> DeleteClient(int clientid)
+        public async Task<IActionResult> DeleteClient(int id)
         {
             try
             {
-                if (clientid > 0)
+                if (id > 0)
                 {
-                    bool b = await client.DeleteClient(clientid);
+                    bool b = await client.DeleteClient(id);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
                     else
