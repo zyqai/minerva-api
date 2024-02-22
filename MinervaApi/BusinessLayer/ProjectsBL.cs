@@ -32,17 +32,21 @@ namespace Minerva.BusinessLayer
         private Project Mapping(ProjectRequest request)
         {
             Project p = new Project();
-            p.Id_Projects=request.Id_Projects;
-            p.Filename=request.Filename;
-            p.Loanamount=request.Loanamount;
-            p.Assignrdstaff=request.Assignrdstaff;
-            p.Filedescription=request.Filedescription;
-            p.Staffnote=request.Staffnote;
-            p.Primaryborrower=request.Primaryborrower;
-            p.Primarybusiness=request.Primarybusiness;  
-            p.Startdate=request.Startdate;
-            p.Desiredclosingdate=request.Desiredclosingdate;    
-            p.Initialphase=request.Initialphase;
+            p.ProjectId=request.ProjectId;
+            p.TenantId=request.TenantId;
+            p.ProjectName=request.ProjectName;
+            p.ProjectDescription=request.ProjectDescription;
+            p.IndustryId=request.IndustryId;
+            p.Amount    =request.Amount;
+            p.Purpose =request.Purpose;
+            p.CreatedDateTime =request.CreatedDateTime;
+            p.CreatedByUserId   =request.CreatedByUserId;
+            p.AssignedToUserId =request.AssignedToUserId;
+            p.ModifiedByUserId =request.ModifiedByUserId;
+            p.ModifiedDateTime= request.ModifiedDateTime;
+            p.LoanTypeAutoId =request.LoanTypeAutoId;
+            p.StatusAutoId =request.StatusAutoId;
+            p.ProjectFilesPath = request.ProjectFilesPath;
             return p;
         }
         public Task<bool> UpdateProject(ProjectRequest request)
