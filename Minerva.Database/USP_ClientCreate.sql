@@ -1,13 +1,4 @@
-
-/*
-Author: [Santhosh]
-Created Date: [2024-01-09]
-Modified Date: [2024-02-13] Createdby and UpdatedBy changed Int to varchar
-*/
-DELIMITER //
-
--- Create the stored procedure for client createion 
-CREATE PROCEDURE `USP_ClientCreate`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `USP_ClientCreate`(
     -- Parameters for input
     IN p_userId VARCHAR(45),
     IN p_tenantId INT,
@@ -52,7 +43,4 @@ BEGIN
 
     -- Set the output parameter to the last inserted ID
     SET p_last_insert_id := LAST_INSERT_ID();
-END//
-
--- Reset delimiter to semicolon
-DELIMITER ;
+END

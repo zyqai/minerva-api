@@ -34,7 +34,6 @@ namespace Minerva.Controllers
                 Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
                 if (ModelState.IsValid)
                 {
-
                     int? b = await BusinessBL.SaveBusines(request);
                     if (b > 0)
                     {
