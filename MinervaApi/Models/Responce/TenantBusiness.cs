@@ -37,5 +37,9 @@ namespace Minerva.Models.Responce
         public Client Client{ get; set; }
         public List<BusinessPersonas> businesses { get; set; }
     }
-    
+    public class TenantProject
+    {
+        public Tenant? tenant { get; set; }
+        public List<Project>? Projects { get; set; }
+    }
 }

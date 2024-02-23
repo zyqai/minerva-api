@@ -14,5 +14,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<TenantBusiness> BusinessesForTenant(int tenantId);
         public Task<PeopleBusiness> PeoplesForTenant(int tenantId);
         public Task<TenantUsers> UsersForTenant(int tenantId);
+        public Task<TenantProject> ProjectByTenant(int tenantId);
     }
 }
