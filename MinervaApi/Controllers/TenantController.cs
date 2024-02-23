@@ -20,7 +20,7 @@ namespace MinervaApi.Controllers
         {
             tenant = _tenant;
         }
-        
+
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
@@ -92,18 +92,18 @@ namespace MinervaApi.Controllers
         [HttpPut]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> UpdateTenant(TenantRequest request)
-         {
+        {
             request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email);
             Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
                 {
-                    
+
                     var b = await tenant.UpdateTenant(request);
                     if (b)
                     {
-                        
+
                         return StatusCode(StatusCodes.Status201Created, request);
                     }
                     else
@@ -154,7 +154,7 @@ namespace MinervaApi.Controllers
         [HttpGet("businessesByTenant/{tenantId}")]
         public async Task<IActionResult> BusinessesForTenant(int tenantId)
         {
-            TenantBusiness res=new TenantBusiness ();
+            TenantBusiness res = new TenantBusiness();
             res = await tenant.BusinessesForTenant(tenantId);
 
             if (res != null)
@@ -170,7 +170,7 @@ namespace MinervaApi.Controllers
         [HttpGet("peoplesByTenant/{tenantId}")]
         public async Task<IActionResult> PeoplesForTenant(int tenantId)
         {
-            PeopleBusiness peopleBusiness = new PeopleBusiness ();
+            PeopleBusiness peopleBusiness = new PeopleBusiness();
             peopleBusiness = await tenant.PeoplesForTenant(tenantId);
             if (peopleBusiness != null)
             {
@@ -185,11 +185,40 @@ namespace MinervaApi.Controllers
         [HttpGet("usersByTenant/{tenantId}")]
         public async Task<IActionResult> UsersForTenant(int tenantId)
         {
-            TenantUsers tenantUsers=new TenantUsers ();
+            TenantUsers tenantUsers = new TenantUsers();
             tenantUsers = await tenant.UsersForTenant(tenantId);
             if (tenantUsers != null)
             {
                 return Ok(tenantUsers);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpGet("projectByTenant/{tenantId}")]
+        public async Task<IActionResult> ProjectByTenant(int tenantId)
+        {
+            TenantProject res = new TenantProject();
+            res = await tenant.ProjectByTenant(tenantId);
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+        [HttpGet("personasByTenant/{tenantId}")]
+        public async Task<IActionResult> PersonasByTenant(int tenantId)
+        {
+            TenentPersonas res = new TenentPersonas();
+            res = await tenant.PersonasByTenant(tenantId);
+            if (res != null)
+            {
+                return Ok(res);
             }
             else
             {

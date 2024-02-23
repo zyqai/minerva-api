@@ -8,6 +8,8 @@ namespace Minerva.IDataAccessLayer
         public Task<List<Project?>> GetAllProjectAsync();
         Task<bool> SaveProject(Project p);
         public Task<bool> UpdateProject(Project ps);
-        public Task<bool> DeleteProject(int BusinesId);
+        public Task<bool> DeleteProject(int id);
+        public Task<List<Project>?> GetProjectByTenantAsync(int tenantId);
+        
     }
 }

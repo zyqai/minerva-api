@@ -14,12 +14,17 @@ namespace Minerva.BusinessLayer
         IUserRepository userRepository;
         IBusinessRepository businessRepository;
         IClientRepository clientRepository;
-        public TenantBL(ITenantRepositiry tenant, IUserRepository _user, IBusinessRepository _businessRepository, IClientRepository _clientRepository)
+        IProjectRepository projectRepository;
+        IPersonaRepository personaRepository;
+        public TenantBL(ITenantRepositiry tenant, IUserRepository _user, IBusinessRepository _businessRepository, 
+            IClientRepository _clientRepository,IProjectRepository _projectRepository,IPersonaRepository _personaRepository)
         {
             repositiry = tenant;
             userRepository = _user;
             businessRepository = _businessRepository;
             clientRepository = _clientRepository;
+            projectRepository = _projectRepository;
+            personaRepository = _personaRepository;
         }
         public Task<bool> DeleteTenant(int TnantId)
         {
@@ -107,6 +112,30 @@ namespace Minerva.BusinessLayer
                 tenantUsers.users = await userRepository.GetTenantUserList(tenantId);
             }
             return tenantUsers;
+        }
+
+        public async Task<TenantProject> ProjectByTenant(int tenantId)
+        {
+            TenantProject tenantProject = new TenantProject();
+            tenantProject.tenant= await repositiry.GetTenantAsync(tenantId);
+            if (tenantProject.tenant != null)
+            {
+                tenantProject.Projects = new List<Project>();
+                tenantProject.Projects = await projectRepository.GetProjectByTenantAsync(tenantId);
+            }
+            return tenantProject;
+        }
+
+        async Task<TenentPersonas> ITenant.PersonasByTenant(int tenantId)
+        {
+            TenentPersonas tenantPersonas = new TenentPersonas();   
+            tenantPersonas.tenant=await repositiry.GetTenantAsync(tenantId);
+            if (tenantPersonas.tenant != null)
+            { 
+                tenantPersonas.Personas= new List<Persona>();
+                tenantPersonas.Personas = await personaRepository.GetPersonasByTenantId(tenantId);
+            }
+            return tenantPersonas;
         }
     }
 }

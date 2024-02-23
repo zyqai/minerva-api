@@ -22,6 +22,19 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             return [.. result];
         }
+
+        public async Task<List<Persona>> GetPersonasByTenantId(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_TenentPersonas";
+            command.Parameters.AddWithValue("@p_tenantId", tenantId);
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAlPersonalAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+
         private async Task<IReadOnlyList<Personas>> ReadAllAsync(MySqlDataReader reader)
         {
             var Personas = new List<Personas>();
@@ -33,6 +46,27 @@ namespace Minerva.DataAccessLayer
                     {
                         personaId = !reader.IsDBNull(0) ? reader.GetInt32(0) : 0,
                         personaName = reader.GetValue(1).ToString(),
+                    };
+                    Personas.Add(Persona);
+                }
+
+            }
+            return Personas;
+        }
+        private async Task<IReadOnlyList<Persona>> ReadAlPersonalAsync(MySqlDataReader reader)
+        {
+            var Personas = new List<Persona>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var Persona = new Persona
+                    {
+                        personaAutoId = reader["personaAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaAutoId"]),
+                        personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
+                        tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        projectPersona = reader["projectPersona"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectPersona"]),
+                        personaName = reader["personaName"] == DBNull.Value ?string.Empty: reader["personaName"].ToString(),
                     };
                     Personas.Add(Persona);
                 }
