@@ -2,7 +2,6 @@
 {
     public class ProjectRequest
     {
-
         public int? ProjectId { get; set; }
         public int? TenantId { get; set; }
         public string? ProjectName { get; set; }
@@ -18,6 +17,5 @@
         public int? LoanTypeAutoId { get; set; }
         public int? StatusAutoId { get; set; }
         public string? ProjectFilesPath { get; set; }
-        
     }
 }
