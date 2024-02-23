@@ -1,0 +1,4 @@
+ALTER TABLE `minerva`.`_tenants` 
+CHANGE COLUMN `CreatedBy` `createdBy` VARCHAR(45) NULL DEFAULT NULL ,
+CHANGE COLUMN `UpdateDateTime` `modifiedDateTime` DATETIME NULL DEFAULT NULL ,
+CHANGE COLUMN `UpdateBy` `modifiedBy` VARCHAR(45) NULL DEFAULT NULL ;
