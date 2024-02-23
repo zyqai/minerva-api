@@ -86,8 +86,8 @@ namespace Minerva.DataAccessLayer
                         BusinessRegistrationNumber =reader.GetValue(8).ToString(),
                         RootDocumentFolder=reader.GetValue(9).ToString(),
                         BusinessAddress1 = reader.GetValue(10).ToString(),
-                        CreatedBy= reader["CreatedBy"].ToString(),
-                        UpdatedBy = reader["modifiedBy"].ToString()
+                        //CreatedBy= reader["CreatedBy"].ToString(),
+                        //UpdatedBy = reader["modifiedBy"].ToString()
                     };
                     bu.Add(user);
                 }
