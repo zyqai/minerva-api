@@ -15,13 +15,16 @@ namespace Minerva.BusinessLayer
         IBusinessRepository businessRepository;
         IClientRepository clientRepository;
         IProjectRepository projectRepository;
-        public TenantBL(ITenantRepositiry tenant, IUserRepository _user, IBusinessRepository _businessRepository, IClientRepository _clientRepository,IProjectRepository _projectRepository)
+        IPersonaRepository personaRepository;
+        public TenantBL(ITenantRepositiry tenant, IUserRepository _user, IBusinessRepository _businessRepository, 
+            IClientRepository _clientRepository,IProjectRepository _projectRepository,IPersonaRepository _personaRepository)
         {
             repositiry = tenant;
             userRepository = _user;
             businessRepository = _businessRepository;
             clientRepository = _clientRepository;
             projectRepository = _projectRepository;
+            personaRepository = _personaRepository;
         }
         public Task<bool> DeleteTenant(int TnantId)
         {
@@ -121,6 +124,18 @@ namespace Minerva.BusinessLayer
                 tenantProject.Projects = await projectRepository.GetProjectByTenantAsync(tenantId);
             }
             return tenantProject;
+        }
+
+        async Task<TenentPersonas> ITenant.PersonasByTenant(int tenantId)
+        {
+            TenentPersonas tenantPersonas = new TenentPersonas();   
+            tenantPersonas.tenant=await repositiry.GetTenantAsync(tenantId);
+            if (tenantPersonas.tenant != null)
+            { 
+                tenantPersonas.Personas= new List<Persona>();
+                tenantPersonas.Personas = await personaRepository.GetPersonasByTenantId(tenantId);
+            }
+            return tenantPersonas;
         }
     }
 }

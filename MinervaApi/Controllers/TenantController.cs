@@ -197,11 +197,25 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpGet("ProjectByTenant/{tenantId}")]
+        [HttpGet("projectByTenant/{tenantId}")]
         public async Task<IActionResult> ProjectByTenant(int tenantId)
         {
             TenantProject res = new TenantProject();
             res = await tenant.ProjectByTenant(tenantId);
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+        [HttpGet("personasByTenant/{tenantId}")]
+        public async Task<IActionResult> PersonasByTenant(int tenantId)
+        {
+            TenentPersonas res = new TenentPersonas();
+            res = await tenant.PersonasByTenant(tenantId);
             if (res != null)
             {
                 return Ok(res);
