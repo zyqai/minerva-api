@@ -22,12 +22,12 @@ namespace Minerva.Controllers
             this.userBL = _userBL;
         }
 
-        [HttpGet("{userId}")]
-        public Task<User?> GetUser(string UserId)
+        [HttpGet("{id}")]
+        public Task<User?> GetUser(string id)
         {
             UsersRequest user = new UsersRequest
             {
-                UserId = UserId
+                UserId = id
             };
             return userBL.GetUser(user);
         }
