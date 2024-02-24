@@ -16,5 +16,10 @@ namespace MinervaApi.BusinessLayer
         {
             return Repository.GetindustrysAsync();
         }
+
+        public Task<List<loanTypes>> GetloanTypesAsync()
+        {
+            return Repository.GetloanTypesAsync();
+        }
     }
 }

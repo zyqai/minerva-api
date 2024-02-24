@@ -16,9 +16,24 @@ namespace MinervaApi.Controllers
             bl = _masterBL;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Getindustrys()
         {
             var res = await bl.GetindustryAsync();
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetloanTypes()
+        {
+            var res = await bl.GetloanTypesAsync();
 
             if (res != null)
             {

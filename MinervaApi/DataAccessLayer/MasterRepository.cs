@@ -24,7 +24,6 @@ namespace MinervaApi.DataAccessLayer
             connection.Close();
             return [.. result];
         }
-
         private async Task<List<Industrys>> ReadAllindustrysAsync(MySqlDataReader reader)
         {
             var res = new List<Industrys>();
@@ -41,6 +40,37 @@ namespace MinervaApi.DataAccessLayer
                         industryDescription = reader["industryDescription"] == DBNull.Value ? string.Empty : Convert.ToString(reader["industryDescription"]),
                     };
                     res.Add(industrys);
+                }
+            }
+            return res;
+        }
+
+        public async Task<List<loanTypes>> GetloanTypesAsync()
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_loanTypes";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllLoanTypesAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+        private async Task<List<loanTypes>> ReadAllLoanTypesAsync(MySqlDataReader reader)
+        {
+            var res = new List<loanTypes>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var re = new loanTypes
+                    {
+                        loanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
+                        tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        loanTypeId = reader["loanTypeId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeId"]),
+                        loanType = reader["loanType"] == DBNull.Value ? string.Empty : Convert.ToString(reader["loanType"]),
+                        loanTypeDescription = reader["loanTypeDescription"] == DBNull.Value ? string.Empty : Convert.ToString(reader["loanTypeDescription"]),
+                    };
+                    res.Add(re);
                 }
             }
             return res;
