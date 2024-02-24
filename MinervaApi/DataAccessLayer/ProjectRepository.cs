@@ -7,15 +7,15 @@ using System.Reflection.PortableExecutable;
 
 namespace MinervaApi.DataAccessLayer
 {
-    public class ProjectRepository :IProjectRepository
+    public class ProjectRepository : IProjectRepository
     {
         MySqlDataSource database;
         public ProjectRepository(MySqlDataSource mySql)
         {
             this.database = mySql;
         }
-       
-        public async Task<bool> SaveProject(Project p)
+
+        public async Task<int> SaveProject(Project p)
         {
             using var connection = database.OpenConnection();
             try
@@ -23,20 +23,24 @@ namespace MinervaApi.DataAccessLayer
                 using var command = connection.CreateCommand();
                 command.CommandText = "USP_ProjectCreate";
                 AddParameters(command, p);
+                MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outputParameter);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
+                int lastInsertId = Convert.ToInt32(outputParameter.Value);
                 if (rowsAffected == 1)
                 {
-                    return true;
+                    rowsAffected = lastInsertId;
                 }
-                else
-                {
-                    return false;
-                }
+                return rowsAffected;
+
             }
             catch (Exception)
             {
-                return false;
+                return 0;
             }
             finally
             {
@@ -46,7 +50,7 @@ namespace MinervaApi.DataAccessLayer
                 }
             }
         }
-        
+
         private void AddParameters(MySqlCommand command, Project p)
         {
             command.Parameters.AddWithValue("@in_tenantId", p.TenantId);
@@ -67,7 +71,7 @@ namespace MinervaApi.DataAccessLayer
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_GetProjectById";
-            command.Parameters.AddWithValue("@p_id", Id_Projects);
+            command.Parameters.AddWithValue("@in_projectId", Id_Projects);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -88,11 +92,11 @@ namespace MinervaApi.DataAccessLayer
                         TenantId = reader["TenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["TenantId"]),
                         ProjectName = reader["ProjectName"] == DBNull.Value ? string.Empty : reader["ProjectName"].ToString(),
                         ProjectDescription = reader["ProjectDescription"] == DBNull.Value ? string.Empty : reader["ProjectDescription"].ToString(),
-                        IndustryId= reader["industryId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industryId"]),
-                        Amount= reader["Amount"] == DBNull.Value ? string.Empty : reader["Amount"].ToString(),
+                        IndustryId = reader["industryId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industryId"]),
+                        Amount = reader["Amount"] == DBNull.Value ? string.Empty : reader["Amount"].ToString(),
                         Purpose = reader["purpose"] == DBNull.Value ? string.Empty : reader["purpose"].ToString(),
-                        CreatedByUserId= reader["CreatedByUserId"] == DBNull.Value ? string.Empty : reader["CreatedByUserId"].ToString(),
-                        CreatedDateTime = reader["createdDateTime"] == DBNull.Value ? (DateTime?)null :Convert.ToDateTime(reader["createdDateTime"].ToString()),
+                        CreatedByUserId = reader["CreatedByUserId"] == DBNull.Value ? string.Empty : reader["CreatedByUserId"].ToString(),
+                        CreatedDateTime = reader["createdDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdDateTime"].ToString()),
                         AssignedToUserId = reader["assignedToUserId"] == DBNull.Value ? string.Empty : reader["assignedToUserId"].ToString(),
                         ModifiedByUserId = reader["modifiedByUserId"] == DBNull.Value ? string.Empty : reader["modifiedByUserId"].ToString(),
                         ModifiedDateTime = reader["modifiedDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["modifiedDateTime"].ToString()),
@@ -195,7 +199,7 @@ namespace MinervaApi.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return result.ToList();
-           
+
         }
     }
 }
