@@ -183,5 +183,19 @@ namespace MinervaApi.DataAccessLayer
                 }
             }
         }
+
+        public async Task<List<Project>?> GetProjectByTenantAsync(int tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_TenentProjects";
+            command.Parameters.AddWithValue("@p_tenantId", tenantId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.ToList();
+           
+        }
     }
 }
