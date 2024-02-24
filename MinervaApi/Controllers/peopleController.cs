@@ -13,10 +13,10 @@ namespace MinervaApi.Controllers
 {
     [Route("people")]
     [ApiController]
-    public class ClientsController : ControllerBase
+    public class peopleController : ControllerBase
     {
         IClientBL client;
-        public ClientsController(IClientBL bL)
+        public peopleController(IClientBL bL)
         {
             client = bL;
         }
