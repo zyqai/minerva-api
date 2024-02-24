@@ -12,10 +12,10 @@ namespace Minerva.Controllers
 {
     [Route("peopleBusinessRelation")]
     [ApiController]
-    public class ClientBusinessRelationController : ControllerBase
+    public class peopleBusinessRelationController : ControllerBase
     {
         ICBRelation relation;
-        public ClientBusinessRelationController(ICBRelation cBRelation)
+        public peopleBusinessRelationController(ICBRelation cBRelation)
         {
             relation = cBRelation;
         }

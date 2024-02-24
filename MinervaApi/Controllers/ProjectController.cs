@@ -5,6 +5,9 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using MinervaApi.ExternalApi;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace MinervaApi.Controllers
 {
@@ -19,19 +22,21 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
-        //[Authorize(Policy = "Staff")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
+            request.CreatedByUserId = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var b = await ProtBL.SaveProject(request);
-                    if (b)
+                    int b = await ProtBL.SaveProject(request);
+                    if (b>1)
                     {
-                        return StatusCode(StatusCodes.Status201Created, request);
+                        Project? p=await ProtBL.GetProjects(b);
+                        return StatusCode(StatusCodes.Status201Created, p);
                     }
                     else
                     {
@@ -63,9 +68,9 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
-        
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
+
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -81,11 +86,13 @@ namespace MinervaApi.Controllers
             }
         }
 
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateProject(ProjectRequest request)
         {
+            request.ModifiedByUserId = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -111,7 +118,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        //[Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {

@@ -10,19 +10,23 @@ namespace Minerva.BusinessLayer
     public class ProjectsBL : IProjectsBL
     {
         IProjectRepository PorjectRepository;
-        public ProjectsBL(IProjectRepository _repository)
+        IUserRepository userRepository;
+        public ProjectsBL(IProjectRepository _repository, IUserRepository user)
         {
             PorjectRepository = _repository;
+            userRepository = user;
         }
         public Task<Project?> GetProjects(int Id_Projects)
         {
             return PorjectRepository.GetProjectAsync(Id_Projects);
         }
 
-        public Task<bool> SaveProject(ProjectRequest request)
+        public async Task<int> SaveProject(ProjectRequest request)
         {
+            var _user = await userRepository.GetuserusingUserNameAsync(request.CreatedByUserId);
+            request.CreatedByUserId = _user?.UserId;
             Project project = Mapping(request);
-            return PorjectRepository.SaveProject(project);
+            return await PorjectRepository.SaveProject(project);
         }
 
         public Task<List<Project?>> GetAllProjects()
@@ -49,10 +53,12 @@ namespace Minerva.BusinessLayer
             p.ProjectFilesPath = request.ProjectFilesPath;
             return p;
         }
-        public Task<bool> UpdateProject(ProjectRequest request)
+        public async Task<bool> UpdateProject(ProjectRequest request)
         {
+            var _user = await userRepository.GetuserusingUserNameAsync(request.ModifiedByUserId);
+            request.ModifiedByUserId = _user?.UserId;
             Project project = Mapping(request);
-            return PorjectRepository.UpdateProject(project);
+            return await PorjectRepository.UpdateProject(project);
         }
         public Task<bool> DeleteProject(int id)
         { 
