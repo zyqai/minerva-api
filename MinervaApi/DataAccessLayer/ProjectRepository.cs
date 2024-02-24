@@ -199,7 +199,6 @@ namespace MinervaApi.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return result.ToList();
-
         }
     }
 }
