@@ -6,7 +6,7 @@ using MinervaApi.BusinessLayer.Interface;
 
 namespace MinervaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("master")]
     [ApiController]
     public class masterController : ControllerBase
     {
@@ -15,7 +15,7 @@ namespace MinervaApi.Controllers
         {
             bl = _masterBL;
         }
-        [HttpGet]
+        [HttpGet("getIndustrys")]
         public async Task<IActionResult> Getindustrys()
         {
             var res = await bl.GetindustryAsync();
@@ -30,7 +30,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("getLoanTypes")]
         public async Task<IActionResult> GetloanTypes()
         {
             var res = await bl.GetloanTypesAsync();
