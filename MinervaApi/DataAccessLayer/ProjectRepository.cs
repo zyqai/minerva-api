@@ -67,7 +67,7 @@ namespace MinervaApi.DataAccessLayer
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_GetProjectById";
-            command.Parameters.AddWithValue("@p_id", Id_Projects);
+            command.Parameters.AddWithValue("@in_projectId", Id_Projects);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
