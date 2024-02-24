@@ -53,6 +53,9 @@ builder.Services.AddTransient<ICBRelation, CBRelationBL>();
 builder.Services.AddTransient<IMasterRepository, MasterRepository>();
 builder.Services.AddTransient<IMasterBL, MasterBL>();
 
+builder.Services.AddTransient<IprojectPeopleRelation,projectPeopleRelationBL>();
+builder.Services.AddTransient<IprojectPeopleRelationRepository,projectPeopleRelationRepository>();
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var configuration = builder.Configuration;
