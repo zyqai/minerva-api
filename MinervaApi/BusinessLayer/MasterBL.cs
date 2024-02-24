@@ -1,4 +1,5 @@
 ﻿
+using Minerva.Models;
 using MinervaApi.BusinessLayer.Interface;
 using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models;
@@ -20,6 +21,11 @@ namespace MinervaApi.BusinessLayer
         public Task<List<loanTypes>> GetloanTypesAsync()
         {
             return Repository.GetloanTypesAsync();
+        }
+
+        public Task<List<Statuses>> getStatues()
+        {
+            return Repository.GetStatusAsync();
         }
     }
 }

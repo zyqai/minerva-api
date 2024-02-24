@@ -75,5 +75,41 @@ namespace MinervaApi.DataAccessLayer
             }
             return res;
         }
+
+        public async Task<List<Statuses>> GetStatusAsync()
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_statuses";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllStatusAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+
+        private async Task<List<Statuses>> ReadAllStatusAsync(MySqlDataReader reader)
+        {
+            var status=new List<Statuses>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var re = new Statuses
+                    {
+                        statusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
+                        tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                        statusId = reader["statusId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusId"]),
+                        statusName = reader["statusName"] == DBNull.Value ? string.Empty : Convert.ToString(reader["statusName"]),
+                        statusDescription = reader["statusDescription"] == DBNull.Value ? string.Empty : Convert.ToString(reader["statusDescription"]),
+                        projectRequestTemplateStatus = reader["projectRequestTemplateStatus"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectRequestTemplateStatus"]),
+
+                    };
+                    status.Add(re);
+                }
+            }
+            return status;
+
+        }
+
     }
 }

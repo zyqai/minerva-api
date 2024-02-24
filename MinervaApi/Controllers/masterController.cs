@@ -45,5 +45,20 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [HttpGet("getStatues")]
+        public async Task<IActionResult> getStatues()
+        {
+            var res = await bl.getStatues();
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
     }
 }
