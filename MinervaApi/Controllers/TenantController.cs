@@ -22,7 +22,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -76,8 +76,10 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Get(int id)
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
             var ten = await tenant.GetTenantAsync(id);
 
             if (ten != null)
@@ -90,7 +92,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpPut]
-        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> UpdateTenant(TenantRequest request)
         {
             request.UpdatedBY = User.FindFirstValue(ClaimTypes.Email);
