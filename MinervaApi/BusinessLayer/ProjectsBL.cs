@@ -3,26 +3,36 @@ using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MinervaApi.DataAccessLayer;
+using MinervaApi.IDataAccessLayer;
 
 namespace Minerva.BusinessLayer
 {
     public class ProjectsBL : IProjectsBL
     {
         IProjectRepository PorjectRepository;
-        public ProjectsBL(IProjectRepository _repository)
+        IUserRepository userRepository;
+        IMasterRepository masterRepository;
+        public ProjectsBL(IProjectRepository _repository, IUserRepository user,IMasterRepository _master)
         {
             PorjectRepository = _repository;
-        }
+            userRepository = user;
+            masterRepository = _master;
+
         public Task<Project?> GetProjects(int Id_Projects)
         {
             return PorjectRepository.GetProjectAsync(Id_Projects);
         }
 
-        public Task<bool> SaveProject(ProjectRequest request)
+        public async Task<int> SaveProject(ProjectRequest request)
         {
+            var _user = await userRepository.GetuserusingUserNameAsync(request.CreatedByUserId);
+            request.CreatedByUserId = _user?.UserId;
             Project project = Mapping(request);
-            return PorjectRepository.SaveProject(project);
+            project.TenantId=_user?.TenantId;
+
+            return await PorjectRepository.SaveProject(project);
         }
 
         public Task<List<Project?>> GetAllProjects()
@@ -49,14 +59,36 @@ namespace Minerva.BusinessLayer
             p.ProjectFilesPath = request.ProjectFilesPath;
             return p;
         }
-        public Task<bool> UpdateProject(ProjectRequest request)
+        public async Task<bool> UpdateProject(ProjectRequest request)
         {
+            var _user = await userRepository.GetuserusingUserNameAsync(request.ModifiedByUserId);
+            request.ModifiedByUserId = _user?.UserId;
             Project project = Mapping(request);
-            return PorjectRepository.UpdateProject(project);
+            return await PorjectRepository.UpdateProject(project);
         }
         public Task<bool> DeleteProject(int id)
         { 
             return PorjectRepository.DeleteProject(id);
+        }
+
+        public async Task<projectsResponce?> GetProjectDetails(int id)
+        {
+            projectsResponce projectsResponce = new projectsResponce();
+            projectsResponce.Project = await PorjectRepository.GetProjectAsync(id);
+            if (projectsResponce.Project != null)
+            {
+                projectsResponce.code = "206";
+                projectsResponce.message = "responce available";
+                projectsResponce.Status = await masterRepository.GetStatusByIdAsync(projectsResponce?.Project?.StatusAutoId);
+                projectsResponce.Industry = await masterRepository.GetIndustrysByIdAsync(projectsResponce.Project?.IndustryId);
+                projectsResponce.LoanType = await masterRepository.GetloanTypesByIdAsync(projectsResponce.Project?.LoanTypeAutoId);
+            }
+            else
+            {
+                projectsResponce.code = "201";
+                projectsResponce.message = "no content";
+            }
+            return projectsResponce;
         }
     }
 }

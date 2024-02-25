@@ -6,6 +6,8 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
+using MinervaApi.BusinessLayer;
+using MinervaApi.BusinessLayer.Interface;
 using MinervaApi.DataAccessLayer;
 using MinervaApi.ExternalApi;
 using MinervaApi.IDataAccessLayer;
@@ -47,6 +49,12 @@ builder.Services.AddTransient<IPersona, PersonaBL>();
 
 builder.Services.AddTransient<ICBRelationRepository, CBRelationRepository>();
 builder.Services.AddTransient<ICBRelation, CBRelationBL>();
+
+builder.Services.AddTransient<IMasterRepository, MasterRepository>();
+builder.Services.AddTransient<IMasterBL, MasterBL>();
+
+builder.Services.AddTransient<IprojectPeopleRelation,projectPeopleRelationBL>();
+builder.Services.AddTransient<IprojectPeopleRelationRepository,projectPeopleRelationRepository>();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
@@ -157,6 +165,17 @@ builder.Services.AddAuthorization(options =>
             };
             builder.RequireAuthenticatedUser();
             builder.RequireRole("TenantAdmin");
+        }
+        );
+    options.AddPolicy("AdminPolicy",
+        builder =>
+        {
+            builder.AuthenticationSchemes = new List<string>
+            {
+                JwtBearerDefaults.AuthenticationScheme
+            };
+            builder.RequireAuthenticatedUser();
+            builder.RequireRole("admin");
         }
         );
     options.AddPolicy("AdminPolicy",

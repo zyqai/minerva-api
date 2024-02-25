@@ -14,5 +14,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<List<User?>> GetTenantUserList(int tenantId);
         public Task<APIStatus> Forgetpassword(string emailid);
         public Task<APIStatus> verifyemail(string emailid);
+        public Task<User?> GetUserusingUserName(string emailid);
     }
 }
