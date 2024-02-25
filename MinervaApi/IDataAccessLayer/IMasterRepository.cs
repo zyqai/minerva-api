@@ -12,5 +12,6 @@ namespace MinervaApi.IDataAccessLayer
         public Task<Industrys> GetIndustrysByIdAsync(int? id);
         public Task<loanTypes> GetloanTypesByIdAsync(int? id);
         public Task<Statuses> GetStatusByIdAsync(int? id);
+
     }
 }

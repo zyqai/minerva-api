@@ -19,7 +19,7 @@ namespace Minerva.BusinessLayer
             PorjectRepository = _repository;
             userRepository = user;
             masterRepository = _master;
-        }
+
         public Task<Project?> GetProjects(int Id_Projects)
         {
             return PorjectRepository.GetProjectAsync(Id_Projects);
@@ -31,6 +31,7 @@ namespace Minerva.BusinessLayer
             request.CreatedByUserId = _user?.UserId;
             Project project = Mapping(request);
             project.TenantId=_user?.TenantId;
+
             return await PorjectRepository.SaveProject(project);
         }
 

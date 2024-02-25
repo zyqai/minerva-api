@@ -42,7 +42,6 @@ namespace MinervaApi.DataAccessLayer
                     res.Add(industrys);
                 }
             }
-
             return res;
         }
 
@@ -112,6 +111,7 @@ namespace MinervaApi.DataAccessLayer
 
         }
 
+
         public async Task<Industrys> GetIndustrysByIdAsync(int? id)
         {
             using var connection = await database.OpenConnectionAsync();
@@ -144,5 +144,6 @@ namespace MinervaApi.DataAccessLayer
             connection.Close();
             return result.First();
         }
+
     }
 }

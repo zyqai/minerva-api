@@ -40,9 +40,8 @@ namespace MinervaApi.DataAccessLayer
             }
             catch (Exception)
             {
-                throw;
-                //return 0;
 
+                throw;
             }
             finally
             {
