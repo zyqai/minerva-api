@@ -42,6 +42,7 @@ namespace MinervaApi.DataAccessLayer
                     res.Add(industrys);
                 }
             }
+
             return res;
         }
 
@@ -111,5 +112,37 @@ namespace MinervaApi.DataAccessLayer
 
         }
 
+        public async Task<Industrys> GetIndustrysByIdAsync(int? id)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_industrys";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllindustrysAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.First();
+        }
+
+        public async Task<loanTypes> GetloanTypesByIdAsync(int? id)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_loanTypes";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllLoanTypesAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.First();
+        }
+
+        public async Task<Statuses> GetStatusByIdAsync(int? id)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_statuses";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllStatusAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result.First();
+        }
     }
 }

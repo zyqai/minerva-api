@@ -3,7 +3,9 @@ using Minerva.DataAccessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MinervaApi.DataAccessLayer;
+using MinervaApi.IDataAccessLayer;
 
 namespace Minerva.BusinessLayer
 {
@@ -11,10 +13,12 @@ namespace Minerva.BusinessLayer
     {
         IProjectRepository PorjectRepository;
         IUserRepository userRepository;
-        public ProjectsBL(IProjectRepository _repository, IUserRepository user)
+        IMasterRepository masterRepository;
+        public ProjectsBL(IProjectRepository _repository, IUserRepository user,IMasterRepository _master)
         {
             PorjectRepository = _repository;
             userRepository = user;
+            masterRepository = _master;
         }
         public Task<Project?> GetProjects(int Id_Projects)
         {
@@ -26,6 +30,7 @@ namespace Minerva.BusinessLayer
             var _user = await userRepository.GetuserusingUserNameAsync(request.CreatedByUserId);
             request.CreatedByUserId = _user?.UserId;
             Project project = Mapping(request);
+            project.TenantId=_user?.TenantId;
             return await PorjectRepository.SaveProject(project);
         }
 
@@ -63,6 +68,26 @@ namespace Minerva.BusinessLayer
         public Task<bool> DeleteProject(int id)
         { 
             return PorjectRepository.DeleteProject(id);
+        }
+
+        public async Task<projectsResponce?> GetProjectDetails(int id)
+        {
+            projectsResponce projectsResponce = new projectsResponce();
+            projectsResponce.Project = await PorjectRepository.GetProjectAsync(id);
+            if (projectsResponce.Project != null)
+            {
+                projectsResponce.code = "206";
+                projectsResponce.message = "responce available";
+                projectsResponce.Status = await masterRepository.GetStatusByIdAsync(projectsResponce?.Project?.StatusAutoId);
+                projectsResponce.Industry = await masterRepository.GetIndustrysByIdAsync(projectsResponce.Project?.IndustryId);
+                projectsResponce.LoanType = await masterRepository.GetloanTypesByIdAsync(projectsResponce.Project?.LoanTypeAutoId);
+            }
+            else
+            {
+                projectsResponce.code = "201";
+                projectsResponce.message = "no content";
+            }
+            return projectsResponce;
         }
     }
 }
