@@ -67,7 +67,7 @@ namespace MinervaApi.DataAccessLayer
             command.Parameters.AddWithValue("@in_projectFilesPath", p.ProjectFilesPath);
         }
 
-        public async Task<Project?> GetProjectAsync(int Id_Projects)
+        public async Task<Project?> GetProjectAsync(int? Id_Projects)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
