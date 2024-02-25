@@ -26,5 +26,27 @@ namespace Minerva.Models.Returns
         public Statuses? Status { get; set; }
         public loanTypes? LoanType { get; set; }
     }
+    public class ProjectByPeople : Apistatus
+    { 
+        public Project? Project { get; set; }
+        public List<Peoplesbyproject>? People { get; set; } 
+
+    }
+    public class Peoplesbyproject
+    {
+        public string? clientname { get; set; }
+        public string? firstname { get; set; }
+        public string? lastname { get; set; }
+        public string? phonenumber { get; set; }
+        public string? email { get; set; }
+        public string? projectName { get; set; }
+        public string? amount { get; set; }
+        public int? personaAutoId { get; set; }
+        public int? personaId { get; set; }
+        public string? personaName { get; set; }
+        public string? projectPersona { get; set; }
+        public string? purpose { get; set; }
+        public int? projectid { get; set; }
+    }
 
 }
