@@ -49,7 +49,8 @@ builder.Services.AddTransient<ICBRelationRepository, CBRelationRepository>();
 builder.Services.AddTransient<ICBRelation, CBRelationBL>();
 builder.Services.AddTransient<IFileTypeRepository, FileTypeRepository>();
 builder.Services.AddTransient<IFileTypeBL, FileTypeBL>();
-
+builder.Services.AddTransient<IDocumentClassificationRepository, DocumentClassificationRepository>();
+builder.Services.AddTransient<IDocumentClassificationBL, DocumentClassificationBL>();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 

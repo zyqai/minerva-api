@@ -1,23 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer.Interface;
 
-namespace Minerva.Controllers
+namespace MinervaApi.Controllers
 {
-    [Route("filetype")]
+    [Route("documentclassification")]
     [ApiController]
-    public class FileTypeController : Controller
+    public class DocumentClassificationController : Controller
     {
-        IFileTypeBL filetype;
-        public FileTypeController(IFileTypeBL _filetype)
+        IDocumentClassificationBL DocumentClassification;
+        public DocumentClassificationController(IDocumentClassificationBL _DocumentClassification)
         {
-            filetype = _filetype;
+            DocumentClassification = _DocumentClassification;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var ft = await filetype.GetALLFileTypes();
+            var ft = await DocumentClassification.GetALLDocumentClassifications();
 
             if (ft != null)
             {
@@ -32,7 +31,7 @@ namespace Minerva.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var ft = await filetype.GetFileType(id);
+            var ft = await DocumentClassification.GetDocumentClassification(id);
 
             if (ft != null)
             {
@@ -43,7 +42,6 @@ namespace Minerva.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
-
 
     }
 }
