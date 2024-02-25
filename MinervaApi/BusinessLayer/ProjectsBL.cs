@@ -14,12 +14,13 @@ namespace Minerva.BusinessLayer
         IProjectRepository PorjectRepository;
         IUserRepository userRepository;
         IMasterRepository masterRepository;
-        public ProjectsBL(IProjectRepository _repository, IUserRepository user,IMasterRepository _master)
+        public ProjectsBL(IProjectRepository _repository, IUserRepository user, IMasterRepository _master)
         {
             PorjectRepository = _repository;
             userRepository = user;
             masterRepository = _master;
 
+        }
         public Task<Project?> GetProjects(int Id_Projects)
         {
             return PorjectRepository.GetProjectAsync(Id_Projects);
@@ -30,7 +31,7 @@ namespace Minerva.BusinessLayer
             var _user = await userRepository.GetuserusingUserNameAsync(request.CreatedByUserId);
             request.CreatedByUserId = _user?.UserId;
             Project project = Mapping(request);
-            project.TenantId=_user?.TenantId;
+            project.TenantId = _user?.TenantId;
 
             return await PorjectRepository.SaveProject(project);
         }
@@ -42,20 +43,20 @@ namespace Minerva.BusinessLayer
         private Project Mapping(ProjectRequest request)
         {
             Project p = new Project();
-            p.ProjectId=request.ProjectId;
-            p.TenantId=request.TenantId;
-            p.ProjectName=request.ProjectName;
-            p.ProjectDescription=request.ProjectDescription;
-            p.IndustryId=request.IndustryId;
-            p.Amount    =request.Amount;
-            p.Purpose =request.Purpose;
-            p.CreatedDateTime =request.CreatedDateTime;
-            p.CreatedByUserId   =request.CreatedByUserId;
-            p.AssignedToUserId =request.AssignedToUserId;
-            p.ModifiedByUserId =request.ModifiedByUserId;
-            p.ModifiedDateTime= request.ModifiedDateTime;
-            p.LoanTypeAutoId =request.LoanTypeAutoId;
-            p.StatusAutoId =request.StatusAutoId;
+            p.ProjectId = request.ProjectId;
+            p.TenantId = request.TenantId;
+            p.ProjectName = request.ProjectName;
+            p.ProjectDescription = request.ProjectDescription;
+            p.IndustryId = request.IndustryId;
+            p.Amount = request.Amount;
+            p.Purpose = request.Purpose;
+            p.CreatedDateTime = request.CreatedDateTime;
+            p.CreatedByUserId = request.CreatedByUserId;
+            p.AssignedToUserId = request.AssignedToUserId;
+            p.ModifiedByUserId = request.ModifiedByUserId;
+            p.ModifiedDateTime = request.ModifiedDateTime;
+            p.LoanTypeAutoId = request.LoanTypeAutoId;
+            p.StatusAutoId = request.StatusAutoId;
             p.ProjectFilesPath = request.ProjectFilesPath;
             return p;
         }
@@ -67,7 +68,7 @@ namespace Minerva.BusinessLayer
             return await PorjectRepository.UpdateProject(project);
         }
         public Task<bool> DeleteProject(int id)
-        { 
+        {
             return PorjectRepository.DeleteProject(id);
         }
 
