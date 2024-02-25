@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Returns;
 
 namespace Minerva.BusinessLayer.Interface
 {
@@ -9,5 +10,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<int> SaveProject(Models.Requests.ProjectRequest project);
         public Task<bool> UpdateProject(Models.Requests.ProjectRequest project);
         public Task<bool> DeleteProject(int Id_Projects);
+        public Task<projectsResponce?> GetProjectDetails(int id);
     }
 }

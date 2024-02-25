@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
@@ -7,6 +8,7 @@ using Minerva.Models.Requests;
 using MinervaApi.ExternalApi;
 using MinervaApi.Models.Requests;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace Minerva.Controllers
 {
@@ -15,20 +17,24 @@ namespace Minerva.Controllers
     public class peopleBusinessRelationController : ControllerBase
     {
         ICBRelation relation;
-        public peopleBusinessRelationController(ICBRelation cBRelation)
+        IUserBL user;
+        public peopleBusinessRelationController(ICBRelation cBRelation, IUserBL _user)
         {
             relation = cBRelation;
+            user = _user;
         }
         [HttpGet("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> Get(int id)
         {
-            Comman.logEvent("clientBusinessRelationGet", id.ToString());
+            Comman.logEvent("peopleBusinessRelationGet", id.ToString());
             try
             {
                 var ten = await relation.GetAync(id);
                 if (ten != null)
                 {
-                    Comman.logRes("clientBusinessRelationGet", JsonConvert.SerializeObject(ten));
+                    Comman.logRes("peopleBusinessRelationGet", JsonConvert.SerializeObject(ten));
                     return Ok(ten);
                 }
                 else
@@ -38,18 +44,31 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError("clientBusinessRelationGet", ex.Message.ToString());
+                Comman.logError("peopleBusinessRelationGet", ex.Message.ToString());
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> Create(List<CBRelationRequest?> requests)
         {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            User? u = new User();
+            Comman.logRes("peopleBusinessRelationGet", JsonConvert.SerializeObject(requests));
+
+            if (email != null)
+            {
+                u = await user.GetUserusingUserName(email);
+            }
+
             List<CBRelation?> resList = new List<CBRelation?>();
             try
             {
                 foreach (var request in requests)
                 {
+                    request.tenantId = u.TenantId;
                     if (ModelState.IsValid)
                     {
                         var b = await relation.Save(request);
@@ -76,6 +95,8 @@ namespace Minerva.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> Update(List<CBRelationRequest> requests)
         {
             try
@@ -108,6 +129,8 @@ namespace Minerva.Controllers
             }
         }
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -136,6 +159,8 @@ namespace Minerva.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> Get()
         {
             var ten = await relation.GetALLAync();

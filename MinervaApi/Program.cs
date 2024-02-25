@@ -175,6 +175,17 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
+            builder.RequireRole("admin");
+        }
+        );
+    options.AddPolicy("AdminPolicy",
+        builder =>
+        {
+            builder.AuthenticationSchemes = new List<string>
+            {
+                JwtBearerDefaults.AuthenticationScheme
+            };
+            builder.RequireAuthenticatedUser();
             builder.RequireRole("Admin");
         }
         );
