@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Minerva.BusinessLayer.Interface;
 
-namespace MinervaApi.Controllers
+namespace Minerva.Controllers
 {
     [Route("documentclassification")]
     [ApiController]

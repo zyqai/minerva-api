@@ -51,6 +51,8 @@ builder.Services.AddTransient<IFileTypeRepository, FileTypeRepository>();
 builder.Services.AddTransient<IFileTypeBL, FileTypeBL>();
 builder.Services.AddTransient<IDocumentClassificationRepository, DocumentClassificationRepository>();
 builder.Services.AddTransient<IDocumentClassificationBL, DocumentClassificationBL>();
+builder.Services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>();
+builder.Services.AddTransient<IDocumentTypeBL, DocumentTypeBL>();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 

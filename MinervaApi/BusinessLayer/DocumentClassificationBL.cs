@@ -14,7 +14,6 @@ namespace Minerva.BusinessLayer
             DocumentClassificationrepository = _repository;
         }
 
-
         public Task<bool> DeleteDocumentClassifications(int DocumentClassificationAutoId)
         {
             return DocumentClassificationrepository.DeleteDocumentClassification(DocumentClassificationAutoId);
@@ -62,15 +61,6 @@ namespace Minerva.BusinessLayer
             return dc;
         }
 
-        Task<bool> IDocumentClassificationBL.SaveDocumentClassification(StatesRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IDocumentClassificationBL.UpdateDocumentClassifications(StatesRequest request)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }
