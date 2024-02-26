@@ -61,9 +61,9 @@ namespace MinervaApi.Controllers
         }
 
         [HttpGet("getProjectByPeople/{projectId}")]
-        public async Task<IActionResult> GetProjectByPeople(int? ProjectId)
+        public async Task<IActionResult> GetProjectByPeople(int? projectId)
         {
-            var res = await ppr.GetProjectByPeople(ProjectId);
+            var res = await ppr.GetProjectByPeople(projectId);
             if (res != null)
             {
                 return Ok(res);
