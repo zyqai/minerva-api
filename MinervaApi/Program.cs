@@ -53,6 +53,8 @@ builder.Services.AddTransient<IDocumentClassificationRepository, DocumentClassif
 builder.Services.AddTransient<IDocumentClassificationBL, DocumentClassificationBL>();
 builder.Services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>();
 builder.Services.AddTransient<IDocumentTypeBL, DocumentTypeBL>();
+builder.Services.AddTransient<IReminderRepository, ReminderRepository>();
+builder.Services.AddTransient<IReminderBL, ReminderBL>();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
