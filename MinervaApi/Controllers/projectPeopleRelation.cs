@@ -59,11 +59,11 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
         [HttpGet("getProjectByPeople/{projectId}")]
         public async Task<IActionResult> GetProjectByPeople(int? projectId)
         {
             var res = await ppr.GetProjectByPeople(projectId);
+
             if (res != null)
             {
                 return Ok(res);
