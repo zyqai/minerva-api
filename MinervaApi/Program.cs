@@ -49,6 +49,14 @@ builder.Services.AddTransient<IPersona, PersonaBL>();
 
 builder.Services.AddTransient<ICBRelationRepository, CBRelationRepository>();
 builder.Services.AddTransient<ICBRelation, CBRelationBL>();
+builder.Services.AddTransient<IFileTypeRepository, FileTypeRepository>();
+builder.Services.AddTransient<IFileTypeBL, FileTypeBL>();
+builder.Services.AddTransient<IDocumentClassificationRepository, DocumentClassificationRepository>();
+builder.Services.AddTransient<IDocumentClassificationBL, DocumentClassificationBL>();
+builder.Services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>();
+builder.Services.AddTransient<IDocumentTypeBL, DocumentTypeBL>();
+builder.Services.AddTransient<IReminderRepository, ReminderRepository>();
+builder.Services.AddTransient<IReminderBL, ReminderBL>();
 
 builder.Services.AddTransient<IMasterRepository, MasterRepository>();
 builder.Services.AddTransient<IMasterBL, MasterBL>();
