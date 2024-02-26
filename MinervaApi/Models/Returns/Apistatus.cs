@@ -48,5 +48,25 @@ namespace Minerva.Models.Returns
         public string? purpose { get; set; }
         public int? projectid { get; set; }
     }
+    public class ProjectByBusiness : Apistatus
+    { 
+        public Project? Project { get; set; }
+        public List<BusinessesByProject>? BusinessRelation { get; set; }
+    }
+
+    public class BusinessesByProject
+    {
+        public int? projectBusinessId { get; set; }
+        public int? businessId { get; set; }
+        public string? businessName { get; set; }
+        public string? industry { get; set;}
+        public string? annualRevenue { get; set; }
+        public string? businessAddress { get; set; }
+        public int? peopleid { get; set; }
+        public string? clientName { get; set; }
+        public int? projectId { get; set; }
+        public string? projectName { get; set;}
+    }
+
 
 }
