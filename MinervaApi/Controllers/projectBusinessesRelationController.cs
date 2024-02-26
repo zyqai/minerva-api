@@ -60,7 +60,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpGet("getProjectByBusiness/{ProjectId}")]
+        [HttpGet("getProjectByBusiness/{projectId}")]
         public async Task<IActionResult> getProjectByBusiness(int? ProjectId)
         {
             var res = await ipbr.GetProjectByBusiness(ProjectId);
