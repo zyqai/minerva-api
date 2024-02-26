@@ -1,52 +1,52 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Minerva.BusinessLayer.Interface;
-using Minerva.Models;
 using Minerva.Models.Returns;
-using MinervaApi.BusinessLayer.Interface;
+using Minerva.Models;
 using MinervaApi.Models.Requests;
 using System.Security.Claims;
+using Minerva.BusinessLayer.Interface;
+using MinervaApi.BusinessLayer.Interface;
 
 namespace MinervaApi.Controllers
 {
-    [Route("projectPeopleRelation")]
+    [Route("projectBusinessesRelation")]
     [ApiController]
-    public class projectPeopleRelation : ControllerBase
+    public class projectBusinessesRelationController : ControllerBase
     {
-        IprojectPeopleRelation ppr;
         IUserBL user;
-        public projectPeopleRelation(IprojectPeopleRelation iprojectPeople,IUserBL _user)
+        IprojectBusinessesRelation ipbr;
+        public projectBusinessesRelationController(IUserBL _user, IprojectBusinessesRelation _ipbr) 
         {
-            ppr = iprojectPeople;
             user = _user;
+            ipbr = _ipbr;
         }
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
         //[Authorize(Policy = "Staff")]
-        public async Task<IActionResult> Createppr(List<projectPeopleRelationRequest?> requests)
+        public async Task<IActionResult> Createppr(List<projectBusinessesRelationRequest?> requests)
         {
+            Apistatus res = new Apistatus();
             string? email = User.FindFirstValue(ClaimTypes.Email);
-            User ?u = new User();
+            User? u = new User();
             if (email != null)
             {
                 u = await user.GetUserusingUserName(email);
             }
-            projectPeopleRelationResponcestatus res = new projectPeopleRelationResponcestatus();
             try
-            { 
+            {
                 foreach (var request in requests)
                 {
-                    request.tenantId = u.TenantId;
-                    int req =await ppr.Create(request);
+                    request.tenantId = u?.TenantId;
+                    int req = await ipbr.Create(request);
                     if (req >= 1)
                     {
-                        res.code = "201"; res.message = "Project people relation created sussfully";
+                        res.code = "201"; res.message = "Project businesses relation created sussfully";
                     }
                     else
                     {
-                        res.code = "300"; res.message = "Project people relation not created!";
+                        res.code = "300"; res.message = "Project businesses relation not created!";
                     }
                 }
                 if (res.code == "201")
@@ -59,11 +59,11 @@ namespace MinervaApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("getProjectByPeople/{projectId}")]
-        public async Task<IActionResult> GetProjectByPeople(int? projectId)
-        {
-            var res = await ppr.GetProjectByPeople(projectId);
 
+        [HttpGet("getProjectByBusiness/{projectId}")]
+        public async Task<IActionResult> getProjectByBusiness(int? projectId)
+        {
+            var res = await ipbr.GetProjectByBusiness(projectId);
             if (res != null)
             {
                 return Ok(res);
