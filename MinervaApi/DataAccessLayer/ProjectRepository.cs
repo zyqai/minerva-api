@@ -2,6 +2,7 @@
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -269,6 +270,53 @@ namespace MinervaApi.DataAccessLayer
                     connection.Close();
                 }
             }
+        }
+
+        public async Task<List<ProjectDetails>> GetAllProjectsWithDetails(int? tenantId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.Parameters.AddWithValue("@in_tenantid", tenantId);
+            command.CommandText = @"usp_ProjectListWithDetails";
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllProjectsWithDetailsAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+
+        private async Task<IReadOnlyList<ProjectDetails>> ReadAllProjectsWithDetailsAsync(MySqlDataReader reader)
+        {
+            var bu = new List<ProjectDetails>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var user = new ProjectDetails
+                    {
+                        projectId = reader["ProjectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["ProjectId"]),
+                        tenantId = reader["TenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["TenantId"]),
+                        projectName = reader["ProjectName"] == DBNull.Value ? string.Empty : reader["ProjectName"].ToString(),
+                        projectDescription = reader["ProjectDescription"] == DBNull.Value ? string.Empty : reader["ProjectDescription"].ToString(),
+                        industryId = reader["industryId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industryId"]),
+                        amount = reader["Amount"] == DBNull.Value ? string.Empty : reader["Amount"].ToString(),
+                        purpose = reader["purpose"] == DBNull.Value ? string.Empty : reader["purpose"].ToString(),
+                        loanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
+                        statusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
+                        industrySectorAutoId= reader["industrySectorAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industrySectorAutoId"]),
+                        assignedToUserId = reader["assignedToUserId"] == DBNull.Value ? string.Empty : reader["assignedToUserId"].ToString(),
+                        industrySector = reader["industrySector"] == DBNull.Value ? string.Empty : reader["industrySector"].ToString(),
+                        industryDescription = reader["industryDescription"] == DBNull.Value ? string.Empty : reader["industryDescription"].ToString(),
+                        assignedToName = reader["assignedToName"] == DBNull.Value ? string.Empty : reader["assignedToName"].ToString(),
+                        statusName = reader["statusName"] == DBNull.Value ? string.Empty : reader["statusName"].ToString(),
+                        statusDescription = reader["statusDescription"] == DBNull.Value ? string.Empty : reader["statusDescription"].ToString(),
+                        loanType = reader["loanType"] == DBNull.Value ? string.Empty : reader["loanType"].ToString(),
+                        loanTypeDescription = reader["loanTypeDescription"] == DBNull.Value ? string.Empty : reader["loanTypeDescription"].ToString(),
+                    };
+                    bu.Add(user);
+                }
+            }
+            return bu;
         }
     }
 }

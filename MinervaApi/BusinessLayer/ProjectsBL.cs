@@ -131,5 +131,26 @@ namespace Minerva.BusinessLayer
             }
             return i;
         }
+
+        public async Task<projectListDetails> GetAllProjectsWithDetails(string? email)
+        {
+            projectListDetails projectList = new projectListDetails();
+            User? user = await userRepository.GetuserusingUserNameAsync(email);
+            List<ProjectDetails> projectListDetails = new List<ProjectDetails>();
+            projectListDetails=await PorjectRepository.GetAllProjectsWithDetails(user?.TenantId);
+            if (projectListDetails.Count > 0)
+            {
+                projectList.code = "200";
+                projectList.message = "response available";
+                projectList.responce = new List<ProjectDetails>();
+                projectList.responce = projectListDetails.ToList();
+            }
+            else
+            {
+                projectList.code = "204";
+                projectList.message = "No Content";
+            }
+            return projectList;
+        }
     }
 }

@@ -164,6 +164,25 @@ namespace MinervaApi.Controllers
             }
         }
 
+
+        [HttpGet("projectList")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> GetprojectList()
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            var projects = await ProtBL.GetAllProjectsWithDetails(email);
+
+            if (projects != null)
+            {
+                return Ok(projects);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
         [HttpPost("projectWithDetails")]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
