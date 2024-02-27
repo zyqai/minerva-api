@@ -164,6 +164,38 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [HttpPost("projectWithDetails")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> CreateProjectWithDetails(ProjectwithDetailsRequest request)
+        {
+            string ?CreatedBy = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    int b = await ProtBL.SaveProjectWithDetails(request,CreatedBy);
+                    if (b > 1)
+                    {
+                        Project? p = await ProtBL.GetProjects(b);
+                        return StatusCode(StatusCodes.Status201Created, p);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
     }
 }
