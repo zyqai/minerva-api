@@ -13,5 +13,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<bool> DeleteProject(int Id_Projects);
         public Task<projectsResponce?> GetProjectDetails(int id);
         public Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request,string CreatedBy);
+        public Task<projectListDetails> GetAllProjectsWithDetails(string? email);
     }
 }

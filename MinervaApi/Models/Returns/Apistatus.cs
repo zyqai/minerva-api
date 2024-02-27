@@ -68,4 +68,33 @@ namespace Minerva.Models.Returns
         public int? projectId { get; set; }
         public string? projectName { get; set;}
     }
+    public class projectListDetails : Apistatus
+    {
+        public List<ProjectDetails>? responce { get; set; }
+    }
+    public class ProjectDetails
+    {
+        public int? projectId { get; set; }
+        public int? tenantId { get; set; }
+        public string? projectName { get; set; }
+        public string? projectDescription { get; set; }
+        public int? industryId { get; set; }
+        public string? amount { get; set; }
+        public int? loanTypeAutoId { get; set; }
+        public string? purpose { get; set; }
+        public int? statusAutoId { get; set;}
+        public int? industrySectorAutoId { get; set;}
+        public string? industrySector { get; set; }
+        public string? industryDescription { get; set; }
+        public string? assignedToUserId { get; set; }
+        public string? assignedTousername { get; set; }
+        public string? assignedToemail { get; set; }
+        public string? assignedToName { get; set; }
+        public int? statusId { get; set; }
+        public string? statusName { get; set; }
+        public string? statusDescription { get; set; }
+        public string? loanType { get; set; }
+        public string? loanTypeDescription { get; set; }
+    }
+
 }
