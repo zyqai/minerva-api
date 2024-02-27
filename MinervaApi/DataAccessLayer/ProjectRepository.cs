@@ -1,6 +1,7 @@
 ﻿using Minerva.BusinessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Requests;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -200,6 +201,74 @@ namespace MinervaApi.DataAccessLayer
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
             return result.ToList();
+        }
+
+        public async Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request, User? user, int? peopleId, int? personaAutoId, int? businessId)
+        {
+            using var connection = database.OpenConnection();
+            using var command = connection.CreateCommand();
+            try
+            {
+                command.CommandText = "Usp_InsertProjectData";
+
+
+                command.Parameters.AddWithValue("@in_ProjectName", request.ProjectName);
+                command.Parameters.AddWithValue("@in_ProjectDescription", request.ProjectDescription);
+                command.Parameters.AddWithValue("@in_IndustryId", request.IndustryId);
+                command.Parameters.AddWithValue("@in_Amount", request.Amount);
+                command.Parameters.AddWithValue("@in_Purpose", request.Purpose);
+                command.Parameters.AddWithValue("@in_AssignedToUserId", request.AssignedToUserId);
+                command.Parameters.AddWithValue("@in_LoanTypeAutoId", request.LoanTypeAutoId);
+                command.Parameters.AddWithValue("@in_StatusAutoId", request.StatusAutoId);
+                command.Parameters.AddWithValue("@in_ProjectFilesPath", request.ProjectFilesPath);
+                command.Parameters.AddWithValue("@in_Notes", request.Notes);
+                command.Parameters.AddWithValue("@in_PrimaryBorrower", request.PrimaryBorrower);
+                command.Parameters.AddWithValue("@in_PrimaryBusiness", request.PrimaryBusiness);
+
+
+                command.Parameters.AddWithValue("@in_CreatedBy", user?.UserId);
+                command.Parameters.AddWithValue("@in_TenantId", user?.TenantId);
+                command.Parameters.AddWithValue("@in_peopleId", peopleId);// request.projectPeopleRelations.Where(w=>w.primaryBorrower==1).Select(s=>s.peopleId));
+                command.Parameters.AddWithValue("@in_personaAutoId", personaAutoId);// request.projectPeopleRelations.Where(w=>w.primaryBorrower==1).Select(s=>s.personaAutoId));
+                command.Parameters.AddWithValue("@in_businessId", businessId);// request.projectPeopleRelations.Where(w=>w.primaryBorrower==1).Select(s=>s.personaAutoId));
+
+                MySqlParameter param = new MySqlParameter("@in_ProjectStartDate", MySqlDbType.DateTime);
+                param.Value = request.ProjectStartDate;
+                command.Parameters.Add(param);
+
+                MySqlParameter param1 = new MySqlParameter("@in_DesiredClosedDate", MySqlDbType.DateTime);
+                param.Value = request.DesiredClosedDate;
+                command.Parameters.Add(param1);
+
+                MySqlParameter outputParameter = new MySqlParameter("@p_last_ProjectNameinsert_id", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outputParameter);
+                command.CommandType = CommandType.StoredProcedure;
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                int lastInsertId = Convert.ToInt32(outputParameter.Value);
+                if (lastInsertId >= 1)
+                {
+                    rowsAffected = lastInsertId;
+                }
+                return rowsAffected;
+
+            }
+            catch (Exception ex)
+            {
+                string errorMessage = ex.Message; // This will contain the MySQL error message
+
+                // Read the custom error message raised in the stored procedure
+                throw;
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }

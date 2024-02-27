@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Requests;
 
 namespace Minerva.IDataAccessLayer
 {
@@ -10,6 +11,6 @@ namespace Minerva.IDataAccessLayer
         public Task<bool> UpdateProject(Project ps);
         public Task<bool> DeleteProject(int id);
         public Task<List<Project>?> GetProjectByTenantAsync(int tenantId);
-        
+        public Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request, User? user, int? peopleId, int? personaAutoId, int? businessId);
     }
 }

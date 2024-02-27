@@ -6,6 +6,9 @@ using Minerva.Models.Requests;
 using Minerva.Models.Returns;
 using MinervaApi.DataAccessLayer;
 using MinervaApi.IDataAccessLayer;
+using MinervaApi.Models;
+using MinervaApi.Models.Requests;
+using System.Linq;
 
 namespace Minerva.BusinessLayer
 {
@@ -14,12 +17,15 @@ namespace Minerva.BusinessLayer
         IProjectRepository PorjectRepository;
         IUserRepository userRepository;
         IMasterRepository masterRepository;
-        public ProjectsBL(IProjectRepository _repository, IUserRepository user, IMasterRepository _master)
+        IprojectBusinessesRelationRepository Ibrr;
+        IprojectPeopleRelationRepository Iprr;
+        public ProjectsBL(IProjectRepository _repository, IUserRepository user, IMasterRepository _master, IprojectBusinessesRelationRepository _ipbrr,IprojectPeopleRelationRepository iproject)  
         {
             PorjectRepository = _repository;
             userRepository = user;
             masterRepository = _master;
-
+            Ibrr = _ipbrr;
+            Iprr = iproject;
         }
         public Task<Project?> GetProjects(int Id_Projects)
         {
@@ -90,6 +96,40 @@ namespace Minerva.BusinessLayer
                 projectsResponce.message = "no content";
             }
             return projectsResponce;
+        }
+
+        public async Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request,string CreatedBy)
+        {
+            projectPeopleRelationRequest ?projectPeople = request?.projectPeopleRelations?.Where(w => w.primaryBorrower == 1).Select(s => s).FirstOrDefault();
+            projectBusinessesRelationRequest ?projectBusinesses=request?.projectBusinessesRelations?.Where(w=>w.primaryForLoan==1).Select(s => s).FirstOrDefault();
+            User? user = await userRepository.GetuserusingUserNameAsync(CreatedBy);
+            int i= await PorjectRepository.SaveProjectWithDetails(request, user,projectPeople?.peopleId,projectPeople?.personaAutoId, projectBusinesses?.businessId);
+            if (request?.projectBusinessesRelations?.Count() > 1)
+            {
+                foreach (var item in request?.projectBusinessesRelations?.Where(w => w.primaryForLoan != 1))
+                {
+                    item.projectId = i;
+                    item.tenantId = user?.TenantId;
+                    int ir=await Ibrr.CreateProjectBusinessRelation(item);
+                }
+            }
+            if(request?.projectPeopleRelations?.Count() > 1)
+            {
+                foreach (var item in request?.projectPeopleRelations?.Where(w => w.primaryBorrower != 1))
+                {
+                    projectPeopleRelation project = new projectPeopleRelation 
+                    {
+                        peopleId = item.peopleId,
+                        personaAutoId = item.personaAutoId,
+                        primaryBorrower = item.primaryBorrower,
+                        projectId = i,
+                        projectPeopleId=item.projectPeopleId,
+                        tenantId = user?.TenantId
+                };
+                    int ib = await Iprr.CreateprojectPeopleRelation(project);
+                }
+            }
+            return i;
         }
     }
 }
