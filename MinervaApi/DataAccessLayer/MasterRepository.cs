@@ -138,7 +138,8 @@ namespace MinervaApi.DataAccessLayer
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"usp_statuses";
+            command.CommandText = @"usp_statusesById";
+            command.Parameters.AddWithValue("@in_statusId", id);
             command.CommandType = CommandType.StoredProcedure;
             var result = await ReadAllStatusAsync(await command.ExecuteReaderAsync());
             connection.Close();
