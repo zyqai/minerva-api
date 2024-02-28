@@ -59,6 +59,7 @@ namespace Minerva.BusinessLayer
             us.IsTenantUser = user.IsTenantUser;
             us.IsActive = user.IsActive;
             us.CreatedBy = user.CreatedBy;
+            us.ModifiedBy = user.ModifiedBy;
             us.NotificationsEnabled = user.NotificationsEnabled;
             us.MfaEnabled = user.MfaEnabled;
             us.TenantId = user.TenantId;

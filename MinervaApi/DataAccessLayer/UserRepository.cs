@@ -111,7 +111,7 @@ namespace Minerva.DataAccessLayer
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_UserUpdate";
             AddUserParameters(command, us);
-            command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
+            command.Parameters.AddWithValue("@in_modifiedBy", us.ModifiedBy);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();

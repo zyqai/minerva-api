@@ -107,7 +107,7 @@ namespace Minerva.DataAccessLayer
             command.CommandText = @"usp_peopleUpdate";
             AddParameters(command, us);
             command.Parameters.AddWithValue("@p_modifiedBy", us.ModifiedBy);
-            command.Parameters.AddWithValue("@p_clientId", us.ClientId);
+            command.Parameters.AddWithValue("@p_peopleId", us.ClientId);
             command.CommandType = CommandType.StoredProcedure;
             int i = await command.ExecuteNonQueryAsync();
             connection.Close();
