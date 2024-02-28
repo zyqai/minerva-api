@@ -4,6 +4,7 @@ using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Requests;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace MinervaApi.DataAccessLayer
 {
@@ -72,6 +73,37 @@ namespace MinervaApi.DataAccessLayer
                     peopleid = reader["peopleid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleid"]),
                     clientName = reader["clientname"] == DBNull.Value ? string.Empty : reader["clientname"].ToString(),
                     projectName = reader["projectName"] == DBNull.Value ? string.Empty : reader["projectName"].ToString(),
+                    projectId = reader["projectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectid"]),
+                };
+                res.Add(peoplesbyproject);
+            }
+            return res;
+        }
+
+        public async Task<List<ResponceprojectBusinessesRelation?>?> GetBusinessByProjectid(int? projectId)
+        {
+            using var connection = await con.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_projectBusinessRelationwithProjectId";
+            command.Parameters.AddWithValue("@in_projectid", projectId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllProjectByBusinessListAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result;
+        }
+
+        private async Task<List<ResponceprojectBusinessesRelation?>?> ReadAllProjectByBusinessListAsync(MySqlDataReader reader)
+        {
+            List<ResponceprojectBusinessesRelation> res = new List<ResponceprojectBusinessesRelation>();
+            while (await reader.ReadAsync())
+            {
+                ResponceprojectBusinessesRelation peoplesbyproject = new ResponceprojectBusinessesRelation
+                {
+                    projectBusinessId = reader["projectBusinessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectBusinessId"]),
+                    businessId = reader["businessId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["businessId"]),
+                    businessName = reader["businessName"] == DBNull.Value ? string.Empty : reader["businessName"].ToString(),
+                    businessType = reader["businessType"] == DBNull.Value ? string.Empty : reader["businessType"].ToString(),
                     projectId = reader["projectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectid"]),
                 };
                 res.Add(peoplesbyproject);

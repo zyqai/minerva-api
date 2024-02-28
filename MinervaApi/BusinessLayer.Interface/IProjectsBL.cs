@@ -14,5 +14,6 @@ namespace Minerva.BusinessLayer.Interface
         public Task<projectsResponce?> GetProjectDetails(int id);
         public Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request,string CreatedBy);
         public Task<projectListDetails> GetAllProjectsWithDetails(string? email);
+        public Task<projectsRelationResponce> getProjectWithDetails(int id);
     }
 }

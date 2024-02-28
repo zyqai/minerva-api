@@ -4,6 +4,7 @@ using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.PortableExecutable;
 
 namespace MinervaApi.DataAccessLayer
 {
@@ -84,6 +85,46 @@ namespace MinervaApi.DataAccessLayer
                     personaAutoId = reader["personaAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaAutoId"]),
                     personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
                     projectid = reader["projectid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectid"]),
+                };
+                res.Add(peoplesbyproject);
+            }
+            return res;
+        }
+
+        public async Task<List<ResponceprojectPeopleRelation?>?> GetPeopleDetailsByProjectId(int? projectId)
+        {
+            using var connection = await con.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_ProjectPeopleRelationsWithProjectId";
+            command.Parameters.AddWithValue("@in_projectid", projectId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllPeopleByProjectsRelationAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result;
+        }
+
+        private async Task<List<ResponceprojectPeopleRelation?>?> ReadAllPeopleByProjectsRelationAsync(MySqlDataReader reader)
+        {
+            List<ResponceprojectPeopleRelation> res = new List<ResponceprojectPeopleRelation>();
+            while (await reader.ReadAsync())
+            {
+                ResponceprojectPeopleRelation peoplesbyproject = new ResponceprojectPeopleRelation
+                {
+                    clientName = reader["clientname"] == DBNull.Value ? string.Empty : reader["clientname"].ToString(),
+                    firstName = reader["firstname"] == DBNull.Value ? string.Empty : reader["firstname"].ToString(),
+                    lastName = reader["lastname"] == DBNull.Value ? string.Empty : reader["lastname"].ToString(),
+                    phoneNumber = reader["phonenumber"] == DBNull.Value ? string.Empty : reader["phonenumber"].ToString(),
+                    email = reader["email"] == DBNull.Value ? string.Empty : reader["email"].ToString(),
+                    personaName = reader["personaName"] == DBNull.Value ? string.Empty : reader["personaName"].ToString(),
+                    projectPersona = reader["projectPersona"] == DBNull.Value ? string.Empty : reader["projectPersona"].ToString(),
+                    personaAutoId = reader["personaAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaAutoId"]),
+                    personaId = reader["personaId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["personaId"]),
+                    ProjectId = reader["ProjectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["ProjectId"]),
+                    peopleId = reader["peopleId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleId"]),
+                    tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
+                    userId = reader["userId"] == DBNull.Value ? string.Empty : reader["userId"].ToString(),
+                    primaryBorrower = reader["primaryBorrower"] == DBNull.Value ? string.Empty : reader["primaryBorrower"].ToString()
                 };
                 res.Add(peoplesbyproject);
             }

@@ -318,5 +318,41 @@ namespace MinervaApi.DataAccessLayer
             }
             return bu;
         }
+
+        public async Task<List<Notes?>> GetNotesByProjectId(int? projectId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.Parameters.AddWithValue("@in_projectId", projectId);
+            command.CommandText = @"usp_projectbyNotes";
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllNotessAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+
+        private async Task<IReadOnlyList<Notes>> ReadAllNotessAsync(MySqlDataReader reader)
+        {
+            var bu = new List<Notes>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var Note = new Notes
+                    {
+                        projectNotesId = reader["projectNotesId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectNotesId"]),
+                        tenantId = reader["TenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["TenantId"]),
+                        projectId = reader["projectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectId"]),
+                        notes = reader["notes"] == DBNull.Value ? string.Empty : reader["notes"].ToString(),
+                        createdByUserId = reader["createdByUserId"] == DBNull.Value ? string.Empty : reader["createdByUserId"].ToString(),
+                        CreatedByName = reader["CreatedByName"] == DBNull.Value ? string.Empty : reader["CreatedByName"].ToString(),
+                        createdOn = reader["createdOn"]==DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["createdOn"].ToString())
+                    };
+                    bu.Add(Note);
+                }
+            }
+            return bu;
+        }
     }
 }

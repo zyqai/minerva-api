@@ -152,5 +152,23 @@ namespace Minerva.BusinessLayer
             }
             return projectList;
         }
+
+        public async Task<projectsRelationResponce> getProjectWithDetails(int id)
+        {
+            projectsRelationResponce projectsResponce=new projectsRelationResponce ();
+            projectsResponce.Project = await PorjectRepository.GetProjectAsync(id);
+            if (projectsResponce.Project != null)
+            {
+                projectsResponce.code = "206";
+                projectsResponce.message = "responce available";
+                projectsResponce.Status = await masterRepository.GetStatusByIdAsync(projectsResponce?.Project?.StatusAutoId);
+                projectsResponce.Industry = await masterRepository.GetIndustrysByIdAsync(projectsResponce.Project?.IndustryId);
+                projectsResponce.LoanType = await masterRepository.GetloanTypesByIdAsync(projectsResponce.Project?.LoanTypeAutoId);
+                projectsResponce.projectPeopleRelation = await Iprr.GetPeopleDetailsByProjectId(projectsResponce.Project?.ProjectId);
+                projectsResponce.projectBusinessesRelation = await Ibrr.GetBusinessByProjectid(projectsResponce.Project?.ProjectId);
+                projectsResponce.Notes = await PorjectRepository.GetNotesByProjectId(projectsResponce.Project?.ProjectId);
+            }
+            return projectsResponce;
+        }
     }
 }

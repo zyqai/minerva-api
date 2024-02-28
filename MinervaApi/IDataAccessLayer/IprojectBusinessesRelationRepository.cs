@@ -7,5 +7,7 @@ namespace MinervaApi.IDataAccessLayer
     {
         public Task<int> CreateProjectBusinessRelation(projectBusinessesRelationRequest request);
         public Task<List<BusinessesByProject>> GetProjectByBusinessRelation(int? projectId);
+        public Task<List<ResponceprojectBusinessesRelation?>?> GetBusinessByProjectid(int? projectId);
+
     }
 }
