@@ -216,5 +216,22 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [HttpGet("getProjectWithDetails/{id}")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> getProjectWithDetails(int id)
+        {
+            var projects = await ProtBL.getProjectWithDetails(id);
+
+            if (projects != null)
+            {
+                return Ok(projects);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
     }
 }

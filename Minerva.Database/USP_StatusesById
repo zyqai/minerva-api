@@ -1,0 +1,6 @@
+CREATE DEFINER=`minerva_admin_dev`@`%` PROCEDURE `usp_statusesById`( IN in_statusId INT)
+BEGIN
+	SELECT statusAutoId, statusId, tenantId, statusName, statusDescription, projectRequestTemplateStatus 
+	FROM _zyq._statuses
+	WHERE statusAutoId = in_statusId;
+END

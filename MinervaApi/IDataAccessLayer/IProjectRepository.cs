@@ -14,5 +14,6 @@ namespace Minerva.IDataAccessLayer
         public Task<List<Project>?> GetProjectByTenantAsync(int tenantId);
         public Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request, User? user, int? peopleId, int? personaAutoId, int? businessId);
         public Task<List<ProjectDetails>> GetAllProjectsWithDetails(int? tenantId);
+        public Task<List<Notes?>> GetNotesByProjectId(int? projectId);
     }
 }
