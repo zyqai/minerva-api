@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Minerva.Models;
+using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MinervaApi.BusinessLayer;
 using MinervaApi.BusinessLayer.Interface;
+using MinervaApi.ExternalApi;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace MinervaApi.Controllers
 {
@@ -11,7 +17,7 @@ namespace MinervaApi.Controllers
     public class masterController : ControllerBase
     {
         IMasterBL bl;
-        public masterController(IMasterBL _masterBL) 
+        public masterController(IMasterBL _masterBL)
         {
             bl = _masterBL;
         }
@@ -57,6 +63,39 @@ namespace MinervaApi.Controllers
             else
             {
                 return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpPost("CreateNotes")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> CreateNotes(Notes request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    request.createdByUserId = email;
+                    var b = await bl.SaveNotes(request);
+                    if (b != null)
+                    {
+                        return StatusCode(StatusCodes.Status201Created, b);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
