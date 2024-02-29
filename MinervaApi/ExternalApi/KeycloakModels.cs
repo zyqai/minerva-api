@@ -36,10 +36,17 @@ namespace MinervaApi.ExternalApi
         public List<object>? disableableCredentialTypes { get; set; }
         public int notBefore { get; set; }
         public Access? access { get; set; }
+        public Attributes? attributes { get; set; }
     }
+    public class Attributes
+    {
+        public List<string?>? AnyId { get; set; }
+        public List<string?>? TenantId { get; set; }
+    }
+
     public class ClientRoles
     {
-        public List<string> roles { get; set; }    
+        public List<string>? roles { get; set; }    
     }
     public class Access
     {

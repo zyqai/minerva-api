@@ -81,7 +81,7 @@ namespace Minerva.DataAccessLayer
             }
             return users;
         }
-        public async Task<string> SaveUser(User us)
+        public async Task<string> SaveUser(User? us)
         {
             using var connection = database.OpenConnection();
             using var command = connection.CreateCommand();
@@ -99,6 +99,7 @@ namespace Minerva.DataAccessLayer
             connection.Close();
             if (i > 0)
             {
+                us =await GetuserAsync(lastInsertId);
                 var res =keycloak.CreateUser(us);
                 return lastInsertId;
             }
