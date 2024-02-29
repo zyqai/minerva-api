@@ -52,7 +52,7 @@ namespace Minerva.DataAccessLayer
                 {
                     var tenant = new Tenant
                     {
-                        TenantId = mySqlDataReader.IsDBNull(0) ? 0 : mySqlDataReader.GetInt32("TenantId"),
+                        TenantId = mySqlDataReader.IsDBNull(0) ? 0 : mySqlDataReader.GetInt32("tenantId"),
                         TenantName = mySqlDataReader.IsDBNull(1) ? null : mySqlDataReader["TenantName"].ToString(),
                         tenantDescription = mySqlDataReader.IsDBNull(14) ? null : mySqlDataReader["tenantDescription"].ToString(),
                         TenantDomain = mySqlDataReader.IsDBNull(3) ? null : mySqlDataReader.GetString(3),
