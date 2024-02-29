@@ -1,4 +1,5 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Returns;
 using MinervaApi.Models;
 
 namespace MinervaApi.IDataAccessLayer
@@ -12,6 +13,6 @@ namespace MinervaApi.IDataAccessLayer
         public Task<Industrys> GetIndustrysByIdAsync(int? id);
         public Task<loanTypes> GetloanTypesByIdAsync(int? id);
         public Task<Statuses> GetStatusByIdAsync(int? id);
-
+        public Task<Apistatus> SaveNotes(Notes request);
     }
 }

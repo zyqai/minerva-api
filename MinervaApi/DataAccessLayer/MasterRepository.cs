@@ -1,6 +1,8 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Returns;
 using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models;
+using MinervaApi.Models.Requests;
 using MySqlConnector;
 using System.Data;
 using System.Reflection.PortableExecutable;
@@ -146,5 +148,43 @@ namespace MinervaApi.DataAccessLayer
             return result.First();
         }
 
+        public async Task<Apistatus> SaveNotes(Notes request)
+        {
+            Apistatus apistatus = new Apistatus();
+            using var connection = database.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"Usp_InsertProjectNotes";
+            AddnotesParameters(command, request);
+            MySqlParameter outputParameter = new MySqlParameter("@p_projectNotesId", SqlDbType.Int)
+            {
+                Direction = ParameterDirection.Output
+            };
+            command.Parameters.Add(outputParameter);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = await command.ExecuteNonQueryAsync();
+            int lastInsertId = Convert.ToInt32(outputParameter.Value);
+            connection.Close();
+            if (i > 0)
+            {
+
+                i = lastInsertId;
+                apistatus.code = "200";
+                apistatus.message = "notes created successfully";
+            }
+            else
+            {
+                apistatus.code = "300";
+                apistatus.message = "notes not created try once again";
+            }
+           return apistatus;
+        }
+
+        private void AddnotesParameters(MySqlCommand command, Notes projectNote)
+        {
+            command.Parameters.AddWithValue("@in_projectId", projectNote.projectId);
+            command.Parameters.AddWithValue("@in_tenantId", projectNote.tenantId);
+            command.Parameters.AddWithValue("@in_notes", projectNote.notes);
+            command.Parameters.AddWithValue("@in_createdByUserId", projectNote.createdByUserId);
+        }
     }
 }

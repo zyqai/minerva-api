@@ -14,7 +14,7 @@ namespace MinervaApi.ExternalApi
         {
             _httpClient = httpClient;
         }
-        public async Task<HttpResponseMessage> CreateUser(User us)
+        public async Task<HttpResponseMessage> CreateUser(User? us)
         {
             try
             {
@@ -29,6 +29,12 @@ namespace MinervaApi.ExternalApi
                 client.enabled = us.IsActive;
                 //client.realmRoles = [];
                 client.clientRoles=new ClientRoles();
+                client.attributes = new Attributes();
+                client.attributes.AnyId = new List<string?>();
+                client.attributes.AnyId.Add(us.UserId);
+                client.attributes.TenantId=new List<string?> ();
+                client.attributes.TenantId.Add(us.TenantId.ToString());
+
                 
                 ClientRoles _clientRoles = new ClientRoles();
                 List<string> rolesList = new List<string>();
