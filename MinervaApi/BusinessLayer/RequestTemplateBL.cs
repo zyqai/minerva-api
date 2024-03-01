@@ -2,23 +2,26 @@
 using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
 using Minerva.Models;
+using Minerva.DataAccessLayer;
 
 namespace MinervaApi.BusinessLayer
 {
          public class RequestTemplateBL : IRequestTemplateBL
         {
             IRequestTemplateRepository RequestTemplaterepository;
-            public RequestTemplateBL(IRequestTemplateRepository _repository)
+        IUserRepository UserRepository;
+        public RequestTemplateBL(IRequestTemplateRepository _repository, IUserRepository userRepository)
             {
                 RequestTemplaterepository = _repository;
-            }
+            UserRepository = userRepository;
+        }
 
             public Task<bool> DeleteRequestTemplates(int RequestTemplateAutoId)
             {
                 return RequestTemplaterepository.DeleteRequestTemplate(RequestTemplateAutoId);
             }
 
-            public Task<List<RequestTemplate?>> GetALLRequestTemplates()
+            public Task<RequestTemplateResponse?> GetALLRequestTemplates()
             {
                 return RequestTemplaterepository.GetALLRequestTemplatesAsync();
             }
@@ -28,16 +31,23 @@ namespace MinervaApi.BusinessLayer
                 return RequestTemplaterepository.GetRequestTemplateAsync(requestYemplatesId);
             }
 
-            public Task<int> SaveRequestTemplate(RequestTemplateRequest request)
+            public async Task<int> SaveRequestTemplate(RequestTemplateRequest request)
             {
+                User? u = await UserRepository.GetuserusingUserNameAsync(request.email);
+                request.tenantId = (int)(u?.TenantId);
+
                 RequestTemplate RequestTemplate = Mapping(request);
-                return RequestTemplaterepository.SaveRequestTemplate(RequestTemplate);
+                return await RequestTemplaterepository.SaveRequestTemplate(RequestTemplate);
             }
 
-            public Task<bool> UpdateRequestTemplates(RequestTemplateRequest request)
+            public async Task<bool> UpdateRequestTemplates(RequestTemplateRequest request)
             {
-                RequestTemplate RequestTemplate = Mapping(request);
-                return RequestTemplaterepository.UpdateRequestTemplate(RequestTemplate);
+            User? u = await UserRepository.GetuserusingUserNameAsync(request.email);
+            request.tenantId = (int)(u?.TenantId);
+
+
+            RequestTemplate RequestTemplate = Mapping(request);
+                return await RequestTemplaterepository.UpdateRequestTemplate(RequestTemplate);
             }
 
             Task<bool> IRequestTemplateBL.DeleteRequestTemplate(int RequestTemplateAutoId)

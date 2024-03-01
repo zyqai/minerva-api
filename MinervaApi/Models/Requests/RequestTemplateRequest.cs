@@ -7,6 +7,6 @@
         public string? requestTemplateName { get; set; }
         public string? requestTemplateDescription { get; set; }
         public int? remindersAutoId { get; set; }
-
+        public string? email { get; set; }
     }
 }

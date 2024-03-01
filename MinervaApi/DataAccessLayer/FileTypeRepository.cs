@@ -3,6 +3,7 @@ using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Minerva.DataAccessLayer
 {
@@ -67,7 +68,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<IReadOnlyList<FileType>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<FileType>> ReadAllAsync(MySqlDataReader reader)
         {
             var filetypes = new List<FileType>();
             using (reader)
@@ -87,16 +88,33 @@ namespace Minerva.DataAccessLayer
             }
             return filetypes;
         }
-        public async Task<List<FileType?>> GetALLFileTypesAsync()
+        public async Task<FileTypeResponse?> GetALLFileTypesAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
             command.CommandText = @"usp_filetypesGetAll";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            List<FileType> result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return [.. result];
+            //return [.. result];
+
+            FileTypeResponse? ft = new FileTypeResponse();
+
+            if(result!= null)
+            {
+                ft.code = "206";
+                ft.message = "Response available";
+                ft.FileTypes = result;
+            }
+            else
+            {
+                ft.code = "204";
+                ft.message = "No Content";
+            }
+
+            return ft;
+
         }
 
         public async Task<bool> UpdateFileType(FileType ft)

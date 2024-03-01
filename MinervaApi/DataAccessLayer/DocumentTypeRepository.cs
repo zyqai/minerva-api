@@ -72,7 +72,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<IReadOnlyList<DocumentType>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<DocumentType>> ReadAllAsync(MySqlDataReader reader)
         {
             var DocumentTypes = new List<DocumentType>();
             using (reader)
@@ -96,7 +96,7 @@ namespace Minerva.DataAccessLayer
             }
             return DocumentTypes;
         }
-        public async Task<List<DocumentType?>> GetALLDocumentTypesAsync()
+        public async Task<DocumentTypeResponse?> GetALLDocumentTypesAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -105,7 +105,23 @@ namespace Minerva.DataAccessLayer
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return [.. result];
+            //return [.. result];
+
+            DocumentTypeResponse? ft = new DocumentTypeResponse();
+
+            if (result != null)
+            {
+                ft.code = "206";
+                ft.message = "Response available";
+                ft.DocumentTypes = result;
+            }
+            else
+            {
+                ft.code = "204";
+                ft.message = "No Content";
+            }
+
+            return ft;
         }
 
         public async Task<bool> UpdateDocumentType(DocumentType dt)

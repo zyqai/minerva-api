@@ -1,4 +1,6 @@
-﻿namespace Minerva.Models
+﻿using Minerva.Models.Returns;
+
+namespace Minerva.Models
 {
     public class RequestTemplate
     {
@@ -8,4 +10,9 @@
         public string? requestTemplateDescription { get; set; }
         public int? remindersAutoId { get; set; }
     }
+    public class RequestTemplateResponse : Apistatus
+    {
+        public List<RequestTemplate>? RequestTemplates { get; set; }
+    }
+
 }

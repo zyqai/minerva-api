@@ -71,7 +71,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<IReadOnlyList<RequestTemplate>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<RequestTemplate>> ReadAllAsync(MySqlDataReader reader)
         {
             var RequestTemplates = new List<RequestTemplate>();
             using (reader)
@@ -93,7 +93,7 @@ namespace Minerva.DataAccessLayer
             }
             return RequestTemplates;
         }
-        public async Task<List<RequestTemplate?>> GetALLRequestTemplatesAsync()
+        public async Task<RequestTemplateResponse?> GetALLRequestTemplatesAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -102,7 +102,24 @@ namespace Minerva.DataAccessLayer
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return [.. result];
+
+
+            RequestTemplateResponse? ft = new RequestTemplateResponse();
+
+            if (result != null)
+            {
+                ft.code = "206";
+                ft.message = "Response available";
+                ft.RequestTemplates = result;
+            }
+            else
+            {
+                ft.code = "204";
+                ft.message = "No Content";
+            }
+
+            return ft;
+
         }
 
         public async Task<bool> UpdateRequestTemplate(RequestTemplate dt)

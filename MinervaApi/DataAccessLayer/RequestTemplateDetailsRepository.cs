@@ -26,7 +26,7 @@ namespace Minerva.DataAccessLayer
 
         }
 
-        public async Task<bool> SaveRequestTemplateDetails(RequestTemplateDetails dt)
+        public async Task<int> SaveRequestTemplateDetails(RequestTemplateDetails dt)
         {
             using var connection = database.OpenConnection();
             try
@@ -36,18 +36,13 @@ namespace Minerva.DataAccessLayer
                 AddParameters(command, dt);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
-                if (rowsAffected == 1)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                
+                return rowsAffected;
+
             }
             catch (Exception)
             {
-                return false;
+                return 0;
             }
             finally
             {
@@ -72,7 +67,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<IReadOnlyList<RequestTemplateDetails>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<RequestTemplateDetails>> ReadAllAsync(MySqlDataReader reader)
         {
             var RequestTemplateDetailss = new List<RequestTemplateDetails>();
             using (reader)
@@ -94,16 +89,32 @@ namespace Minerva.DataAccessLayer
             }
             return RequestTemplateDetailss;
         }
-        public async Task<List<RequestTemplateDetails?>> GetALLRequestTemplateDetailssAsync()
+        public async Task<RequestTemplateDetailsResponse?> GetALLRequestTemplateDetailssAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
             command.CommandText = @"usp_RequestTemplateDetailsGetAll";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            List< RequestTemplateDetails> result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return [.. result];
+
+            RequestTemplateDetailsResponse? ft = new RequestTemplateDetailsResponse();
+
+            if (result != null)
+            {
+                ft.code = "206";
+                ft.message = "Response available";
+                ft.RequestTemplateDetails = result;
+            }
+            else
+            {
+                ft.code = "204";
+                ft.message = "No Content";
+            }
+
+            return ft;
+
         }
 
         public async Task<bool> UpdateRequestTemplateDetails(RequestTemplateDetails dt)

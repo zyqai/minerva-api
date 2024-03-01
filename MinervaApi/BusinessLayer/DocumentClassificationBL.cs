@@ -19,7 +19,7 @@ namespace Minerva.BusinessLayer
             return DocumentClassificationrepository.DeleteDocumentClassification(DocumentClassificationAutoId);
         }
 
-        public Task<List<DocumentClassification?>> GetALLDocumentClassifications()
+        public Task<DocumentClassificationResponse?> GetALLDocumentClassifications()
         {
             return DocumentClassificationrepository.GetALLDocumentClassificationsAsync();
         }

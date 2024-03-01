@@ -7,6 +7,7 @@
         public int? TenantId { get; set; }
         public string? Label { get; set; }
         public int? DocumentTypeAutoId { get; set; }
+        public string? email { get; set; }
 
     }
 }

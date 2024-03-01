@@ -19,7 +19,7 @@ namespace Minerva.BusinessLayer
             return DocumentTyperepository.DeleteDocumentType(DocumentTypeAutoId);
         }
 
-        public Task<List<DocumentType?>> GetALLDocumentTypes()
+        public Task<DocumentTypeResponse?> GetALLDocumentTypes()
         {
             return DocumentTyperepository.GetALLDocumentTypesAsync();
         }

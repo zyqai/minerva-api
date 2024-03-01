@@ -1,4 +1,6 @@
-﻿namespace Minerva.Models
+﻿using Minerva.Models.Returns;
+
+namespace Minerva.Models
 {
 
     public class RequestTemplateDetails
@@ -9,5 +11,12 @@
         public string? Label { get; set; }
         public int? DocumentTypeAutoId { get; set; }
 
+
+    }
+
+
+    public class RequestTemplateDetailsResponse : Apistatus
+    {
+        public List<RequestTemplateDetails>? RequestTemplateDetails { get; set; }
     }
 }

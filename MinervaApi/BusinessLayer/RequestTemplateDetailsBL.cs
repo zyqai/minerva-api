@@ -3,6 +3,8 @@ using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
 using Minerva.Models;
 using MinervaApi.Models.Requests;
+using Minerva.DataAccessLayer;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Minerva.BusinessLayer
 {
@@ -10,9 +12,12 @@ namespace Minerva.BusinessLayer
     {
 
         IRequestTemplateDetailsRepository RequestTemplateDetailsrepository;
-        public RequestTemplateDetailsBL(IRequestTemplateDetailsRepository _repository)
+        IUserRepository UserRepository;
+
+        public RequestTemplateDetailsBL(IRequestTemplateDetailsRepository _repository, IUserRepository userRepository)
         {
             RequestTemplateDetailsrepository = _repository;
+            UserRepository = userRepository;
         }
 
         public Task<bool> DeleteRequestTemplateDetails(int requestTemplateDetailsId)
@@ -20,7 +25,7 @@ namespace Minerva.BusinessLayer
             return RequestTemplateDetailsrepository.DeleteRequestTemplateDetails(requestTemplateDetailsId);
         }
 
-        public Task<List<RequestTemplateDetails?>> GetALLRequestTemplateDetails()
+        public Task<RequestTemplateDetailsResponse?> GetALLRequestTemplateDetails()
         {
             return RequestTemplateDetailsrepository.GetALLRequestTemplateDetailssAsync();
         }
@@ -30,16 +35,22 @@ namespace Minerva.BusinessLayer
             return RequestTemplateDetailsrepository.GetRequestTemplateDetailsAsync(requestTemplateDetailsId);
         }
 
-        public Task<bool> SaveRequestTemplateDetails(RequestTemplateDetailsRequest request)
+        public async Task<int> SaveRequestTemplateDetails(RequestTemplateDetailsRequest request)
         {
+            User? u = await UserRepository.GetuserusingUserNameAsync(request.email);
+            request.TenantId = u?.TenantId;
+
             RequestTemplateDetails RequestTemplateDetails = Mapping(request);
-            return RequestTemplateDetailsrepository.SaveRequestTemplateDetails(RequestTemplateDetails);
+            return await RequestTemplateDetailsrepository.SaveRequestTemplateDetails(RequestTemplateDetails);
         }
 
-        public Task<bool> UpdateRequestTemplateDetails(RequestTemplateDetailsRequest request)
+        public async Task<bool> UpdateRequestTemplateDetails(RequestTemplateDetailsRequest request)
         {
-            RequestTemplateDetails RequestTemplateDetails = Mapping(request);
-            return RequestTemplateDetailsrepository.UpdateRequestTemplateDetails(RequestTemplateDetails);
+            User? u = await UserRepository.GetuserusingUserNameAsync(request.email);
+            request.TenantId = u?.TenantId;
+
+            RequestTemplateDetails RequestTemplateDetails =  Mapping(request);
+            return await RequestTemplateDetailsrepository.UpdateRequestTemplateDetails(RequestTemplateDetails);
         }
 
         private RequestTemplateDetails Mapping(RequestTemplateDetailsRequest request)
