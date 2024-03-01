@@ -92,7 +92,7 @@ namespace MinervaApi.DataAccessLayer
                     var user = new Project
                     {
                         ProjectId = reader["ProjectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["ProjectId"]),
-                        TenantId = reader["TenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["TenantId"]),
+                        TenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
                         ProjectName = reader["ProjectName"] == DBNull.Value ? string.Empty : reader["ProjectName"].ToString(),
                         ProjectDescription = reader["ProjectDescription"] == DBNull.Value ? string.Empty : reader["ProjectDescription"].ToString(),
                         IndustryId = reader["industryId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industryId"]),

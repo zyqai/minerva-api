@@ -57,6 +57,10 @@ builder.Services.AddTransient<IDocumentTypeRepository, DocumentTypeRepository>()
 builder.Services.AddTransient<IDocumentTypeBL, DocumentTypeBL>();
 builder.Services.AddTransient<IReminderRepository, ReminderRepository>();
 builder.Services.AddTransient<IReminderBL, ReminderBL>();
+builder.Services.AddTransient<IRequestTemplateRepository, RequestTemplateRepository>();
+builder.Services.AddTransient<IRequestTemplateBL, RequestTemplateBL>();
+builder.Services.AddTransient<IRequestTemplateDetailsRepository, RequestTemplateDetailsRepository>();
+builder.Services.AddTransient<IRequestTemplateDetailsBL, RequestTemplateDetailsBL>();
 
 builder.Services.AddTransient<IMasterRepository, MasterRepository>();
 builder.Services.AddTransient<IMasterBL, MasterBL>();

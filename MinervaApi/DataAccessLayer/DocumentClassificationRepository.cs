@@ -66,7 +66,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<IReadOnlyList<DocumentClassification>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<DocumentClassification>> ReadAllAsync(MySqlDataReader reader)
         {
             var DocumentClassifications = new List<DocumentClassification>();
             using (reader)
@@ -86,7 +86,7 @@ namespace Minerva.DataAccessLayer
             }
             return DocumentClassifications;
         }
-        public async Task<List<DocumentClassification?>> GetALLDocumentClassificationsAsync()
+        public async Task<DocumentClassificationResponse?> GetALLDocumentClassificationsAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -95,7 +95,23 @@ namespace Minerva.DataAccessLayer
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            return [.. result];
+            //return [.. result];
+
+            DocumentClassificationResponse? ft = new DocumentClassificationResponse();
+
+            if (result != null)
+            {
+                ft.code = "206";
+                ft.message = "Response available";
+                ft.DocumentClassifications = result;
+            }
+            else
+            {
+                ft.code = "204";
+                ft.message = "No Content";
+            }
+
+            return ft;
         }
 
         public async Task<bool> UpdateDocumentClassification(DocumentClassification ft)

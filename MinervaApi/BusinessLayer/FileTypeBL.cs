@@ -24,7 +24,7 @@ namespace Minerva.BusinessLayer
             return Filetyperepository.DeleteFileType(FileTypeAutoId);
         }
 
-        public Task<List<FileType?>> GetALLFileTypes()
+        public Task<FileTypeResponse?> GetALLFileTypes()
         {
             return Filetyperepository.GetALLFileTypesAsync();
         }

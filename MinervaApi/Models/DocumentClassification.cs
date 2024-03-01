@@ -1,4 +1,6 @@
 ﻿
+using Minerva.Models.Returns;
+
 namespace Minerva.Models
 {
     public class DocumentClassification
@@ -8,6 +10,10 @@ namespace Minerva.Models
         public int TenantId { get; set; }
         public string? DocumentClassificationName { get; set; }
 
+    }
+    public class DocumentClassificationResponse : Apistatus
+    {
+        public List<DocumentClassification>? DocumentClassifications { get; set; }
     }
 }
 

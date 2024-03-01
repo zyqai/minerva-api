@@ -1,4 +1,6 @@
-﻿namespace Minerva.Models
+﻿using Minerva.Models.Returns;
+
+namespace Minerva.Models
 {
     public class DocumentType
     {
@@ -10,5 +12,11 @@
         public int? DocumentClassificationId { get; set; }
         public string? TemplateFilePath { get; set; }
 
+    }
+
+    public class DocumentTypeResponse : Apistatus
+    {
+
+        public List<DocumentType>? DocumentTypes { get; set; }
     }
 }

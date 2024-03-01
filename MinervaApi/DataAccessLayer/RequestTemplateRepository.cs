@@ -1,49 +1,52 @@
-﻿using Minerva.BusinessLayer;
+﻿using Minerva.BusinessLayer.Interface;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using MySqlConnector;
 using System.Data;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Minerva.DataAccessLayer
 {
-    public class FileTypeRepository : IFileTypeRepository
+    public class RequestTemplateRepository: IRequestTemplateRepository
     {
+
         MySqlDataSource database;
-        public FileTypeRepository(MySqlDataSource _dataSource)
+        public RequestTemplateRepository(MySqlDataSource _dataSource)
         {
             database = _dataSource;
         }
 
-        private void AddParameters(MySqlCommand command, FileType ft)
+        private void AddParameters(MySqlCommand command, RequestTemplate dt)
         {
-           command.Parameters.AddWithValue("@p_fileTypeId", ft.FileTypeId);
-            command.Parameters.AddWithValue("@p_tenantId", ft.TenantId);
-            command.Parameters.AddWithValue("@p_fileTypeName", ft.FileTypeName);
+            
+            command.Parameters.AddWithValue("@p_tenantId", dt.tenantId);
+            command.Parameters.AddWithValue("@p_RequestTemplateName", dt.requestTemplateName);
+            command.Parameters.AddWithValue("@p_RequestTemplateDescription", dt.requestTemplateDescription);
+            command.Parameters.AddWithValue("@p_remindersAutoId", dt.remindersAutoId);
+
         }
 
-        public async Task<bool> SaveFileType(FileType p)
+        public async Task<int> SaveRequestTemplate(RequestTemplate dt)
         {
             using var connection = database.OpenConnection();
             try
             {
                 using var command = connection.CreateCommand();
-                command.CommandText = "usp_fileTypeCreate";
-                AddParameters(command, p);
+                command.CommandText = "usp_RequestTemplateCreate";
+                AddParameters(command, dt);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 if (rowsAffected == 1)
                 {
-                    return true;
+                    return 1;
                 }
                 else
                 {
-                    return false;
+                    return 0;
                 }
             }
             catch (Exception)
             {
-                return false;
+                return 0;
             }
             finally
             {
@@ -55,12 +58,12 @@ namespace Minerva.DataAccessLayer
         }
 
 
-        public async Task<FileType?> GetFileTypeAsync(int? FileTypeAutoId)
+        public async Task<RequestTemplate?> GetRequestTemplateAsync(int? requestTemplateId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"usp_fileTypeGetById";
-            command.Parameters.AddWithValue("@p_filetypeAutoId", FileTypeAutoId);
+            command.CommandText = @"usp_RequestTemplateGetById";
+            command.Parameters.AddWithValue("@p_RequestTemplateId", requestTemplateId);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
@@ -68,44 +71,46 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        private async Task<List<FileType>> ReadAllAsync(MySqlDataReader reader)
+        private async Task<List<RequestTemplate>> ReadAllAsync(MySqlDataReader reader)
         {
-            var filetypes = new List<FileType>();
+            var RequestTemplates = new List<RequestTemplate>();
             using (reader)
             {
                 while (await reader.ReadAsync())
                 {
-                    var ft = new FileType
+                    var dt = new RequestTemplate
                     {
-                        FileTypeAutoId = Convert.ToInt32(reader["fileTypeAutoId"]),
-                        FileTypeId = Convert.ToInt32(reader["fileTypeId"]),
-                        TenantId = Convert.ToInt32(reader["tenantId"]),
-                        FileTypeName = reader["fileTypeName"].ToString()
+                        requestTemplateId = Convert.ToInt32(reader["requestTemplateId"]),
+                        tenantId = Convert.ToInt32(reader["tenantId"]),
+                        requestTemplateName = reader["requestTemplateName"].ToString(),
+                        requestTemplateDescription = reader["requestTemplateDescription"].ToString(),
+                        remindersAutoId = Convert.ToInt32(reader["remindersAutoId"]),
+
                     };
-                    filetypes.Add(ft);
+                    RequestTemplates.Add(dt);
                 }
 
             }
-            return filetypes;
+            return RequestTemplates;
         }
-        public async Task<FileTypeResponse?> GetALLFileTypesAsync()
+        public async Task<RequestTemplateResponse?> GetALLRequestTemplatesAsync()
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
-            command.CommandText = @"usp_filetypesGetAll";
+            command.CommandText = @"usp_RequestTemplatesGetAll";
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-            List<FileType> result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
-            //return [.. result];
 
-            FileTypeResponse? ft = new FileTypeResponse();
 
-            if(result!= null)
+            RequestTemplateResponse? ft = new RequestTemplateResponse();
+
+            if (result != null)
             {
                 ft.code = "206";
                 ft.message = "Response available";
-                ft.FileTypes = result;
+                ft.RequestTemplates = result;
             }
             else
             {
@@ -117,16 +122,16 @@ namespace Minerva.DataAccessLayer
 
         }
 
-        public async Task<bool> UpdateFileType(FileType ft)
+        public async Task<bool> UpdateRequestTemplate(RequestTemplate dt)
         {
             using var connection = database.OpenConnection();
             try
             {
                 using var command = connection.CreateCommand();
 
-                command.CommandText = "usp_filetypeUpdate";
-                command.Parameters.AddWithValue("@p_fileTypeAutoId", ft.FileTypeAutoId);
-                AddParameters(command, ft);
+                command.CommandText = "usp_RequestTemplateUpdate";
+                command.Parameters.AddWithValue("@p_requestTemplateId", dt.requestTemplateId);
+                AddParameters(command, dt);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 if (rowsAffected == 1)
@@ -151,14 +156,14 @@ namespace Minerva.DataAccessLayer
             }
         }
 
-        public async Task<bool> DeleteFileType(int? FileTypeAutoId)
+        public async Task<bool> DeleteRequestTemplate(int? RequestTemplateAutoId)
         {
             using var connection = database.OpenConnection();
             try
             {
                 using var command = connection.CreateCommand();
-                command.CommandText = "usp_filetypeDelete";
-                command.Parameters.AddWithValue("@fileTypeAutoId", FileTypeAutoId);
+                command.CommandText = "usp_RequestTemplateDelete";
+                command.Parameters.AddWithValue("@RequestTemplateAutoId", RequestTemplateAutoId);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
                 if (rowsAffected == 1)
@@ -182,7 +187,5 @@ namespace Minerva.DataAccessLayer
                 }
             }
         }
-
-
     }
 }
