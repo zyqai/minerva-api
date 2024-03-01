@@ -7,6 +7,7 @@ using MinervaApi.Models.Requests;
 using System.Security.Claims;
 using Minerva.BusinessLayer.Interface;
 using MinervaApi.BusinessLayer.Interface;
+using Minerva.BusinessLayer;
 
 namespace MinervaApi.Controllers
 {
@@ -60,7 +61,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpGet("getProjectByBusiness/{projectId}")]
+        [HttpGet("projectBusinesses/{projectId}")]
         public async Task<IActionResult> getProjectByBusiness(int? projectId)
         {
             var res = await ipbr.GetProjectByBusiness(projectId);
@@ -71,6 +72,34 @@ namespace MinervaApi.Controllers
             else
             {
                 return NotFound();
+            }
+        }
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> DeleteProjectRelation(int id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var b = await ipbr.DeleteProjectBusinessRelation(id);
+                    if (b)
+                    {
+                        return StatusCode(StatusCodes.Status201Created);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

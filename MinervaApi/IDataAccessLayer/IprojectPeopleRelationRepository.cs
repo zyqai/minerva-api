@@ -9,5 +9,6 @@ namespace MinervaApi.IDataAccessLayer
         public Task<int> CreateprojectPeopleRelation(projectPeopleRelation? relation);
         public Task<List<Peoplesbyproject>> GetPeopleByProjectId(int? projectId);
         public Task<List<ResponceprojectPeopleRelation?>?> GetPeopleDetailsByProjectId(int? projectId);
+        public Task<bool> DeleteProjectPeopleRelation(int projectPeopleId);
     }
 }

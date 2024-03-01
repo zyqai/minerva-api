@@ -124,11 +124,24 @@ namespace MinervaApi.DataAccessLayer
                     peopleId = reader["peopleId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleId"]),
                     tenantId = reader["tenantId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["tenantId"]),
                     userId = reader["userId"] == DBNull.Value ? string.Empty : reader["userId"].ToString(),
-                    primaryBorrower = reader["primaryBorrower"] == DBNull.Value ? string.Empty : reader["primaryBorrower"].ToString()
+                    primaryBorrower = reader["primaryBorrower"] == DBNull.Value ? string.Empty : reader["primaryBorrower"].ToString(),
+                    projectPeopleId= reader["projectPeopleId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectPeopleId"]),
                 };
                 res.Add(peoplesbyproject);
             }
             return res;
+        }
+
+        public async Task<bool> DeleteProjectPeopleRelation(int projectPeopleId)
+        {
+            using var connection = con.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_ProjectPeopleDelete";
+            command.Parameters.AddWithValue("@in_projectPeopleId", projectPeopleId);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = await command.ExecuteNonQueryAsync();
+            connection.Close();
+            return i >= 1 ? true : false;
         }
     }
 }

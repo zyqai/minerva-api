@@ -7,5 +7,6 @@ namespace MinervaApi.BusinessLayer.Interface
     {
         public Task<int> Create(projectPeopleRelationRequest request);
         public Task<ProjectByPeople> GetProjectByPeople(int? projectId);
+        public Task<bool> DeleteProjectPeopleRelation(int id);
     }
 }

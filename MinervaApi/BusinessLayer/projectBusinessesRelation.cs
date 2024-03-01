@@ -39,5 +39,9 @@ namespace MinervaApi.BusinessLayer
             }
                 return res;
         }
+        public Task<bool> DeleteProjectBusinessRelation(int id)
+        {
+            return repository.DeleteProjectBusinessRelation(id);
+        }
     }
 }
