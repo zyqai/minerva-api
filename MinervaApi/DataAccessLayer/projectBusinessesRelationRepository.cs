@@ -70,8 +70,8 @@ namespace MinervaApi.DataAccessLayer
                     industry = reader["industry"] == DBNull.Value ? string.Empty : reader["industry"].ToString(),
                     annualRevenue = reader["annualRevenue"] == DBNull.Value ? string.Empty : reader["annualRevenue"].ToString(),
                     businessAddress = reader["businessAddress"] == DBNull.Value ? string.Empty : reader["businessAddress"].ToString(),
-                    peopleid = reader["peopleid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleid"]),
-                    clientName = reader["clientname"] == DBNull.Value ? string.Empty : reader["clientname"].ToString(),
+                    //peopleid = reader["peopleid"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["peopleid"]),
+                    //clientName = reader["clientname"] == DBNull.Value ? string.Empty : reader["clientname"].ToString(),
                     projectName = reader["projectName"] == DBNull.Value ? string.Empty : reader["projectName"].ToString(),
                     projectId = reader["projectId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["projectid"]),
                 };
@@ -109,6 +109,18 @@ namespace MinervaApi.DataAccessLayer
                 res.Add(peoplesbyproject);
             }
             return res;
+        }
+
+        public async Task<bool> DeleteProjectBusinessRelation(int projectBusinessId)
+        {
+            using var connection = con.OpenConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"USP_ProjectBusinessesDelete";
+            command.Parameters.AddWithValue("@in_projectBusinessId", projectBusinessId);
+            command.CommandType = CommandType.StoredProcedure;
+            int i = await command.ExecuteNonQueryAsync();
+            connection.Close();
+            return i >= 1 ? true : false;
         }
     }
 }

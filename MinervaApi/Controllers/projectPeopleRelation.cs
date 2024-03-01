@@ -73,5 +73,34 @@ namespace MinervaApi.Controllers
                 return NotFound();
             }
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> DeleteProjectPeopleRelation(int id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var b = await ppr.DeleteProjectPeopleRelation(id);
+                    if (b)
+                    {
+                        return StatusCode(StatusCodes.Status201Created);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
