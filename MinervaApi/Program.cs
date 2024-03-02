@@ -65,6 +65,9 @@ builder.Services.AddTransient<IRequestTemplateDetailsBL, RequestTemplateDetailsB
 builder.Services.AddTransient<IMasterRepository, MasterRepository>();
 builder.Services.AddTransient<IMasterBL, MasterBL>();
 
+builder.Services.AddTransient<ILenderRepository, LenderRepository>();
+builder.Services.AddTransient<ILenderBL , LenderBL>();
+
 builder.Services.AddTransient<IprojectPeopleRelation,projectPeopleRelationBL>();
 builder.Services.AddTransient<IprojectPeopleRelationRepository,projectPeopleRelationRepository>();
 
