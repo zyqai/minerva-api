@@ -24,7 +24,9 @@ VIEW `projectlist_view` AS
         `e`.`statusName` AS `statusName`,
         `e`.`statusDescription` AS `statusDescription`,
         `d`.`loanType` AS `loanType`,
-        `d`.`loanTypeDescription` AS `loanTypeDescription`
+        `d`.`loanTypeDescription` AS `loanTypeDescription`,
+        `a`.`createdByUserId` AS `createdByUserId`,
+        `a`.`createdDateTime` AS `createdDateTime`
     FROM
         ((((`_projects` `a`
         JOIN `_industrysectors` `b` ON ((`a`.`industryId` = `b`.`industryId`)))

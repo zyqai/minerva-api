@@ -96,6 +96,8 @@ namespace Minerva.Models.Returns
         public string? statusDescription { get; set; }
         public string? loanType { get; set; }
         public string? loanTypeDescription { get; set; }
+        public DateTime? createdOn { get; set; }
+        public string? CreatedBy { get; set; }
     }
     public class projectsRelationResponce : Apistatus
     {
