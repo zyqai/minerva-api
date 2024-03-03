@@ -3,7 +3,9 @@ using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
 using Minerva.Models.Returns;
+using MinervaApi.Models.Requests;
 using MySqlConnector;
+using Newtonsoft.Json;
 using System.Data;
 using System.Reflection.PortableExecutable;
 
@@ -303,7 +305,7 @@ namespace MinervaApi.DataAccessLayer
                         purpose = reader["purpose"] == DBNull.Value ? string.Empty : reader["purpose"].ToString(),
                         loanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
                         statusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
-                        industrySectorAutoId= reader["industrySectorAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industrySectorAutoId"]),
+                        industrySectorAutoId = reader["industrySectorAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["industrySectorAutoId"]),
                         assignedToUserId = reader["assignedToUserId"] == DBNull.Value ? string.Empty : reader["assignedToUserId"].ToString(),
                         industrySector = reader["industrySector"] == DBNull.Value ? string.Empty : reader["industrySector"].ToString(),
                         industryDescription = reader["industryDescription"] == DBNull.Value ? string.Empty : reader["industryDescription"].ToString(),
@@ -347,12 +349,64 @@ namespace MinervaApi.DataAccessLayer
                         notes = reader["notes"] == DBNull.Value ? string.Empty : reader["notes"].ToString(),
                         createdByUserId = reader["createdByUserId"] == DBNull.Value ? string.Empty : reader["createdByUserId"].ToString(),
                         CreatedByName = reader["CreatedByName"] == DBNull.Value ? string.Empty : reader["CreatedByName"].ToString(),
-                        createdOn = reader["createdOn"]==DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["createdOn"].ToString())
+                        createdOn = reader["createdOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["createdOn"].ToString())
                     };
                     bu.Add(Note);
                 }
             }
             return bu;
+        }
+
+        public async Task<Apistatus> SaveProjectRequest(ProjectRequestData request,string Userid)
+        {
+            Apistatus apistatus = new Apistatus();
+            try
+            {
+                using (MySqlConnection connection = database.OpenConnection())
+                {
+                    using (MySqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "Usp_ProjectRequestWithDetailsInsert";
+
+                        // Convert requestSendTo and requestDetails to JSON
+                        string jsonSendTo = JsonConvert.SerializeObject(request.RequestSendTo);
+                        string jsonDetails = JsonConvert.SerializeObject(request.RequestDetails);
+
+                        // Add parameters
+                        command.Parameters.AddWithValue("@in_requestName", request.RequestName);
+                        command.Parameters.AddWithValue("@in_requestDescription", request.RequestDescription);
+                        command.Parameters.AddWithValue("@in_projectId", request.ProjectId);
+                        command.Parameters.AddWithValue("@in_tenantId", request.TenentId);
+                        command.Parameters.AddWithValue("@in_reminderId", request.ReminderId);
+                        command.Parameters.AddWithValue("@in_requestSendTo", jsonSendTo);
+                        command.Parameters.AddWithValue("@in_requestDetails", jsonDetails);
+                        command.Parameters.AddWithValue("@in_createdBy", Userid);
+
+                        // Add output parameter to get the response from the stored procedure
+                        
+
+                        MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar,1000)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(outputParameter);
+
+                        command.ExecuteNonQuery();
+                        // Get the response message from the stored procedure
+                        string message = command.Parameters["@out_message"].Value.ToString();
+                        apistatus.message = message;
+                        apistatus.code = message == "Insertion successful." ? "200" : "500";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                apistatus.code = "500";
+                apistatus.message = ex.Message.ToString();
+            }
+            return apistatus;
         }
     }
 }

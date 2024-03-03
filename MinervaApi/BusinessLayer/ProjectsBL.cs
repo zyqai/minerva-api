@@ -170,5 +170,15 @@ namespace Minerva.BusinessLayer
             }
             return projectsResponce;
         }
+
+        public async Task<Apistatus> SaveProjectRequest(ProjectRequestData request, string email)
+        {
+            User ?user = await userRepository.GetuserusingUserNameAsync(email);
+            if (user != null)
+            {
+                request.TenentId = user.TenantId;
+            }
+            return await PorjectRepository.SaveProjectRequest(request,user?.UserId);
+        }
     }
 }

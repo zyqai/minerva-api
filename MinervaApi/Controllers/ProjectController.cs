@@ -5,7 +5,9 @@ using Minerva.BusinessLayer;
 using Minerva.BusinessLayer.Interface;
 using Minerva.Models;
 using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MinervaApi.ExternalApi;
+using MinervaApi.Models.Requests;
 using Newtonsoft.Json;
 using System.Security.Claims;
 
@@ -230,6 +232,40 @@ namespace MinervaApi.Controllers
             else
             {
                 return NotFound(); // or another appropriate status
+            }
+        }
+
+
+        [HttpPost("createProjectRequest")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> createProjectRequest(ProjectRequestData request)
+        {
+            string? emails = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Apistatus aPI = new Apistatus();
+                    aPI = await ProtBL.SaveProjectRequest(request, emails);
+                    if (aPI!=null)
+                    {
+                        return StatusCode(StatusCodes.Status201Created, aPI);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
