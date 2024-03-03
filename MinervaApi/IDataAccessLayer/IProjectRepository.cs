@@ -17,5 +17,6 @@ namespace Minerva.IDataAccessLayer
         public Task<List<ProjectDetails>> GetAllProjectsWithDetails(int? tenantId);
         public Task<List<Notes?>> GetNotesByProjectId(int? projectId);
         public Task<Apistatus> SaveProjectRequest(ProjectRequestData request,string userid);
+        public Task<Apistatus> UpdateProjectRequest(ProjectRequestDetailUpdateData request, string? userId);
     }
 }

@@ -58,4 +58,22 @@
         public string? Label { get; set; }
         public int? DocumentTypeAutoId { get; set; }
     }
+
+    public class ProjectRequestDetailUpdateData
+    {
+        public int? ProjectRequestId { get; set; }
+        public int? ProjectId { get; set; }
+        public int? TenantId { get; set; }
+        public int? RemindersAutoId { get; set; }
+        public string? ProjectRequestName { get; set; }
+        public string? ProjectRequestDescription { get; set; }
+        public int? ProjectRequestSentId { get; set; }
+        public string? SentTo { get; set; }
+        public string? SentCC { get; set; }
+        public int? StatusAutoId { get; set; }
+        public int? ProjectRequestDetailsId { get; set; }
+        public string? Label { get; set; }
+        public int? DocumentTypeAutoId { get; set; }
+    }
+
 }

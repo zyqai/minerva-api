@@ -8,6 +8,7 @@ using MySqlConnector;
 using Newtonsoft.Json;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MinervaApi.DataAccessLayer
 {
@@ -357,7 +358,7 @@ namespace MinervaApi.DataAccessLayer
             return bu;
         }
 
-        public async Task<Apistatus> SaveProjectRequest(ProjectRequestData request,string Userid)
+        public async Task<Apistatus> SaveProjectRequest(ProjectRequestData request, string Userid)
         {
             Apistatus apistatus = new Apistatus();
             try
@@ -384,9 +385,9 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.AddWithValue("@in_createdBy", Userid);
 
                         // Add output parameter to get the response from the stored procedure
-                        
 
-                        MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar,1000)
+
+                        MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
                         {
                             Direction = ParameterDirection.Output
                         };
@@ -397,6 +398,56 @@ namespace MinervaApi.DataAccessLayer
                         string message = command.Parameters["@out_message"].Value.ToString();
                         apistatus.message = message;
                         apistatus.code = message == "Insertion successful." ? "200" : "500";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                apistatus.code = "500";
+                apistatus.message = ex.Message.ToString();
+            }
+            return apistatus;
+        }
+
+        public async Task<Apistatus> UpdateProjectRequest(ProjectRequestDetailUpdateData data, string? userId)
+        {
+            Apistatus apistatus = new Apistatus();
+            try
+            {
+                using (MySqlConnection connection = database.OpenConnection())
+                {
+                    using (MySqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "Usp_ProjectRequestDataUpdate";
+
+                        command.Parameters.AddWithValue("@in_projectRequestId", data.ProjectRequestId);
+                        command.Parameters.AddWithValue("@in_projectId", data.ProjectId);
+                        command.Parameters.AddWithValue("@in_tenantId", data.TenantId);
+                        command.Parameters.AddWithValue("@in_remindersAutoId", data.RemindersAutoId);
+                        command.Parameters.AddWithValue("@in_projectRequestName", data.ProjectRequestName);
+                        command.Parameters.AddWithValue("@in_projectRequestDescription", data.ProjectRequestDescription);
+                        command.Parameters.AddWithValue("@in_modifiedBy", userId);
+                        command.Parameters.AddWithValue("@in_projectRequestSentId", data.ProjectRequestSentId);
+                        command.Parameters.AddWithValue("@in_sentTo", data.SentTo);
+                        command.Parameters.AddWithValue("@in_sentcc", data.SentCC);
+                        command.Parameters.AddWithValue("@in_statusAutoId", data.StatusAutoId);
+                        command.Parameters.AddWithValue("@in_projectRequestDetailsId", data.ProjectRequestDetailsId);
+                        command.Parameters.AddWithValue("@in_label", data.Label);
+                        command.Parameters.AddWithValue("@in_documentTypeAutoId", data.DocumentTypeAutoId);
+                        // Add output parameter to get the response from the stored procedure
+                        MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(outputParameter);
+
+                        command.ExecuteNonQuery();
+                        // Get the response message from the stored procedure
+                        string message = command.Parameters["@out_message"].Value.ToString();
+                        apistatus.message = message;
+                        apistatus.code = message == "Update successful." ? "200" : "500";
                     }
                 }
             }
