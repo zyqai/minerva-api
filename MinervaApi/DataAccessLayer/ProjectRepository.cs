@@ -313,7 +313,7 @@ namespace MinervaApi.DataAccessLayer
                         loanType = reader["loanType"] == DBNull.Value ? string.Empty : reader["loanType"].ToString(),
                         loanTypeDescription = reader["loanTypeDescription"] == DBNull.Value ? string.Empty : reader["loanTypeDescription"].ToString(),
                         CreatedBy = reader["createdByUserId"].ToString(),//reader["createdBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["createdBy"]),
-                        createdOn = reader["createdDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdTime"]),
+                        createdOn = reader["createdDateTime"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["createdDateTime"]),
                     };
                     bu.Add(user);
                 }
