@@ -15,5 +15,26 @@ namespace MinervaApi.BusinessLayer
         {
             return repository.GetALLAsyncWithProjectId(projectId);
         }
+
+        public async Task<ProjectRequestWithDetails> GetALLProjectRequestByIdasync(int projectRequestId)
+        {
+            ProjectRequestWithDetails pr = new ProjectRequestWithDetails();
+            pr.projectRequest=await repository.GetAllProjectRequestById(projectRequestId);
+            pr.ProjectRequestSentList = await repository.GetAllProjectRequestSentToByRequestId(projectRequestId);
+            pr.ProjectRequestDetailList = await repository.GetAllProjectRequestDetailsByRequestId(projectRequestId);
+            if (pr.projectRequest != null)
+            {
+                pr.code = "200";
+                pr.message = "response is available ";
+            }
+            else
+            {
+                pr.code = "204";
+                pr.message = "response is not available ";
+
+
+            }
+            return pr;
+        }
     }
 }

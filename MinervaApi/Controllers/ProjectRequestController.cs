@@ -16,9 +16,23 @@ namespace MinervaApi.Controllers
             projectRequest = project;
         }
         [HttpGet("projectId")]
-        public async Task<IActionResult> Get(int projectId)
+        public async Task<IActionResult> GetByProjectId(int projectId)
         {
             var  res= await projectRequest.GetALLAsync(projectId);
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+        [HttpGet("getProjectRequestById/{projectRequestId}")]
+        public async Task<IActionResult> GetProjectRequestById(int projectRequestId)
+        {
+            var res = await projectRequest.GetALLProjectRequestByIdasync(projectRequestId);
 
             if (res != null)
             {
