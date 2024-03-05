@@ -6,6 +6,7 @@ using Minerva.Models;
 using MinervaApi.ExternalApi;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using Minerva.Models.Returns;
 
 namespace Minerva.Controllers
 {
@@ -51,41 +52,38 @@ namespace Minerva.Controllers
         }
 
 
-        //[HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
-        //public async Task<IActionResult> SaveRequestTemplate(RequestTemplateRequest request)
-        //{
-        //    string? email = User.FindFirstValue(ClaimTypes.Email);
+        [HttpPost]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> SaveRequestTemplate(RequestTemplateRequestWhithDetails request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
 
-        //    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            request.email = email;
-
-        //            int b = await requestTemplateBL.SaveRequestTemplate(request);
-        //            if (b > 1)
-        //            {
-        //                RequestTemplate? p = await requestTemplateBL.GetRequestTemplate(b);
-        //                return StatusCode(StatusCodes.Status201Created, p);
-        //            }
-        //            else
-        //            {
-        //                return StatusCode(StatusCodes.Status500InternalServerError, request);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Apistatus b = await requestTemplateBL.SaveRequestTemplate(request,email);
+                    if (b?.code== "200")
+                    {
+                        return StatusCode(StatusCodes.Status201Created, b);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
         //[Authorize(Policy = "TenantAdminPolicy")]
         //[Authorize(Policy = "AdminPolicy")]
@@ -150,6 +148,6 @@ namespace Minerva.Controllers
         //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         //    }
         //}
-    
+
     }
 }

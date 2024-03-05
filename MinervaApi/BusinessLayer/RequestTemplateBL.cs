@@ -3,6 +3,7 @@ using Minerva.IDataAccessLayer;
 using Minerva.Models.Requests;
 using Minerva.Models;
 using Minerva.DataAccessLayer;
+using Minerva.Models.Returns;
 
 namespace MinervaApi.BusinessLayer
 {
@@ -31,13 +32,12 @@ namespace MinervaApi.BusinessLayer
                 return RequestTemplaterepository.GetRequestTemplateAsync(requestYemplatesId);
             }
 
-            public async Task<int> SaveRequestTemplate(RequestTemplateRequest request)
+            public async Task<Apistatus> SaveRequestTemplate(RequestTemplateRequestWhithDetails request, string email)
             {
-                User? u = await UserRepository.GetuserusingUserNameAsync(request.email);
-                request.tenantId = (int)(u?.TenantId);
+                User? u = await UserRepository.GetuserusingUserNameAsync(email);
+                request.TenantId = (int)(u?.TenantId);
 
-                RequestTemplate RequestTemplate = Mapping(request);
-                return await RequestTemplaterepository.SaveRequestTemplate(RequestTemplate);
+                return await RequestTemplaterepository.SaveRequestTemplate(request);
             }
 
             public async Task<bool> UpdateRequestTemplates(RequestTemplateRequest request)

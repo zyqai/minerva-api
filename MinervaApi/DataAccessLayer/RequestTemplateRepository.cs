@@ -1,7 +1,10 @@
 ﻿using Minerva.BusinessLayer.Interface;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
+using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 using MySqlConnector;
+using Newtonsoft.Json;
 using System.Data;
 
 namespace Minerva.DataAccessLayer
@@ -25,37 +28,60 @@ namespace Minerva.DataAccessLayer
 
         }
 
-        public async Task<int> SaveRequestTemplate(RequestTemplate dt)
+        public async Task<Apistatus> SaveRequestTemplate(RequestTemplateRequestWhithDetails dt)
         {
-            using var connection = database.OpenConnection();
+            Apistatus apistatus = new Apistatus();
+            MySqlConnection connection = null;
             try
             {
-                using var command = connection.CreateCommand();
-                command.CommandText = "usp_RequestTemplateCreate";
-                AddParameters(command, dt);
-                command.CommandType = CommandType.StoredProcedure;
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-                if (rowsAffected == 1)
+                using (connection = new MySqlConnection())
                 {
-                    return 1;
-                }
-                else
-                {
-                    return 0;
+                    connection = database.OpenConnection();
+                    using (MySqlCommand command = connection.CreateCommand())
+                    {
+
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "Usp_RequestTemplateWithDetailsInsert";
+                        // Serialize the request object to a JSON string
+                        string RequestTemplateDetails = JsonConvert.SerializeObject(dt.RequestTemplateDetails);
+
+                        command.Parameters.AddWithValue("@in_tenantId", dt.TenantId);
+                        command.Parameters.AddWithValue("@in_requestTemplateName", dt.RequestTemplateName);
+                        command.Parameters.AddWithValue("@in_requestTemplateDescription", dt.RequestTemplateDescription);
+                        command.Parameters.AddWithValue("@in_remindersAutoId", dt.RemindersAutoId);
+                        command.Parameters.AddWithValue("@in_requestTemplateDetails", RequestTemplateDetails);
+
+                        MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        command.Parameters.Add(outputParameter);
+
+                        command.ExecuteNonQuery();
+                        // Get the response message from the stored procedure
+                        string message = command.Parameters["@out_message"].Value.ToString();
+
+                        apistatus.message= message;
+                        apistatus.code = message == "Insertion successful." ? "200" : "500"; 
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return 0;
+                apistatus.message = ex.Message;
+                apistatus.code = "500";
             }
             finally
             {
-                if (connection.State == ConnectionState.Open)
+                if (connection != null && connection.State != ConnectionState.Closed)
                 {
                     connection.Close();
+                    connection.Dispose();
                 }
             }
+            return apistatus;
         }
+    
 
 
         public async Task<RequestTemplate?> GetRequestTemplateAsync(int? requestTemplateId)
