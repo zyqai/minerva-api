@@ -387,8 +387,6 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.AddWithValue("@in_createdBy", Userid);
 
                         // Add output parameter to get the response from the stored procedure
-
-
                         MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
                         {
                             Direction = ParameterDirection.Output
@@ -396,6 +394,7 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.Add(outputParameter);
 
                         command.ExecuteNonQuery();
+
                         // Get the response message from the stored procedure
                         string message = command.Parameters["@out_message"].Value.ToString();
                         apistatus.message = message;

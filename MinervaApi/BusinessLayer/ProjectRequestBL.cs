@@ -1,6 +1,8 @@
 ﻿using MinervaApi.BusinessLayer.Interface;
+using MinervaApi.ExternalApi;
 using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Returns;
+using System.Data;
 
 namespace MinervaApi.BusinessLayer
 {
@@ -35,6 +37,24 @@ namespace MinervaApi.BusinessLayer
 
             }
             return pr;
+        }
+
+        public Task<APIStatus> SaveProjectRequestDetails(Models.Requests.ProjectRequestDetail request)
+        {
+            Models.ProjectRequestDetail prd = new Models.ProjectRequestDetail();
+            prd = MappingRequest(request);
+            return repository.SaveProjectRequestDetails(prd);
+        }
+
+        private Models.ProjectRequestDetail MappingRequest(Models.Requests.ProjectRequestDetail request)
+        {
+            Models.ProjectRequestDetail prd = new Models.ProjectRequestDetail();
+            prd.ProjectRequestDetailsId = request.ProjectRequestDetailsId;
+            prd.ProjectRequestTemplateId   = request.ProjectRequestTemplateId;
+            prd.ProjectId = request.ProjectId;
+            prd.Label = request.Label;
+            prd.DocumentTypeAutoId = request.DocumentTypeAutoId;    
+            return prd;
         }
     }
 }

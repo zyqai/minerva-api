@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Minerva.BusinessLayer;
 using Minerva.Models;
+using Minerva.Models.Returns;
+using MinervaApi.ExternalApi;
 using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Requests;
 using MinervaApi.Models.Returns;
 using MySqlConnector;
 using System.Data;
+using System.Reflection.Emit;
 
 namespace MinervaApi.DataAccessLayer
 {
@@ -137,7 +141,7 @@ namespace MinervaApi.DataAccessLayer
 
         public async Task<List<Models.Returns.ProjectRequestDetail>?> GetAllProjectRequestDetailsByRequestId(int projectRequestId)
         {
-           List<Models.Returns.ProjectRequestDetail> projectRequestDetails = new List<Models.Returns.ProjectRequestDetail>();
+            List<Models.Returns.ProjectRequestDetail> projectRequestDetails = new List<Models.Returns.ProjectRequestDetail>();
             using (MySqlConnection connection = database.OpenConnection())
             {
                 using (MySqlCommand command = connection.CreateCommand())
@@ -170,6 +174,34 @@ namespace MinervaApi.DataAccessLayer
                 }
             }
             return projectRequestDetails;
+        }
+
+        public async Task<APIStatus> SaveProjectRequestDetails(Models.ProjectRequestDetail prd)
+        {
+            APIStatus status = new APIStatus();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Usp_ProjectRequestDetailsInsert";
+                    command.Parameters.AddWithValue("@in_projectrequestTemplateId", prd.ProjectRequestTemplateId);
+                    command.Parameters.AddWithValue("@in_projectId", prd.ProjectId);
+                    command.Parameters.AddWithValue("@in_tenantId", prd.TenantId);
+                    command.Parameters.AddWithValue("@in_label", prd.Label);
+                    command.Parameters.AddWithValue("@in_documentTypeAutoId", prd.DocumentTypeAutoId);
+                    // Add output parameter
+                    command.Parameters.Add(new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000));
+                    command.Parameters["@out_message"].Direction = ParameterDirection.Output;
+                    // Execute command
+                    command.ExecuteNonQuery();
+                    // Get output message
+                    string message = command.Parameters["@out_message"].Value.ToString();
+                        status.Message = message;
+                    status.Code = message == "Insertion successful." ? "200" : "500";
+                }
+            }
+            return status;
         }
     }
 }

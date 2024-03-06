@@ -1,4 +1,5 @@
-﻿using MinervaApi.Models.Returns;
+﻿using MinervaApi.ExternalApi;
+using MinervaApi.Models.Returns;
 
 namespace MinervaApi.IDataAccessLayer
 {
@@ -9,5 +10,6 @@ namespace MinervaApi.IDataAccessLayer
         
         public Task<List<ProjectRequestSentTo>?> GetAllProjectRequestSentToByRequestId(int projectRequestId);
         public Task<List<ProjectRequestDetail>?> GetAllProjectRequestDetailsByRequestId(int projectRequestId);
+        public Task<APIStatus> SaveProjectRequestDetails(Models.ProjectRequestDetail prd);
     }
 }
