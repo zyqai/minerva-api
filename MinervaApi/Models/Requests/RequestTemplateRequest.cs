@@ -9,4 +9,19 @@
         public int? remindersAutoId { get; set; }
         public string? email { get; set; }
     }
+
+    public class RequestTemplateRequestWhithDetails
+    {
+        public int? TenantId { get; set; }
+        public string? RequestTemplateName { get; set; }
+        public string? RequestTemplateDescription { get; set; }
+        public int? RemindersAutoId { get; set; }
+        public List<RequestTemplateDetailwithDetails>? RequestTemplateDetails { get; set; }
+    }
+    public class RequestTemplateDetailwithDetails
+    {
+        public int? RequestTemplateId { get; set; }
+        public string? Label { get; set; }
+        public int? DocumentTypeAutoId { get; set; }
+    }
 }

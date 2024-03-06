@@ -18,7 +18,7 @@ namespace Minerva.DataAccessLayer
 
         private void AddParameters(MySqlCommand command, RequestTemplateDetails dt)
         {
-            command.Parameters.AddWithValue("@p_requestTemplateId", dt.RequestTemplateDetailsId);
+            command.Parameters.AddWithValue("@p_requestTemplateId", dt.RequestTemplateId);
             command.Parameters.AddWithValue("@p_tenantId", dt.TenantId);
             command.Parameters.AddWithValue("@p_label", dt.Label);
             command.Parameters.AddWithValue("@p_documentTypeAutoId", dt.DocumentTypeAutoId);
@@ -34,14 +34,24 @@ namespace Minerva.DataAccessLayer
                 using var command = connection.CreateCommand();
                 command.CommandText = "usp_RequestTemplateDetailsCreate";
                 AddParameters(command, dt);
+                MySqlParameter outputParameter = new MySqlParameter("@p_last_insert_id", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outputParameter);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();
-                
+                int lastInsertId = Convert.ToInt32(outputParameter.Value);
+                if (rowsAffected == 1)
+                {
+                    rowsAffected = lastInsertId;
+                }
                 return rowsAffected;
 
             }
             catch (Exception)
             {
+                throw;
                 return 0;
             }
             finally

@@ -1,4 +1,6 @@
 ﻿using Minerva.Models;
+using Minerva.Models.Requests;
+using Minerva.Models.Returns;
 
 namespace Minerva.IDataAccessLayer
 {
@@ -6,7 +8,7 @@ namespace Minerva.IDataAccessLayer
     {
         public Task<RequestTemplate?> GetRequestTemplateAsync(int? RequestTemplateId);
         public Task<RequestTemplateResponse?> GetALLRequestTemplatesAsync();
-        public Task<int> SaveRequestTemplate(RequestTemplate dt);
+        public Task<Apistatus> SaveRequestTemplate(RequestTemplateRequestWhithDetails dt);
         public Task<bool> UpdateRequestTemplate(RequestTemplate dt);
         public Task<bool> DeleteRequestTemplate(int? RequestTemplateId);
 
