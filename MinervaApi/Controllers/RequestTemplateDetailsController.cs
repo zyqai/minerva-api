@@ -54,98 +54,98 @@ namespace Minerva.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
-        //public async Task<IActionResult> SaveRequestTemplateDetail(RequestTemplateDetailsRequest request)
-        //{
-        //    string? email = User.FindFirstValue(ClaimTypes.Email);
+        [HttpPost]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> SaveRequestTemplateDetail(RequestTemplateDetailsRequest request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
 
-        //    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            request.email = email;
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    request.email = email;
 
-        //            int b = await _rtdBL.SaveRequestTemplateDetails(request);
-        //            if (b > 1)
-        //            {
-        //                RequestTemplateDetails? p = await _rtdBL.GetRequestTemplateDetails(b);
-        //                return StatusCode(StatusCodes.Status201Created, p);
-        //            }
-        //            else
-        //            {
-        //                return StatusCode(StatusCodes.Status500InternalServerError, request);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-        //[HttpPut]
-        //[Authorize(Policy = "AdminPolicy")]
-        //public async Task<IActionResult> UpdateRequestTemplateDetail(RequestTemplateDetailsRequest request)
-        //{
-        //    string? email = User.FindFirstValue(ClaimTypes.Email);
+                    int b = await _rtdBL.SaveRequestTemplateDetails(request);
+                    if (b > 1)
+                    {
+                        RequestTemplateDetails? p = await _rtdBL.GetRequestTemplateDetails(b);
+                        return StatusCode(StatusCodes.Status201Created, p);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpPut]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> UpdateRequestTemplateDetail(RequestTemplateDetailsRequest request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
 
-        //    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            request.email = email;
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    request.email = email;
 
-        //            bool? b = await _rtdBL.UpdateRequestTemplateDetails(request);
-        //            return StatusCode(StatusCodes.Status200OK, request);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
+                    bool? b = await _rtdBL.UpdateRequestTemplateDetails(request);
+                    return StatusCode(StatusCodes.Status200OK, request);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
-        //[HttpDelete("{id}")]
-        //[Authorize(Policy = "AdminPolicy")]
-        //public async Task<IActionResult> DeleteRequestTemplateDetail(int id)
-        //{
-        //    try
-        //    {
-        //        if (id > 0)
-        //        {
-        //            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
-        //            bool? b = await _rtdBL.DeleteRequestTemplateDetails(id);
-        //            if (b==true)
-        //                return StatusCode(StatusCodes.Status200OK);
-        //            else
-        //                return StatusCode(StatusCodes.Status204NoContent);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, id + " error " + ex.Message.ToString());
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
+        [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> DeleteRequestTemplateDetail(int id)
+        {
+            try
+            {
+                if (id > 0)
+                {
+                    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
+                    bool? b = await _rtdBL.DeleteRequestTemplateDetails(id);
+                    if (b == true)
+                        return StatusCode(StatusCodes.Status200OK);
+                    else
+                        return StatusCode(StatusCodes.Status204NoContent);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, id + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
 
-  
-    
+
+
     }
 }

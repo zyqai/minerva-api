@@ -85,69 +85,68 @@ namespace Minerva.Controllers
             }
         }
 
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateRequestTemplate(RequestTemplateRequest request)
-        //{
-        //    string? email = User.FindFirstValue(ClaimTypes.Email);
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateRequestTemplate(RequestTemplateRequest request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    request.email = email;
 
-        //    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            request.email = email;
+                    var b = await requestTemplateBL.UpdateRequestTemplates(request);
+                    if (b)
+                    {
+                        return StatusCode(StatusCodes.Status201Created, request);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
-        //            var b = await requestTemplateBL.UpdateRequestTemplates(request);
-        //            if (b)
-        //            {
-        //                return StatusCode(StatusCodes.Status201Created, request);
-        //            }
-        //            else
-        //            {
-        //                return StatusCode(StatusCodes.Status500InternalServerError, request);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteRequestTemplate(int id)
-        //{
-        //    try
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            var b = await requestTemplateBL.DeleteRequestTemplate(id);
-        //            if (b)
-        //            {
-        //                return StatusCode(StatusCodes.Status201Created);
-        //            }
-        //            else
-        //            {
-        //                return StatusCode(StatusCodes.Status500InternalServerError);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return BadRequest();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRequestTemplate(int id)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var b = await requestTemplateBL.DeleteRequestTemplate(id);
+                    if (b)
+                    {
+                        return StatusCode(StatusCodes.Status201Created);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
     }
 }

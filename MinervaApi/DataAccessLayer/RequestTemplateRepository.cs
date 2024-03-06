@@ -203,7 +203,7 @@ namespace Minerva.DataAccessLayer
             }
             catch (Exception)
             {
-                return false;
+                throw;
             }
             finally
             {
