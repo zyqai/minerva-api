@@ -1,0 +1,175 @@
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Minerva.Models;
+using MinervaApi.IDataAccessLayer;
+using MinervaApi.Models.Requests;
+using MinervaApi.Models.Returns;
+using MySqlConnector;
+using System.Data;
+
+namespace MinervaApi.DataAccessLayer
+{
+    public class ProjectRequestRepository : IProjectRequestRepository
+    {
+        MySqlDataSource database;
+        public ProjectRequestRepository(MySqlDataSource database)
+        {
+            this.database = database;
+        }
+        public async Task<ProjectRequestDetailsResponse> GetALLAsyncWithProjectId(int projectId)
+        {
+            List<ProjectRequestResponse> projectRequests = new List<ProjectRequestResponse>();
+
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@in_projectId", projectId);
+                    command.CommandText = "Usp_projectrequestsList";
+
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            ProjectRequestResponse request = new ProjectRequestResponse();
+                            request.projectRequestId = reader.IsDBNull("projectRequestId") ? null : (int?)reader.GetInt32("projectRequestId");
+                            request.projectId = reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId");
+                            request.tenantId = reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId");
+                            request.projectRequestName = reader.IsDBNull("projectRequestName") ? null : reader.GetString("projectRequestName");
+                            request.label = reader.IsDBNull("label") ? null : reader.GetString("label");
+                            request.sentTo = reader.IsDBNull("sentTo") ? null : reader.GetString("sentTo");
+                            request.sentcc = reader.IsDBNull("sentcc") ? null : reader.GetString("sentcc");
+                            request.documentTypeName = reader.IsDBNull("documentTypeName") ? null : reader.GetString("documentTypeName");
+                            request.statusName = reader.IsDBNull("statusName") ? null : reader.GetString("statusName");
+
+                            projectRequests.Add(request);
+                        }
+                    }
+                }
+            }
+            ProjectRequestDetailsResponse response = new ProjectRequestDetailsResponse();
+            if (projectRequests != null)
+            {
+                response.code = "200";
+                response.message = "response available";
+                response.ProjectRequest = projectRequests;
+            }
+            else
+            {
+                response.code = "204";
+                response.message = "no content";
+            }
+            return response;
+        }
+
+        public async Task<ProjectRequest?> GetAllProjectRequestById(int projectRequestId)
+        {
+            ProjectRequest request = new ProjectRequest();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@in_projectRequestId", projectRequestId);
+                    command.CommandText = "Usp_projectRequestById";
+
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            request.ProjectRequestId = reader.IsDBNull("projectRequestId") ? null : (int?)reader.GetInt32("projectRequestId");
+                            request.ProjectId = reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId");
+                            request.TenantId = reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId");
+                            request.RemindersAutoId = reader.IsDBNull("remindersAutoId") ? null : (int?)reader.GetInt32("remindersAutoId");
+                            request.ProjectRequestName = reader.IsDBNull("projectRequestName") ? null : reader.GetString("projectRequestName");
+                            request.ProjectRequestDescription = reader.IsDBNull("projectRequestDescription") ? null : reader.GetString("projectRequestDescription");
+                            request.CreatedBy = reader.IsDBNull("CreatedBy") ? null : reader.GetString("CreatedBy");
+                            request.CreatedOn = reader.IsDBNull("createdOn") ? null : reader.GetDateTime("createdOn");
+                            request.ModifiedBy = reader.IsDBNull("ModifiedBy") ? null : reader.GetString("ModifiedBy");
+                            request.ModifiedOn = reader.IsDBNull("ModifiedOn") ? null : reader.GetDateTime("ModifiedOn");
+                        }
+                    }
+                }
+            }
+            return request;
+        }
+
+        public async Task<List<Models.Returns.ProjectRequestSentTo>?> GetAllProjectRequestSentToByRequestId(int projectRequestId)
+        {
+            List<Models.Returns.ProjectRequestSentTo> requestSentTos = new List<Models.Returns.ProjectRequestSentTo>();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@in_ProjectRequestId", projectRequestId);
+                    command.CommandText = "Usp_projectrequestsenttoByProjectRequestID";
+
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            Models.Returns.ProjectRequestSentTo request = new Models.Returns.ProjectRequestSentTo
+                            {
+                                ProjectRequestTemplateId = reader.IsDBNull("projectRequestTemplateId") ? null : (int?)reader.GetInt32("projectRequestTemplateId"),
+                                ProjectId = reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId"),
+                                TenantId = reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId"),
+                                ProjectRequestSentId = reader.IsDBNull("projectRequestSentId") ? null : (int?)reader.GetInt32("projectRequestSentId"),
+                                SentTo = reader.IsDBNull("sentTo") ? null : reader.GetString("sentTo"),
+                                SentCC = reader.IsDBNull("sentcc") ? null : reader.GetString("sentcc"),
+                                SentOn = reader.IsDBNull("sentOn") ? null : reader.GetDateTime("sentOn"),
+                                UniqueLink = reader.IsDBNull("uniqueLink") ? null : reader.GetString("uniqueLink"),
+                                StatusAutoId = reader.IsDBNull("statusAutoId") ? null : (int?)reader.GetInt32("statusAutoId"),
+                                statusName = reader.IsDBNull("statusName") ? null : reader.GetString("statusName"),
+                                statusDescription = reader.IsDBNull("statusDescription") ? null : reader.GetString("statusDescription"),
+                            };
+                            requestSentTos.Add(request);
+
+                        }
+                    }
+                }
+            }
+            return requestSentTos;
+        }
+
+        public async Task<List<Models.Returns.ProjectRequestDetail>?> GetAllProjectRequestDetailsByRequestId(int projectRequestId)
+        {
+           List<Models.Returns.ProjectRequestDetail> projectRequestDetails = new List<Models.Returns.ProjectRequestDetail>();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@in_projectRequestId", projectRequestId);
+                    command.CommandText = "Usp_ProjectRequestDetailsByProjectRequestId";
+
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            Models.Returns.ProjectRequestDetail request = new Models.Returns.ProjectRequestDetail
+                            {
+                                ProjectRequestTemplateId = reader.IsDBNull("projectRequestTemplateId") ? null : (int?)reader.GetInt32("projectRequestTemplateId"),
+                                ProjectId = reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId"),
+                                TenantId = reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId"),
+                                ProjectRequestDetailsId = reader.IsDBNull("projectrequestDetailsId") ? null : (int?)reader.GetInt32("projectrequestDetailsId"),
+                                DocumentTypeAutoId = reader.IsDBNull("documentTypeAutoId") ? null : (int?)reader.GetInt32("documentTypeAutoId"),
+                                Label = reader.IsDBNull("label") ? null : reader.GetString("label"),
+                                DocumentTypeName = reader.IsDBNull("documentTypeName") ? null : reader.GetString("documentTypeName"),
+                                DocumentTypeDescription = reader.IsDBNull("documentTypeDescription") ? null : reader.GetString("documentTypeDescription"),
+                                TemplateFilePath = reader.IsDBNull("templateFilePath") ? null : reader.GetString("templateFilePath"),
+                            };
+                            projectRequestDetails.Add(request);
+
+                        }
+                    }
+                }
+            }
+            return projectRequestDetails;
+        }
+    }
+}

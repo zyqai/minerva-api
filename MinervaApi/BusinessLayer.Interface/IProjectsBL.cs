@@ -1,6 +1,7 @@
 ﻿using Minerva.Models;
 using Minerva.Models.Requests;
 using Minerva.Models.Returns;
+using MinervaApi.Models.Requests;
 
 namespace Minerva.BusinessLayer.Interface
 {
@@ -15,5 +16,7 @@ namespace Minerva.BusinessLayer.Interface
         public Task<int> SaveProjectWithDetails(ProjectwithDetailsRequest request,string CreatedBy);
         public Task<projectListDetails> GetAllProjectsWithDetails(string? email);
         public Task<projectsRelationResponce> getProjectWithDetails(int id);
+        public Task<Apistatus> SaveProjectRequest(ProjectRequestData request,string email);
+        public Task<Apistatus> UpdateProjectRequest(ProjectRequestDetailUpdateData request, string? emails);
     }
 }
