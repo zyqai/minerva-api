@@ -30,5 +30,6 @@ namespace Minerva.Models.Requests
         public string? ModifiedBy { get; set; }
         public string? City { get; set; }
         public string? ClientAddress1 { get; set; }
+        public string? Gender { get; set; }
     }
 }
