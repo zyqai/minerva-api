@@ -55,14 +55,15 @@ namespace MinervaApi.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> ProjectRequestDetailsInsert(ProjectRequestDetail request)
         {
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
                 {
                     APIStatus aPIStatus = new APIStatus();
 
-                    aPIStatus = await projectRequest.SaveProjectRequestDetails(request);
+                    aPIStatus = await projectRequest.SaveProjectRequestDetails(request, email);
                     if (aPIStatus != null)
                     {
                         if (aPIStatus.Code == "200")
@@ -86,7 +87,130 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("updateProjectRequestDetails")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> ProjectRequestDetailsUpdate(ProjectRequestDetail request)
+        {
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    APIStatus aPIStatus = new APIStatus();
+
+                    aPIStatus = await projectRequest.UpdateProjectRequestDetails(request);
+                    if (aPIStatus != null)
+                    {
+                        if (aPIStatus.Code == "200")
+                        {
+                            return StatusCode(StatusCodes.Status201Created, aPIStatus);
+                        }
+                        else
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, aPIStatus);
+                        }
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpPost("createProjectRequestSentTo")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> ProjectRequestSentToInsert(ProjectRequestSentTo request)
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    APIStatus aPIStatus = new APIStatus();
+
+                    aPIStatus = await projectRequest.SaveProjectRequestSentTo(request, email);
+                    if (aPIStatus != null)
+                    {
+                        if (aPIStatus.Code == "200")
+                        {
+                            return StatusCode(StatusCodes.Status201Created, aPIStatus);
+                        }
+                        else
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, aPIStatus);
+                        }
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("updateProjectRequestSentTo")]
+        [Authorize(Policy = "AdminPolicy")]
+        public async Task<IActionResult> ProjectProjectRequestDetails(ProjectRequestSentTo request)
+        {
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    APIStatus aPIStatus = new APIStatus();
+
+                    aPIStatus = await projectRequest.UpdateProjectRequestSentTo(request);
+                    if (aPIStatus != null)
+                    {
+                        if (aPIStatus.Code == "200")
+                        {
+                            return StatusCode(StatusCodes.Status201Created, aPIStatus);
+                        }
+                        else
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, aPIStatus);
+                        }
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
