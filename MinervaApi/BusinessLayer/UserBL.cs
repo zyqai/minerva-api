@@ -33,6 +33,7 @@ namespace Minerva.BusinessLayer
         {
             User? user1 = await UserRepository.GetuserusingUserNameAsync(user.CreatedBy);
             user.CreatedBy = user1?.UserId;
+            user.TenantId = user1?.TenantId;
             User us = MappingUsers(user);
             return await UserRepository.SaveUser(us);
         }
