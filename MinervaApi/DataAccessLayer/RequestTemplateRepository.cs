@@ -13,9 +13,11 @@ namespace Minerva.DataAccessLayer
     {
 
         MySqlDataSource database;
-        public RequestTemplateRepository(MySqlDataSource _dataSource)
+        IRequestTemplateDetailsRepository requestTemplateDetailsrepository;
+        public RequestTemplateRepository(MySqlDataSource _dataSource, IRequestTemplateDetailsRepository _requestTemplateDetailsrepository)
         {
             database = _dataSource;
+            requestTemplateDetailsrepository = _requestTemplateDetailsrepository;
         }
 
         private void AddParameters(MySqlCommand command, RequestTemplate dt)
@@ -92,7 +94,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_RequestTemplateId", requestTemplateId);
             command.CommandType = CommandType.StoredProcedure;
             MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());       
             connection.Close();
             return result.FirstOrDefault();
         }
@@ -113,6 +115,9 @@ namespace Minerva.DataAccessLayer
                         remindersAutoId = Convert.ToInt32(reader["remindersAutoId"]),
 
                     };
+                    
+                    dt.requestTemplateDetails = await requestTemplateDetailsrepository.GetRequestTemplateDetailsByTemplateIdAsync(dt.requestTemplateId);
+
                     RequestTemplates.Add(dt);
                 }
 

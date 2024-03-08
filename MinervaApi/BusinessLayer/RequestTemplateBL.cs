@@ -10,11 +10,13 @@ namespace MinervaApi.BusinessLayer
     public class RequestTemplateBL : IRequestTemplateBL
     {
         IRequestTemplateRepository RequestTemplaterepository;
+        IRequestTemplateDetailsRepository requestTemplateDetailsrepository;
         IUserRepository UserRepository;
-        public RequestTemplateBL(IRequestTemplateRepository _repository, IUserRepository userRepository)
+        public RequestTemplateBL(IRequestTemplateRepository _repository, IUserRepository userRepository, IRequestTemplateDetailsRepository _requestTemplateDetailsrepository)
         {
             RequestTemplaterepository = _repository;
             UserRepository = userRepository;
+            requestTemplateDetailsrepository = _requestTemplateDetailsrepository;
         }
 
         public Task<bool> DeleteRequestTemplate(int RequestTemplateAutoId)
@@ -27,9 +29,9 @@ namespace MinervaApi.BusinessLayer
             return RequestTemplaterepository.GetALLRequestTemplatesAsync();
         }
 
-        public Task<RequestTemplate?> GetRequestTemplate(int requestYemplatesId)
+        public async Task<RequestTemplate?> GetRequestTemplate(int requestTemplatesId)
         {
-            return RequestTemplaterepository.GetRequestTemplateAsync(requestYemplatesId);
+            return await RequestTemplaterepository.GetRequestTemplateAsync(requestTemplatesId);
         }
 
         public async Task<Apistatus> SaveRequestTemplate(RequestTemplateRequestWhithDetails request, string email)
