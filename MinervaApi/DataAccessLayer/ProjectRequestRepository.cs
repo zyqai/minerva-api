@@ -4,6 +4,7 @@ using Minerva.Models;
 using Minerva.Models.Returns;
 using MinervaApi.ExternalApi;
 using MinervaApi.IDataAccessLayer;
+using MinervaApi.Models;
 using MinervaApi.Models.Requests;
 using MinervaApi.Models.Returns;
 using MySqlConnector;
@@ -194,11 +195,100 @@ namespace MinervaApi.DataAccessLayer
                     command.Parameters.Add(new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000));
                     command.Parameters["@out_message"].Direction = ParameterDirection.Output;
                     // Execute command
-                    command.ExecuteNonQuery();
+                    await command.ExecuteNonQueryAsync();
                     // Get output message
-                    string message = command.Parameters["@out_message"].Value.ToString();
+                    string message = command.Parameters["@out_message"]?.Value?.ToString() ?? string.Empty;
                         status.Message = message;
                     status.Code = message == "Insertion successful." ? "200" : "500";
+                }
+            }
+            return status;
+        }
+
+        public async Task<APIStatus> UpdateProjectRequestDetails(Models.ProjectRequestDetail prd)
+        {
+            APIStatus status = new APIStatus();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Usp_ProjectRequestDetailsUpdate";
+                    command.Parameters.AddWithValue("@in_projectrequestDetailsId", prd.ProjectRequestDetailsId);
+                    command.Parameters.AddWithValue("@in_projectrequestTemplateId", prd.ProjectRequestTemplateId);
+                    command.Parameters.AddWithValue("@in_projectId", prd.ProjectId);
+                    command.Parameters.AddWithValue("@in_tenantId", prd.TenantId);
+                    command.Parameters.AddWithValue("@in_label", prd.Label);
+                    command.Parameters.AddWithValue("@in_documentTypeAutoId", prd.DocumentTypeAutoId);
+                    // Add output parameter
+                    command.Parameters.Add(new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000));
+                    command.Parameters["@out_message"].Direction = ParameterDirection.Output;
+                    // Execute command
+                    await command.ExecuteNonQueryAsync();
+                    // Get output message
+                    string message = command.Parameters["@out_message"]?.Value?.ToString() ?? string.Empty;
+                    status.Message = message;
+                    status.Code = message == "Update successful." ? "200" : "500";
+                }
+            }
+            return status;
+        }
+
+        public async Task<APIStatus> SaveProjectRequestSentTo(Models.ProjectRequestSentTo prst)
+        {
+            APIStatus status = new APIStatus();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Usp_ProjectRequestSentToInsert";
+                    command.Parameters.AddWithValue("@in_projectRequestTemplateId", prst.ProjectRequestTemplateId);
+                    command.Parameters.AddWithValue("@in_projectId", prst.ProjectId);
+                    command.Parameters.AddWithValue("@in_tenantId", prst.TenantId);
+                    command.Parameters.AddWithValue("@in_sentTo", prst.SentTo);
+                    command.Parameters.AddWithValue("@in_sentcc", prst.SentCC);
+                    command.Parameters.AddWithValue("@in_uniqueLink", prst.UniqueLink);
+                    command.Parameters.AddWithValue("@in_statusAutoId", prst.StatusAutoId);
+                    MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(outputParameter);
+                    await command.ExecuteNonQueryAsync();
+                    string message = command.Parameters["@out_message"]?.Value?.ToString() ?? string.Empty;
+                    status.Message = message;
+                    status.Code = message == "Insertion successful." ? "200" : "500";
+                }
+            }
+            return status;
+        }
+
+        public async Task<APIStatus> UpdateProjectRequestSentTo(Models.ProjectRequestSentTo prst)
+        {
+            APIStatus status = new APIStatus();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Usp_ProjectRequestSentToUpdate";
+                    command.Parameters.AddWithValue("@in_projectRequestSentId", prst.ProjectRequestSentId);
+                    command.Parameters.AddWithValue("@in_projectRequestTemplateId", prst.ProjectRequestTemplateId);
+                    command.Parameters.AddWithValue("@in_projectId", prst.ProjectId);
+                    command.Parameters.AddWithValue("@in_tenantId", prst.TenantId);
+                    command.Parameters.AddWithValue("@in_sentTo", prst.SentTo);
+                    command.Parameters.AddWithValue("@in_sentcc", prst.SentCC);
+                    command.Parameters.AddWithValue("@in_statusAutoId", prst.StatusAutoId);
+                    MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(outputParameter);
+                    await command.ExecuteNonQueryAsync();
+                    string message = command.Parameters["@out_message"]?.Value?.ToString() ?? string.Empty;
+                    status.Message = message;
+                    status.Code = message == "Update successful." ? "200" : "500";
                 }
             }
             return status;

@@ -70,7 +70,8 @@ namespace Minerva.BusinessLayer
                 postalnumber = c.postalnumber,
                 stateid = c.stateid,
                 City = c.City,
-                ClientAddress1 = c.ClientAddress1
+                ClientAddress1 = c.ClientAddress1,
+                Gender = c.Gender,
             };
             return ct;
         }

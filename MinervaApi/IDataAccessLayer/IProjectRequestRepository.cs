@@ -11,5 +11,8 @@ namespace MinervaApi.IDataAccessLayer
         public Task<List<ProjectRequestSentTo>?> GetAllProjectRequestSentToByRequestId(int projectRequestId);
         public Task<List<ProjectRequestDetail>?> GetAllProjectRequestDetailsByRequestId(int projectRequestId);
         public Task<APIStatus> SaveProjectRequestDetails(Models.ProjectRequestDetail prd);
+        public Task<APIStatus> UpdateProjectRequestDetails(Models.ProjectRequestDetail prd);
+        public Task<APIStatus> SaveProjectRequestSentTo(Models.ProjectRequestSentTo prst);
+        public Task<APIStatus> UpdateProjectRequestSentTo(Models.ProjectRequestSentTo prst);
     }
 }
