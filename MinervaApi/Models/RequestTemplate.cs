@@ -9,6 +9,7 @@ namespace Minerva.Models
         public string? requestTemplateName { get; set; }
         public string? requestTemplateDescription { get; set; }
         public int? remindersAutoId { get; set; }
+        public List<RequestTemplateDetails>? requestTemplateDetails { get; set; }
     }
     public class RequestTemplateResponse : Apistatus
     {

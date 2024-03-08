@@ -70,6 +70,7 @@ namespace Minerva.DataAccessLayer
                         ModifiedBy = reader["modifiedBy"].ToString(),//reader["modifiedBy"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["modifiedBy"]),
                         City = reader["city"].ToString(),
                         ClientAddress1 = reader["clientAddress1"].ToString(),
+                        Gender = reader["Gender"].ToString(),
 
                     };
                     Clients.Add(Client);
@@ -139,6 +140,7 @@ namespace Minerva.DataAccessLayer
             command.Parameters.AddWithValue("@p_rootFolder", client.RootFolder);
             command.Parameters.AddWithValue("@p_createdBy", client.CreatedBy);
             command.Parameters.AddWithValue("@p_city", client.City);
+            command.Parameters.AddWithValue("@p_Gender", client.Gender);
         }
         public async Task<bool> DeleteClient(int? Id)
         {

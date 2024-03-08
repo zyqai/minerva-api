@@ -77,6 +77,19 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
+        public async Task<List<RequestTemplateDetails>?> GetRequestTemplateDetailsByTemplateIdAsync(int? requestTemplateId)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"usp_requestTemplateDetailsByTemplateId";
+            command.Parameters.AddWithValue("@p_requestTemplateId", requestTemplateId);
+            command.CommandType = CommandType.StoredProcedure;
+            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return result;
+        }
+
         private async Task<List<RequestTemplateDetails>> ReadAllAsync(MySqlDataReader reader)
         {
             var RequestTemplateDetailss = new List<RequestTemplateDetails>();
