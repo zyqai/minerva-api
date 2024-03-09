@@ -17,5 +17,7 @@ namespace Minerva.Models
         public int? LoanTypeAutoId { get; set; }
         public int? StatusAutoId { get; set; }
         public string? ProjectFilesPath { get; set; }
+        public DateTime? ProjectStartDate { get; set; }
+        public DateTime? DesiredClosedDate { get; set; }
     }
 }
