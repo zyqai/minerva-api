@@ -78,6 +78,11 @@ builder.Services.AddTransient<IprojectBusinessesRelationRepository, projectBusin
 builder.Services.AddTransient<IProjectRequestRepository, ProjectRequestRepository>();
 builder.Services.AddTransient<IProjectRequestBL, ProjectRequestBL>();
 
+
+builder.Services.AddTransient<IProjectNotesRepository, ProjectNotesRepository>();
+builder.Services.AddTransient<IProjectNotesBL, ProjectNotesBL>();
+
+
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var configuration = builder.Configuration;
