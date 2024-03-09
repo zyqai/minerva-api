@@ -19,5 +19,8 @@ namespace Minerva.Models
         public string? ProjectFilesPath { get; set; }
         public DateTime? ProjectStartDate { get; set; }
         public DateTime? DesiredClosedDate { get; set; }
+        public string? Notes { get; set; }
+        public int? PrimaryBorrower { get; set; } // People ID
+        public int? PrimaryBusiness { get; set; } // BusinessId
     }
 }

@@ -19,6 +19,12 @@ namespace Minerva.Models.Requests
         public int? LoanTypeAutoId { get; set; }
         public int? StatusAutoId { get; set; }
         public string? ProjectFilesPath { get; set; }
+        public DateTime? ProjectStartDate { get; set; }
+        public DateTime? DesiredClosedDate { get; set; }
+        public string? Notes { get; set; }
+        public int? PrimaryBorrower { get; set; } // People ID
+        public int? PrimaryBusiness { get; set; } // BusinessId
+
     }
     public class ProjectwithDetailsRequest
     {

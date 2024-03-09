@@ -70,6 +70,8 @@ namespace MinervaApi.DataAccessLayer
             command.Parameters.AddWithValue("@in_loanTypeAutoId", p.LoanTypeAutoId);
             command.Parameters.AddWithValue("@in_statusAutoId", p.StatusAutoId);
             command.Parameters.AddWithValue("@in_projectFilesPath", p.ProjectFilesPath);
+            command.Parameters.AddWithValue("@in_projectStartDate", p.ProjectStartDate);
+            command.Parameters.AddWithValue("@in_desiredClosedDate", p.DesiredClosedDate);
         }
 
         public async Task<Project?> GetProjectAsync(int? Id_Projects)
@@ -139,6 +141,7 @@ namespace MinervaApi.DataAccessLayer
 
                 command.CommandText = "USP_ProjectUpdate";
                 command.Parameters.AddWithValue("@in_projectId", p.ProjectId);
+                command.Parameters.AddWithValue("@in_modifiedByUserId", p.ModifiedByUserId);
                 AddParameters(command, p);
                 command.CommandType = CommandType.StoredProcedure;
                 int rowsAffected = await command.ExecuteNonQueryAsync();

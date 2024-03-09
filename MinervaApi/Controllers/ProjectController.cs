@@ -29,7 +29,7 @@ namespace MinervaApi.Controllers
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             request.CreatedByUserId = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -93,8 +93,8 @@ namespace MinervaApi.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProject(ProjectRequest request)
         {
-            request.ModifiedByUserId = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+             request.ModifiedByUserId = User.FindFirstValue(ClaimTypes.Email);
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -191,7 +191,7 @@ namespace MinervaApi.Controllers
         public async Task<IActionResult> CreateProjectWithDetails(ProjectwithDetailsRequest request)
         {
             string ?CreatedBy = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -242,7 +242,7 @@ namespace MinervaApi.Controllers
         public async Task<IActionResult> createProjectRequest(ProjectRequestData request)
         {
             string? emails = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -274,7 +274,7 @@ namespace MinervaApi.Controllers
         public async Task<IActionResult> UpdateProjectRequest(ProjectRequestDetailUpdateData request)
         {
             string? emails = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
