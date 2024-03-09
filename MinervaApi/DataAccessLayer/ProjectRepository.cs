@@ -243,7 +243,7 @@ namespace MinervaApi.DataAccessLayer
                 command.Parameters.Add(param);
 
                 MySqlParameter param1 = new MySqlParameter("@in_DesiredClosedDate", MySqlDbType.DateTime);
-                param.Value = request.DesiredClosedDate;
+                param1.Value = request.DesiredClosedDate;
                 command.Parameters.Add(param1);
 
                 MySqlParameter outputParameter = new MySqlParameter("@p_last_ProjectNameinsert_id", SqlDbType.Int)
