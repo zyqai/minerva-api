@@ -64,6 +64,11 @@ namespace Minerva.BusinessLayer
             p.LoanTypeAutoId = request.LoanTypeAutoId;
             p.StatusAutoId = request.StatusAutoId;
             p.ProjectFilesPath = request.ProjectFilesPath;
+            p.ProjectStartDate=request.ProjectStartDate;
+            p.DesiredClosedDate=request.DesiredClosedDate;
+            p.Notes=request.Notes;
+            p.PrimaryBorrower=request.PrimaryBorrower;
+            p.PrimaryBusiness = request.PrimaryBusiness;
             return p;
         }
         public async Task<bool> UpdateProject(ProjectRequest request)
