@@ -15,5 +15,11 @@ namespace Minerva.BusinessLayer
         {
             return IPersona.GetALLPersonas();
         }
+
+        public Task<List<Personas?>> GetALLProjectPersonas(int ProjectPersona)
+        {
+            return IPersona.GetALLProjectPersonas(ProjectPersona);
+
+        }
     }
 }

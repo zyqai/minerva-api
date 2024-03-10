@@ -32,6 +32,11 @@ namespace MinervaApi.BusinessLayer
             return Repository.GetStatusAsync();
         }
 
+        public Task<List<Statuses>> getStatues(int projectRequeststatus)
+        {
+            return Repository.GetStatusAsync(projectRequeststatus);
+        }
+
         public async Task<Apistatus> SaveNotes(Notes request)
         {
             User? user = await UserRepository.GetuserusingUserNameAsync(request.createdByUserId);

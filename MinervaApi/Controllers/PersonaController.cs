@@ -29,5 +29,34 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
+
+        [HttpGet("getBusinessPersona")]
+        public async Task<IActionResult> GetPersonaBusiness()
+        {
+            var personas = await persona.GetALLProjectPersonas(0);
+
+            if (personas != null)
+            {
+                return Ok(personas);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+        [HttpGet("getPeoplePersona")]
+        public async Task<IActionResult> getPeoplePersona()
+        {
+            var personas = await persona.GetALLProjectPersonas(1);
+
+            if (personas != null)
+            {
+                return Ok(personas);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
     }
 }

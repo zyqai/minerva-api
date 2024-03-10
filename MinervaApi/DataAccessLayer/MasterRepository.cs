@@ -186,5 +186,17 @@ namespace MinervaApi.DataAccessLayer
             command.Parameters.AddWithValue("@in_notes", projectNote.notes);
             command.Parameters.AddWithValue("@in_createdByUserId", projectNote.createdByUserId);
         }
+
+        public async Task<List<Statuses>> GetStatusAsync(int projectRequeststatus)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.CommandText = @"Usp_projectRequestTemplateStatus";
+            command.Parameters.AddWithValue("@in_projectRequestTemplateStatus", projectRequeststatus);
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllStatusAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
     }
 }

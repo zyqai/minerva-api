@@ -1,4 +1,5 @@
-﻿using Minerva.IDataAccessLayer;
+﻿using Minerva.BusinessLayer;
+using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using MySqlConnector;
 using System.Data;
@@ -17,6 +18,18 @@ namespace Minerva.DataAccessLayer
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
             command.CommandText = @"USP_PersonasGetAll";
+            command.CommandType = CommandType.StoredProcedure;
+            var result = await ReadAllAsync(await command.ExecuteReaderAsync());
+            connection.Close();
+            return [.. result];
+        }
+
+        public async Task<List<Personas?>> GetALLProjectPersonas(int projectPersona)
+        {
+            using var connection = await database.OpenConnectionAsync();
+            using var command = connection.CreateCommand();
+            command.Parameters.AddWithValue("@in_projectPersona", projectPersona);
+            command.CommandText = @"USP_PersonasProjectGetAll";
             command.CommandType = CommandType.StoredProcedure;
             var result = await ReadAllAsync(await command.ExecuteReaderAsync());
             connection.Close();
@@ -45,7 +58,7 @@ namespace Minerva.DataAccessLayer
                     var Persona = new Personas
                     {
                         personaId = !reader.IsDBNull(0) ? reader.GetInt32(0) : 0,
-                        personaName = reader.GetValue(1).ToString(),
+                        personaName = reader.GetValue(3).ToString(),
                     };
                     Personas.Add(Persona);
                 }

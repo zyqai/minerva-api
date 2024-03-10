@@ -66,6 +66,24 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [HttpGet("getProjectRequestTemplateStatus/{projectRequeststatus}")]
+        public async Task<IActionResult> getStatues(int projectRequeststatus)
+        {
+            var res = await bl.getStatues(projectRequeststatus);
+
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
+
+
+
+
         [HttpPost("CreateNotes")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> CreateNotes(Notes request)
