@@ -25,7 +25,7 @@ namespace MinervaApi.ExternalApi
                 client.username = us.Email;
                 client.firstName = us.FirstName;
                 client.lastName = us.LastName;
-                //client.realmRoles = [us.Roles];
+                client.realmRoles = [us.Roles.ToString()];
                 client.enabled = us.IsActive;
                 //client.realmRoles = [];
                 client.clientRoles=new ClientRoles();

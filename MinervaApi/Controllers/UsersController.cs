@@ -49,7 +49,7 @@ namespace Minerva.Controllers
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             user.CreatedBy = email;
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(user));
             try
             {
 
@@ -62,6 +62,7 @@ namespace Minerva.Controllers
                     string userid = await userBL.SaveUser(user);
                     if (!string.IsNullOrEmpty(userid))
                     {
+                        var res1 = userBL.verifyemail(user.Email);
                         user.UserId = userid;
                         User? user1 = await userBL.GetUser(user);
                         List<User?> ulist = new List<User?>();
@@ -78,7 +79,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -89,7 +90,7 @@ namespace Minerva.Controllers
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             user.ModifiedBy = email;
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(user));
 
             try
             {
@@ -106,7 +107,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(user) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
