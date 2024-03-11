@@ -2,6 +2,8 @@
 using Minerva.Models;
 using MinervaApi.IDataAccessLayer;
 using Newtonsoft.Json;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 
 namespace MinervaApi.ExternalApi
@@ -153,6 +155,39 @@ namespace MinervaApi.ExternalApi
                 throw new HttpRequestException($"Error Reset Password: {ex}");
             }
 
+        }
+
+        public async Task<APIStatus?> Sendemails(string recipientEmail, string CCrecipientEmail, string subject, string body)
+        {
+            APIStatus status = new APIStatus();
+            try
+            {
+                MailMessage message = new MailMessage();
+                message.To.Add(new MailAddress(recipientEmail));  // Recipient email address
+                message.From = new MailAddress("hiiamsanthu@gmail.com");  // Your Gmail address
+                message.CC.Add(new MailAddress(CCrecipientEmail)); // CC email address
+                message.Subject = subject;
+                message.Body = body;
+                message.IsBodyHtml = true;
+
+                using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com"))
+                {
+                    smtpClient.Port = 587;  // Gmail SMTP port
+                    smtpClient.Credentials = new NetworkCredential("hiiamsanthu@gmail.com", "Donthi@0805");  // Your Gmail credentials
+                    smtpClient.EnableSsl = true;
+
+                    await smtpClient.SendMailAsync(message);
+                    status.Code = "200";
+                    status.Message = "successfully sent email";
+                }
+            }
+            catch (Exception ex)
+            {
+                status.Code = "200";
+                status.Message = "Error sending email: " + ex.Message;
+                // Handle exception
+            }
+            return status;
         }
     }
 }

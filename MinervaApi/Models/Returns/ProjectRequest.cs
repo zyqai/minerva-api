@@ -15,6 +15,9 @@ namespace MinervaApi.Models.Returns
         public string? sentcc { get; set; }
         public string? documentTypeName { get; set; }
         public string? statusName { get; set; }
+        public string? documentClassificationName { get; set;}
+        public DateTime? createdOn { get; set; }
+        public DateTime? modifiedOn { get; set; }
     }
     public class ProjectRequestDetailsResponse:Apistatus
     { 

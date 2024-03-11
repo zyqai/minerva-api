@@ -3,10 +3,13 @@ using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
 using Minerva.Models.Returns;
+using MinervaApi.ExternalApi;
+using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Requests;
 using MySqlConnector;
 using Newtonsoft.Json;
 using System.Data;
+using System.Reflection;
 using System.Reflection.PortableExecutable;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -14,10 +17,11 @@ namespace MinervaApi.DataAccessLayer
 {
     public class ProjectRepository : IProjectRepository
     {
-        MySqlDataSource database;
-        public ProjectRepository(MySqlDataSource mySql)
+        MySqlDataSource database; IKeycloakApiService Keycloak;
+        public ProjectRepository(MySqlDataSource mySql, IKeycloakApiService _Keycloak)
         {
             this.database = mySql;
+            Keycloak = _Keycloak;
         }
 
         public async Task<int> SaveProject(Project p)
@@ -403,7 +407,15 @@ namespace MinervaApi.DataAccessLayer
                         // Get the response message from the stored procedure
                         string message = command.Parameters["@out_message"].Value.ToString();
                         apistatus.message = message;
+
                         apistatus.code = message == "Insertion successful." ? "200" : "500";
+                        if (apistatus.code == "200")
+                        {
+                            foreach (var recipient in request?.RequestSendTo)
+                            {
+                                var res = Keycloak.Sendemails(recipient?.SendTo,recipient?.SendCC, "testemail", "testemail");
+                            }
+                        }
                     }
                 }
             }
