@@ -13,6 +13,7 @@ namespace MinervaApi.IDataAccessLayer
         public Task<APIStatus?> DeleteUser(string? id, string emailid);
 
 
+        public Task<APIStatus?> Sendemails(string recipientEmail,string cc ,string subject, string body);
 
     }
 }

@@ -47,6 +47,9 @@ namespace MinervaApi.DataAccessLayer
                             request.sentcc = reader.IsDBNull("sentcc") ? null : reader.GetString("sentcc");
                             request.documentTypeName = reader.IsDBNull("documentTypeName") ? null : reader.GetString("documentTypeName");
                             request.statusName = reader.IsDBNull("statusName") ? null : reader.GetString("statusName");
+                            request.documentClassificationName = reader.IsDBNull("documentClassificationName") ? null : reader.GetString("documentClassificationName");
+                            request.createdOn = reader.IsDBNull("createdOn") ? null : reader.GetDateTime("createdOn");
+                            request.modifiedOn = reader.IsDBNull("modifiedOn") ? null : reader.GetDateTime("modifiedOn");
 
                             projectRequests.Add(request);
                         }
