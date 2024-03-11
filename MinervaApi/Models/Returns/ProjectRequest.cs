@@ -18,6 +18,7 @@ namespace MinervaApi.Models.Returns
         public string? documentClassificationName { get; set;}
         public DateTime? createdOn { get; set; }
         public DateTime? modifiedOn { get; set; }
+        public string? Assignedto { get; set; }
     }
     public class ProjectRequestDetailsResponse:Apistatus
     { 

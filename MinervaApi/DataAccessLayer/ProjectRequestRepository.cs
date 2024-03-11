@@ -50,7 +50,7 @@ namespace MinervaApi.DataAccessLayer
                             request.documentClassificationName = reader.IsDBNull("documentClassificationName") ? null : reader.GetString("documentClassificationName");
                             request.createdOn = reader.IsDBNull("createdOn") ? null : reader.GetDateTime("createdOn");
                             request.modifiedOn = reader.IsDBNull("modifiedOn") ? null : reader.GetDateTime("modifiedOn");
-
+                            request.Assignedto = "Rajendra Prasad";// we want to change this from Database it's temp
                             projectRequests.Add(request);
                         }
                     }
