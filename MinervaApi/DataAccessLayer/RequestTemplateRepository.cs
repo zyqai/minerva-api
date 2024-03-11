@@ -108,10 +108,10 @@ namespace Minerva.DataAccessLayer
                 {
                     var dt = new RequestTemplate
                     {
-                        requestTemplateId = Convert.ToInt32(reader["requestTemplateId"]),
-                        tenantId = Convert.ToInt32(reader["tenantId"]),
-                        requestTemplateName = reader["requestTemplateName"].ToString(),
-                        requestTemplateDescription = reader["requestTemplateDescription"].ToString(),
+                        requestTemplateId = reader.IsDBNull("requestTemplateId") ? null : Convert.ToInt32(reader["requestTemplateId"]),
+                        tenantId = reader.IsDBNull("tenantId") ? null : Convert.ToInt32(reader["tenantId"]),
+                        requestTemplateName = reader.IsDBNull("requestTemplateName") ? null : reader["requestTemplateName"].ToString(),
+                        requestTemplateDescription = reader.IsDBNull("requestTemplateDescription") ? null : reader["requestTemplateDescription"].ToString(),
                         remindersAutoId = reader.IsDBNull("remindersAutoId") ? null : (int?)reader.GetInt32("remindersAutoId"),
 
                     };

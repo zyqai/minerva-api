@@ -77,7 +77,7 @@ namespace Minerva.DataAccessLayer
             return result.FirstOrDefault();
         }
 
-        public async Task<List<RequestTemplateDetails>?> GetRequestTemplateDetailsByTemplateIdAsync(int? requestTemplateId)
+        public async Task<List<RequestTemplateDetails?>?> GetRequestTemplateDetailsByTemplateIdAsync(int? requestTemplateId)
         {
             using var connection = await database.OpenConnectionAsync();
             using var command = connection.CreateCommand();
@@ -99,10 +99,10 @@ namespace Minerva.DataAccessLayer
                 {
                     var dt = new RequestTemplateDetails
                     {
-                        RequestTemplateDetailsId = Convert.ToInt32(reader["requestTemplateDetailsId"]),
-                        RequestTemplateId = Convert.ToInt32(reader["requestTemplateId"]),
-                        TenantId = Convert.ToInt32(reader["tenantId"]),
-                        Label = reader["label"].ToString(),
+                        RequestTemplateDetailsId = reader.IsDBNull("TenantId") ? null : Convert.ToInt32(reader["requestTemplateDetailsId"]),
+                        RequestTemplateId = reader.IsDBNull("TenantId") ? null : Convert.ToInt32(reader["requestTemplateId"]),
+                        TenantId = reader.IsDBNull("TenantId") ? null : Convert.ToInt32(reader["tenantId"]),
+                        Label = reader.IsDBNull("label") ? null : reader["label"].ToString(),
                         DocumentTypeAutoId = reader.IsDBNull("documentTypeAutoId") ? null : (int?)reader.GetInt32("documentTypeAutoId"),
 
                     };
