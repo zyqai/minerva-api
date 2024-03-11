@@ -103,7 +103,7 @@ namespace Minerva.DataAccessLayer
                         RequestTemplateId = Convert.ToInt32(reader["requestTemplateId"]),
                         TenantId = Convert.ToInt32(reader["tenantId"]),
                         Label = reader["label"].ToString(),
-                        DocumentTypeAutoId = Convert.ToInt32(reader["documentTypeAutoId"]),
+                        DocumentTypeAutoId = reader.IsDBNull("documentTypeAutoId") ? null : (int?)reader.GetInt32("documentTypeAutoId"),
 
                     };
                     RequestTemplateDetailss.Add(dt);

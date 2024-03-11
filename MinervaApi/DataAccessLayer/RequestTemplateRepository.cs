@@ -112,7 +112,7 @@ namespace Minerva.DataAccessLayer
                         tenantId = Convert.ToInt32(reader["tenantId"]),
                         requestTemplateName = reader["requestTemplateName"].ToString(),
                         requestTemplateDescription = reader["requestTemplateDescription"].ToString(),
-                        remindersAutoId = Convert.ToInt32(reader["remindersAutoId"]),
+                        remindersAutoId = reader.IsDBNull("remindersAutoId") ? null : (int?)reader.GetInt32("remindersAutoId"),
 
                     };
                     
