@@ -30,8 +30,8 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpGet("getBusinessPersona")]
-        public async Task<IActionResult> GetPersonaBusiness()
+        [HttpGet("getPeoplePersona")]
+        public async Task<IActionResult> getPeoplePersona()
         {
             var personas = await persona.GetALLProjectPersonas(0);
 
@@ -44,8 +44,8 @@ namespace MinervaApi.Controllers
                 return NotFound(); // or another appropriate status
             }
         }
-        [HttpGet("getPeoplePersona")]
-        public async Task<IActionResult> getPeoplePersona()
+        [HttpGet("getProjectPersona")]
+        public async Task<IActionResult> getProjectPersona()
         {
             var personas = await persona.GetALLProjectPersonas(1);
 
