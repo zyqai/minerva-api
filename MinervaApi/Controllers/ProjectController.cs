@@ -24,8 +24,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             request.CreatedByUserId = User.FindFirstValue(ClaimTypes.Email);
@@ -71,8 +70,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -88,8 +86,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateProject(ProjectRequest request)
         {
@@ -120,7 +117,7 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
@@ -149,9 +146,9 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        
         [HttpGet("details/{id}")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> GetProjectDetails(int id)
         {
             var projects = await ProtBL.GetProjectDetails(id);
@@ -168,8 +165,7 @@ namespace MinervaApi.Controllers
 
 
         [HttpGet("projectList")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> GetprojectList()
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -186,8 +182,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost("projectWithDetails")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateProjectWithDetails(ProjectwithDetailsRequest request)
         {
             string ?CreatedBy = User.FindFirstValue(ClaimTypes.Email);
@@ -219,8 +214,7 @@ namespace MinervaApi.Controllers
         }
 
         [HttpGet("getProjectWithDetails/{id}")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> getProjectWithDetails(int id)
         {
             var projects = await ProtBL.getProjectWithDetails(id);
@@ -237,8 +231,7 @@ namespace MinervaApi.Controllers
 
 
         [HttpPost("createProjectRequest")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> createProjectRequest(ProjectRequestData request)
         {
             string? emails = User.FindFirstValue(ClaimTypes.Email);
@@ -269,8 +262,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpPut("updateProjectRequest")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateProjectRequest(ProjectRequestDetailUpdateData request)
         {
             string? emails = User.FindFirstValue(ClaimTypes.Email);

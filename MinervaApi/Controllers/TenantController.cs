@@ -23,6 +23,7 @@ namespace MinervaApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -62,6 +63,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpGet]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Get()
         {
             var _tenants = await tenant.GetALLAsync();
@@ -76,7 +78,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -125,7 +127,7 @@ namespace MinervaApi.Controllers
             }
         }
         [HttpDelete("{id}")]
-        //[Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> DeleteProject(int id)
         {
             try
