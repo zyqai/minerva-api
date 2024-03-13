@@ -29,7 +29,7 @@ namespace MinervaApi.ExternalApi
         public bool? enabled { get; set; }
         public bool? emailVerified { get; set; }
         public ClientRoles? clientRoles { get; set; }
-        public List<object>? realmRoles { get; set; }
+        public List<string>? realmRoles { get; set; }
         public List<string>? requiredActions { get; set; }
         public long createdTimestamp { get; set; }
         public bool totp { get; set; }
@@ -37,6 +37,7 @@ namespace MinervaApi.ExternalApi
         public int notBefore { get; set; }
         public Access? access { get; set; }
         public Attributes? attributes { get; set; }
+        public List<string>? groups { get; set; }
     }
     public class Attributes
     {

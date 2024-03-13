@@ -27,23 +27,17 @@ namespace MinervaApi.ExternalApi
                 client.username = us.Email;
                 client.firstName = us.FirstName;
                 client.lastName = us.LastName;
-                client.realmRoles = [us.Roles.ToString()];
                 client.enabled = us.IsActive;
-                //client.realmRoles = [];
-                client.clientRoles=new ClientRoles();
                 client.attributes = new Attributes();
                 client.attributes.AnyId = new List<string?>();
                 client.attributes.AnyId.Add(us.UserId);
-                client.attributes.TenantId=new List<string?> ();
+                client.attributes.TenantId = new List<string?>();
                 client.attributes.TenantId.Add(us.TenantId.ToString());
+                client.groups = new List<string>();
+                client.groups.Add(us.Roles);
 
-                
-                ClientRoles _clientRoles = new ClientRoles();
-                List<string> rolesList = new List<string>();
-                _clientRoles.roles = new List<string>();
-                _clientRoles.roles.Add(us.Roles);
 
-                client.clientRoles = _clientRoles;
+
 
 
                 client.requiredActions = ["UPDATE_PASSWORD", "VERIFY_EMAIL"];
@@ -60,16 +54,17 @@ namespace MinervaApi.ExternalApi
                     throw new HttpRequestException($"Error creating user: {await response.Content.ReadAsStringAsync()}");
                 }
             }
-            catch   (Exception ex)
+            catch(Exception ex)
             {
                 throw new HttpRequestException($"Error Reset Password: {ex}");
             }
         }
+
         public async Task<List<KeyClient?>> GetUser(string email)
         {
             try
             {
-                var response=await _httpClient.GetAsync("users?username=" + email);
+                var response = await _httpClient.GetAsync("users?username=" + email);
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -88,20 +83,20 @@ namespace MinervaApi.ExternalApi
             }
         }
         public async Task<APIStatus?> ResetPassword(string? id, string email)
-        { 
+        {
             APIStatus status = new APIStatus();
             try
             {
                 var request = new HttpRequestMessage();
-                var response = await _httpClient.PutAsync("users/"+ id + "/reset-password-email",request.Content);
-                if(response.IsSuccessStatusCode)
+                var response = await _httpClient.PutAsync("users/" + id + "/reset-password-email", request.Content);
+                if (response.IsSuccessStatusCode)
                 {
-                    status = new APIStatus { Code = "200",Message= "password is reset successfully! check your registered email address" };
+                    status = new APIStatus { Code = "200", Message = "password is reset successfully! check your registered email address" };
                     return status;
                 }
                 else
                 {
-                    throw new HttpRequestException($"Error Reset Password: {await response.Content.ReadAsStringAsync()}"); 
+                    throw new HttpRequestException($"Error Reset Password: {await response.Content.ReadAsStringAsync()}");
                 }
             }
             catch (Exception ex)
