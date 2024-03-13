@@ -24,7 +24,7 @@ namespace MinervaApi.Controllers
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
-        //[Authorize(Policy = "Staff")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Createppr(List<projectPeopleRelationRequest?> requests)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -76,6 +76,7 @@ namespace MinervaApi.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectPeopleRelation(int id)
         {
             try

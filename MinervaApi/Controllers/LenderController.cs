@@ -27,10 +27,11 @@ namespace MinervaApi.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateLender(LenderRequest request)
         {
            string userid = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -55,18 +56,20 @@ namespace MinervaApi.Controllers
                 }
                 else
                 {
+
                     return BadRequest();
                 }
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public Task<Lender?> GetLender(int id)
         {
@@ -76,6 +79,7 @@ namespace MinervaApi.Controllers
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<List<Lender?>> GetLenders()
         {
             return await lender.GetALLLenders();
@@ -84,10 +88,11 @@ namespace MinervaApi.Controllers
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateLender(LenderRequest c)
         {
             Apistatus status = new Apistatus();
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c));
             try
             {
                 if (ModelState.IsValid)
@@ -102,7 +107,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -126,6 +131,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, " error "+ id.ToString() + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

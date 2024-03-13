@@ -37,8 +37,9 @@ namespace Minerva.Controllers
             }
         }
 
-        //[Authorize(Policy = "TenantAdminPolicy")]
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -57,11 +58,12 @@ namespace Minerva.Controllers
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveRequestTemplateDetail(RequestTemplateDetailsRequest request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
 
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -91,11 +93,12 @@ namespace Minerva.Controllers
         }
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateRequestTemplateDetail(RequestTemplateDetailsRequest request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
 
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -112,20 +115,21 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteRequestTemplateDetail(int id)
         {
             try
             {
                 if (id > 0)
                 {
-                    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
+                    Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
                     bool? b = await _rtdBL.DeleteRequestTemplateDetails(id);
                     if (b == true)
                         return StatusCode(StatusCodes.Status200OK);
@@ -139,7 +143,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, id + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, id + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

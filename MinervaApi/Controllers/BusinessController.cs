@@ -31,14 +31,14 @@ namespace Minerva.Controllers
             try
             {
                 request.CreatedBy = User.FindFirstValue(ClaimTypes.Email);
-                Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+                Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
                 if (ModelState.IsValid)
                 {
                     int? b = await BusinessBL.SaveBusines(request);
                     if (b > 0)
                     {
                         Business? res = await BusinessBL.GetBusiness((int)b);
-                        Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(res));
+                        Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(res));
                         return StatusCode(StatusCodes.Status201Created, res);
                     }
                     else
@@ -53,7 +53,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -63,7 +63,7 @@ namespace Minerva.Controllers
         [Authorize(Policy = "TenantAdminPolicy")]
         public Task<Business?> GetBusiness(int id)
         {
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id.ToString());
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, id.ToString());
             return BusinessBL.GetBusiness(id);
         }
 
@@ -80,7 +80,7 @@ namespace Minerva.Controllers
         public async Task<IActionResult> UpdateBusiness(BusinessRequest request)
         {
             request.UpdatedBy = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -95,7 +95,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -108,7 +108,7 @@ namespace Minerva.Controllers
             {
                 if (id > 0)
                 {
-                    Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
+                    Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, id + "delete By " + User.FindFirstValue(ClaimTypes.Email));
                     bool b = BusinessBL.DeleteBusiness(id);
                     if (b)
                         return StatusCode(StatusCodes.Status200OK);
@@ -122,7 +122,7 @@ namespace Minerva.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, id + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, id + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

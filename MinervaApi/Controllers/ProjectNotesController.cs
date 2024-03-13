@@ -22,10 +22,11 @@ namespace MinervaApi.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateProjectNotes(ProjectNotesRequest request)
         {
             request.createdByUserId = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -34,10 +35,13 @@ namespace MinervaApi.Controllers
                     if (b > 1)
                     {
                         ProjectNotes? p = await PNBL.GetProjectNotes(b);
+                        Comman.logRes(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(p));
                         return StatusCode(StatusCodes.Status201Created, p);
+
                     }
                     else
                     {
+                        Comman.logRes(ControllerContext.ActionDescriptor.ActionName, "error "+JsonConvert.SerializeObject(request));
                         return StatusCode(StatusCodes.Status500InternalServerError, request);
                     }
                 }
@@ -48,6 +52,8 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logRes(ControllerContext.ActionDescriptor.ActionName, "error " + ex.Message.ToString());
+
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -55,6 +61,7 @@ namespace MinervaApi.Controllers
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get()
         {
             var ProjectNotes = await PNBL.GetALLProjectNotes();
@@ -74,6 +81,7 @@ namespace MinervaApi.Controllers
         [HttpGet("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             var ProjectNotes = await PNBL.GetProjectNotes(id);
@@ -93,10 +101,11 @@ namespace MinervaApi.Controllers
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateProjectNotes(ProjectNotesRequest request)
         {
             request.ModifiedByUserId = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -118,6 +127,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logRes(ControllerContext.ActionDescriptor.ActionName, "error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -126,6 +136,7 @@ namespace MinervaApi.Controllers
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectNotes(int id)
         {
             try
@@ -149,6 +160,7 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
+                Comman.logRes(ControllerContext.ActionDescriptor.ActionName, "error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }

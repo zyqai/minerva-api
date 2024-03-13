@@ -25,7 +25,7 @@ namespace MinervaApi.Controllers
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
-        //[Authorize(Policy = "Staff")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Createppr(List<projectBusinessesRelationRequest?> requests)
         {
             Apistatus res = new Apistatus();
@@ -74,8 +74,10 @@ namespace MinervaApi.Controllers
                 return NotFound();
             }
         }
+        
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectRelation(int id)
         {
             try

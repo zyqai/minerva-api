@@ -55,11 +55,12 @@ namespace Minerva.Controllers
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveRequestTemplate(RequestTemplateRequestWhithDetails request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
 
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -87,11 +88,12 @@ namespace Minerva.Controllers
 
         [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateRequestTemplate(RequestTemplateRequest request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(request));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
             {
                 if (ModelState.IsValid)
@@ -120,6 +122,7 @@ namespace Minerva.Controllers
         }
 
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestTemplate(int id)
         {

@@ -26,6 +26,7 @@ namespace Minerva.Controllers
         [HttpGet("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             Comman.logEvent("peopleBusinessRelationGet", id.ToString());
@@ -52,11 +53,12 @@ namespace Minerva.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Create(List<CBRelationRequest?> requests)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
             User? u = new User();
-            Comman.logRes("peopleBusinessRelationGet", JsonConvert.SerializeObject(requests));
+            Comman.logRes("peopleBusinessRelationCreate", JsonConvert.SerializeObject(requests));
 
             if (email != null)
             {
@@ -97,6 +99,7 @@ namespace Minerva.Controllers
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Update(List<CBRelationRequest> requests)
         {
             try
@@ -128,9 +131,11 @@ namespace Minerva.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -161,6 +166,8 @@ namespace Minerva.Controllers
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
+
         public async Task<IActionResult> Get()
         {
             var ten = await relation.GetALLAync();
@@ -175,6 +182,7 @@ namespace Minerva.Controllers
             }
         }
 
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("businessRelation/{businessId}")]
         public async Task<IActionResult> GetBusinessRelation(int ?businessId)
         {
@@ -188,6 +196,8 @@ namespace Minerva.Controllers
                 return NotFound();
             }
         }
+
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("clientsRelation/{clientId}")]
         public async Task<IActionResult> GetClientsRelation(int? clientId)
         {
