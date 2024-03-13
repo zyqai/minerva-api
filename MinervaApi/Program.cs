@@ -191,7 +191,7 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
-            builder.RequireRole("TenantAdmin");
+            builder.RequireRole("TenantAdmin", "Admin", "admin");
         }
         );
     options.AddPolicy("AdminPolicy",
@@ -202,7 +202,7 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
-            builder.RequireRole("admin");
+            builder.RequireRole("admin", "");
         }
         );
     options.AddPolicy("AdminPolicy",
@@ -213,7 +213,7 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
-            builder.RequireRole("Admin");
+            builder.RequireRole("Admin", "admin");
         }
         );
     options.AddPolicy("StaffPolicy",
@@ -224,7 +224,7 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
-            builder.RequireRole("Staff");
+            builder.RequireRole("Staff", "Admin", "admin", "TenantAdmin" );
         }
         );
 

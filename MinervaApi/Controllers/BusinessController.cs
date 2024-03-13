@@ -24,7 +24,7 @@ namespace Minerva.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> SaveBusines([FromBody] BusinessRequest request)
         {
