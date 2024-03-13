@@ -53,6 +53,7 @@ namespace MinervaApi.Controllers
 
         [HttpPost("createProjectRequestDetails")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectRequestDetailsInsert(ProjectRequestDetail request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -94,6 +95,7 @@ namespace MinervaApi.Controllers
 
         [HttpPut("updateProjectRequestDetails")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectRequestDetailsUpdate(ProjectRequestDetail request)
         {
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
@@ -135,6 +137,7 @@ namespace MinervaApi.Controllers
 
         [HttpPost("createProjectRequestSentTo")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectRequestSentToInsert(ProjectRequestSentTo request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -177,6 +180,7 @@ namespace MinervaApi.Controllers
 
         [HttpPut("updateProjectRequestSentTo")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectProjectRequestDetails(ProjectRequestSentTo request)
         {
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));

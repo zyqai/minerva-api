@@ -24,6 +24,7 @@ namespace MinervaApi.Controllers
 
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public Task<Client?> GetClient(int id)
         {
@@ -34,6 +35,7 @@ namespace MinervaApi.Controllers
         [HttpGet]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public Task<List<Client?>> GetClient()
         {
             return client.GetALLClients();
@@ -41,10 +43,11 @@ namespace MinervaApi.Controllers
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
             c.CreatedBy = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c));
             try
             {
                 if (ModelState.IsValid)
@@ -68,17 +71,18 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpPut]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateClient(ClientRequest c)
         {
             c.ModifiedBy = User.FindFirstValue(ClaimTypes.Email);
-            Comman.logEvent(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c));
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c));
             try
             {
                 if (ModelState.IsValid)
@@ -93,13 +97,14 @@ namespace MinervaApi.Controllers
             }
             catch (Exception ex)
             {
-                Comman.logError(System.Reflection.MethodBase.GetCurrentMethod().Name, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(c) + " error " + ex.Message.ToString());
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteClient(int id)
         {
             try

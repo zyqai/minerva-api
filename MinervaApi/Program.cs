@@ -202,7 +202,7 @@ builder.Services.AddAuthorization(options =>
                 JwtBearerDefaults.AuthenticationScheme
             };
             builder.RequireAuthenticatedUser();
-            builder.RequireRole("admin", "");
+            builder.RequireRole("admin", "Admin");
         }
         );
     options.AddPolicy("AdminPolicy",
