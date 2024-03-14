@@ -25,7 +25,6 @@ namespace Minerva.Controllers
 
         [HttpPost]
         [Authorize(Policy = "StaffPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> SaveBusines([FromBody] BusinessRequest request)
         {
             try
@@ -59,8 +58,7 @@ namespace Minerva.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public Task<Business?> GetBusiness(int id)
         {
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, id.ToString());
@@ -68,15 +66,14 @@ namespace Minerva.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public Task<List<Business?>> GetBusiness()
         {
             return BusinessBL.GetALLBusiness();
         }
 
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateBusiness(BusinessRequest request)
         {
             request.UpdatedBy = User.FindFirstValue(ClaimTypes.Email);

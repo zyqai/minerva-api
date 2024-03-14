@@ -85,7 +85,7 @@ namespace MinervaApi.Controllers
 
 
         [HttpPost("CreateNotes")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateNotes(Notes request)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);

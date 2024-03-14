@@ -23,8 +23,6 @@ namespace MinervaApi.Controllers
             ipbr = _ipbr;
         }
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Createppr(List<projectBusinessesRelationRequest?> requests)
         {
@@ -76,7 +74,6 @@ namespace MinervaApi.Controllers
         }
         
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectRelation(int id)
         {

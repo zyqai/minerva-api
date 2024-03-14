@@ -24,8 +24,6 @@ namespace Minerva.Controllers
             user = _user;
         }
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
@@ -51,8 +49,6 @@ namespace Minerva.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Create(List<CBRelationRequest?> requests)
         {
@@ -97,8 +93,6 @@ namespace Minerva.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Update(List<CBRelationRequest> requests)
         {
@@ -133,8 +127,6 @@ namespace Minerva.Controllers
         }
         
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -164,8 +156,6 @@ namespace Minerva.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
 
         public async Task<IActionResult> Get()

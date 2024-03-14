@@ -22,7 +22,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> CreateTenent(TenantRequest request)
         {

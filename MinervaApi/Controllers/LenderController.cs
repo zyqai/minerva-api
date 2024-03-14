@@ -25,8 +25,6 @@ namespace MinervaApi.Controllers
             lender = _Lender;
         }
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateLender(LenderRequest request)
         {
@@ -67,8 +65,6 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public Task<Lender?> GetLender(int id)
@@ -77,8 +73,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<List<Lender?>> GetLenders()
         {
@@ -86,8 +80,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateLender(LenderRequest c)
         {
@@ -112,7 +104,6 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLender(int id)

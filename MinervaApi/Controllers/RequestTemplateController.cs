@@ -53,8 +53,6 @@ namespace Minerva.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveRequestTemplate(RequestTemplateRequestWhithDetails request)
         {
@@ -86,8 +84,7 @@ namespace Minerva.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        
         [Authorize(Policy = "StaffPolicy")]
         [HttpPut]
         public async Task<IActionResult> UpdateRequestTemplate(RequestTemplateRequest request)
@@ -121,7 +118,6 @@ namespace Minerva.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestTemplate(int id)

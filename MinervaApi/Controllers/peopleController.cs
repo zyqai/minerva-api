@@ -22,8 +22,6 @@ namespace MinervaApi.Controllers
         }
 
 
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         [HttpGet("{id}")]
         public Task<Client?> GetClient(int id)
@@ -33,16 +31,12 @@ namespace MinervaApi.Controllers
         
 
         [HttpGet]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public Task<List<Client?>> GetClient()
         {
             return client.GetALLClients();
         }
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveClinet(ClientRequest c)
         {
@@ -77,7 +71,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateClient(ClientRequest c)
         {
@@ -103,7 +96,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteClient(int id)
         {

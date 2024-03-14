@@ -37,10 +37,9 @@ namespace Minerva.Controllers
             }
         }
 
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "StaffPolicy")]
+        
         [HttpGet("{id}")]
+        [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
             var RequestTemplateDetails = await _rtdBL.GetRequestTemplateDetails(id);
@@ -56,8 +55,6 @@ namespace Minerva.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> SaveRequestTemplateDetail(RequestTemplateDetailsRequest request)
         {
@@ -92,7 +89,6 @@ namespace Minerva.Controllers
             }
         }
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateRequestTemplateDetail(RequestTemplateDetailsRequest request)
         {
@@ -121,7 +117,6 @@ namespace Minerva.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteRequestTemplateDetail(int id)
         {

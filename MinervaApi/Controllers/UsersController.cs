@@ -32,8 +32,7 @@ namespace Minerva.Controllers
             return userBL.GetUser(user);
         }
         [HttpGet]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         //[Authorize]
         public Task<List<User?>> GetUses()
         {
@@ -44,7 +43,6 @@ namespace Minerva.Controllers
         
         [HttpPost]
         [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> SaveUsers(UsersRequest user)
         {
             string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -85,7 +83,6 @@ namespace Minerva.Controllers
         }
         
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "TenantAdminPolicy")]
         public async Task<IActionResult> UpdateUser(UsersRequest user)
         {
@@ -154,15 +151,13 @@ namespace Minerva.Controllers
         //    return userBL.GetTenantUserList(tenantId);
         //}
         [HttpGet("forgotPassword/{emailId}")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public Task<APIStatus> Forgetpassword(string emailId) 
         {
             return userBL.Forgetpassword(emailId);
         }
         [HttpGet("verifyEmail/{emailId}")]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
         public Task<APIStatus> verifyemail(string emailId)
         {
             return userBL.verifyemail(emailId);

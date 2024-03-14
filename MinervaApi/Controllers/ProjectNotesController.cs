@@ -20,8 +20,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> CreateProjectNotes(ProjectNotesRequest request)
         {
@@ -59,8 +57,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get()
         {
@@ -79,8 +75,6 @@ namespace MinervaApi.Controllers
 
         
         [HttpGet("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Get(int id)
         {
@@ -99,8 +93,6 @@ namespace MinervaApi.Controllers
 
        
         [HttpPut]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> UpdateProjectNotes(ProjectNotesRequest request)
         {
@@ -134,8 +126,6 @@ namespace MinervaApi.Controllers
 
         
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "TenantAdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectNotes(int id)
         {

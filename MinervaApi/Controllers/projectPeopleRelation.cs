@@ -22,8 +22,6 @@ namespace MinervaApi.Controllers
             user = _user;
         }
         [HttpPost]
-        [Authorize(Policy = "TenantAdminPolicy")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> Createppr(List<projectPeopleRelationRequest?> requests)
         {
@@ -75,7 +73,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> DeleteProjectPeopleRelation(int id)
         {

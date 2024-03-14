@@ -52,7 +52,6 @@ namespace MinervaApi.Controllers
 
 
         [HttpPost("createProjectRequestDetails")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectRequestDetailsInsert(ProjectRequestDetail request)
         {
@@ -179,7 +178,6 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPut("updateProjectRequestSentTo")]
-        [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> ProjectProjectRequestDetails(ProjectRequestSentTo request)
         {
