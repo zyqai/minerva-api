@@ -1,5 +1,6 @@
 ﻿
 using MinervaApi.ExternalApi;
+using MinervaApi.Models.Requests;
 using MinervaApi.Models.Returns;
 
 namespace MinervaApi.BusinessLayer.Interface
@@ -13,5 +14,6 @@ namespace MinervaApi.BusinessLayer.Interface
 
         public Task<APIStatus> SaveProjectRequestSentTo(Models.Requests.ProjectRequestSentTo request, string email);
         public Task<APIStatus> UpdateProjectRequestSentTo(Models.Requests.ProjectRequestSentTo request);
+        public Task<ProjectEmailResponce> GetALLProjectRequestBytoken(string request);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Minerva.BusinessLayer;
+﻿using IdentityModel.Client;
+using Minerva.BusinessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
@@ -8,9 +9,12 @@ using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Requests;
 using MySqlConnector;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MinervaApi.DataAccessLayer
@@ -384,7 +388,9 @@ namespace MinervaApi.DataAccessLayer
                         // Convert requestSendTo and requestDetails to JSON
                         string jsonSendTo = JsonConvert.SerializeObject(request.RequestSendTo);
                         string jsonDetails = JsonConvert.SerializeObject(request.RequestDetails);
-
+                        string token = Comman.GenerateRandomString(6)+DateTime.Now.ToString("yyyyMMddHHmmss") + Comman.GenerateRandomString(6);
+                        string requestURL = string.Empty;
+                        requestURL = Comman.EncryptDatastring(token);
                         // Add parameters
                         command.Parameters.AddWithValue("@in_requestName", request.RequestName);
                         command.Parameters.AddWithValue("@in_requestDescription", request.RequestDescription);
@@ -394,6 +400,9 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.AddWithValue("@in_requestSendTo", jsonSendTo);
                         command.Parameters.AddWithValue("@in_requestDetails", jsonDetails);
                         command.Parameters.AddWithValue("@in_createdBy", Userid);
+                        command.Parameters.AddWithValue("@in_token", token);
+                        command.Parameters.AddWithValue("@in_requestURL", requestURL);
+
 
                         // Add output parameter to get the response from the stored procedure
                         MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)

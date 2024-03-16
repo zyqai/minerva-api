@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Minerva.BusinessLayer;
 using Minerva.Models;
 using Minerva.Models.Returns;
@@ -8,8 +9,10 @@ using MinervaApi.Models;
 using MinervaApi.Models.Requests;
 using MinervaApi.Models.Returns;
 using MySqlConnector;
+using System.Collections;
 using System.Data;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 
 namespace MinervaApi.DataAccessLayer
 {
@@ -295,6 +298,72 @@ namespace MinervaApi.DataAccessLayer
                 }
             }
             return status;
+        }
+
+        public async Task<ProjectRequestUrl> GetAllProjectRequestBytoken(string? token)
+        {
+            ProjectRequestUrl response = new ProjectRequestUrl();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                   
+                    command.Parameters.AddWithValue("@in_token", token);
+                    command.CommandText = "USP_GetProjectURL ";
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            response.TenantId= reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId");
+                            response.ProjectId= reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId");
+                            response.ProjectRequestId = reader.IsDBNull("projectRequestId") ? null : (int?)reader.GetInt32("projectRequestId");
+                            response.Token=reader.IsDBNull("token") ?null: (string)reader.GetValue("token");
+                            response.RequestURL = reader.IsDBNull("requestURL") ?null: (string)reader.GetValue("requestURL");
+                        }
+                    }
+                }
+            }
+           return response;
+        }
+
+        public async Task<List<ProjectRequestDetails?>> GetAllProjectRequestDetailsByProjectid(int prid)
+        {
+            List<ProjectRequestDetails> projectRequestDetails = new List<ProjectRequestDetails>();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@in_project", prid);
+                    command.CommandText = "USP_projectDocumentDetails";
+
+                    using (MySqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            ProjectRequestDetails request = new ProjectRequestDetails
+                            {
+                                ProjectRequestDetailsId = reader.IsDBNull("projectrequestDetailsId") ? null : (int?)reader.GetInt32("projectrequestDetailsId"),
+                                ProjectRequestTemplateId = reader.IsDBNull("projectRequestTemplateId") ? null : (int?)reader.GetInt32("projectRequestTemplateId"),
+                                ProjectId = reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId"),
+                                TenantId = reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId"),
+                                documentTypeAutoId = reader.IsDBNull("documentTypeAutoId") ? null : (int?)reader.GetInt32("documentTypeAutoId"),
+                                documentTypeId = reader.IsDBNull("documentTypeId") ? null : (int?)reader.GetInt32("documentTypeId"),
+                                Label = reader.IsDBNull("label") ? null : reader.GetString("label"),
+                                DocumentTypeName = reader.IsDBNull("documentTypeName") ? null : reader.GetString("documentTypeName"),
+                                DocumentTypeDescription = reader.IsDBNull("documentTypeDescription") ? null : reader.GetString("documentTypeDescription"),
+                                DocumentClassificationName = reader.IsDBNull("documentClassificationName") ? null : reader.GetString("documentClassificationName"),
+                                documentClassificationAutoId = reader.IsDBNull("documentClassificationAutoId") ? null : (int?)reader.GetInt32("documentClassificationAutoId"),
+                                documentClassificationId = reader.IsDBNull("documentClassificationId") ? null : (int?)reader.GetInt32("documentClassificationId"),
+                            };
+                            projectRequestDetails.Add(request);
+                        }
+                    }
+                }
+            }
+            return projectRequestDetails;
         }
     }
 }

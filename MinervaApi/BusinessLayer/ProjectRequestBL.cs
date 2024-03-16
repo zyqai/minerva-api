@@ -1,8 +1,12 @@
-﻿using Minerva.IDataAccessLayer;
+﻿using Minerva.BusinessLayer;
+using Minerva.BusinessLayer.Interface;
+using Minerva.DataAccessLayer;
+using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using MinervaApi.BusinessLayer.Interface;
 using MinervaApi.ExternalApi;
 using MinervaApi.IDataAccessLayer;
+using MinervaApi.Models.Requests;
 using MinervaApi.Models.Returns;
 using System.Data;
 
@@ -10,12 +14,16 @@ namespace MinervaApi.BusinessLayer
 {
     public class ProjectRequestBL : IProjectRequestBL
     {
+        IFileTypeRepository Filetyperepository;
+        IProjectsBL projectsrepositiry;
         IProjectRequestRepository repository;
         IUserRepository userRepository;
-        public ProjectRequestBL(IProjectRequestRepository _repository,IUserRepository _user) 
+        public ProjectRequestBL(IProjectRequestRepository _repository, IUserRepository _user, IProjectsBL _projectsrepositiry, IFileTypeRepository _Filetyperepository)
         {
             this.repository = _repository;
             userRepository = _user;
+            projectsrepositiry = _projectsrepositiry;
+            Filetyperepository = _Filetyperepository;
         }
         public Task<ProjectRequestDetailsResponse> GetALLAsync(int projectId)
         {
@@ -25,7 +33,7 @@ namespace MinervaApi.BusinessLayer
         public async Task<ProjectRequestWithDetails> GetALLProjectRequestByIdasync(int projectRequestId)
         {
             ProjectRequestWithDetails pr = new ProjectRequestWithDetails();
-            pr.projectRequest=await repository.GetAllProjectRequestById(projectRequestId);
+            pr.projectRequest = await repository.GetAllProjectRequestById(projectRequestId);
             pr.ProjectRequestSentList = await repository.GetAllProjectRequestSentToByRequestId(projectRequestId);
             pr.ProjectRequestDetailList = await repository.GetAllProjectRequestDetailsByRequestId(projectRequestId);
             if (pr.projectRequest != null)
@@ -45,10 +53,10 @@ namespace MinervaApi.BusinessLayer
 
         public async Task<APIStatus> SaveProjectRequestDetails(Models.Requests.ProjectRequestDetail request, string email)
         {
-            User ?user=await userRepository.GetuserusingUserNameAsync(email);
+            User? user = await userRepository.GetuserusingUserNameAsync(email);
             Models.ProjectRequestDetail prd = new Models.ProjectRequestDetail();
             prd = MappingRequest(request);
-            prd.TenantId = user?.TenantId;    
+            prd.TenantId = user?.TenantId;
             return await repository.SaveProjectRequestDetails(prd);
         }
 
@@ -98,6 +106,20 @@ namespace MinervaApi.BusinessLayer
             sentTo.UniqueLink = request.UniqueLink;
             sentTo.StatusAutoId = request.StatusAutoId;
             return sentTo;
+        }
+
+        public async Task<ProjectEmailResponce> GetALLProjectRequestBytoken(string token)
+        {
+            ProjectRequestUrl res = new ProjectRequestUrl();
+            res = await repository.GetAllProjectRequestBytoken(token);
+            ProjectEmailResponce responce = new ProjectEmailResponce();
+            int prid = (int)(res.ProjectId == null ? 0 : res.ProjectId);
+            responce.Project = await projectsrepositiry.GetProjects(prid);
+            responce.ProjectRequestResponse = new List<ProjectRequestDetails?>();
+            responce.ProjectRequestResponse = await repository.GetAllProjectRequestDetailsByProjectid(prid);
+            var resf= (await Filetyperepository.GetALLFileTypesAsync().ConfigureAwait(false));
+            responce.FileFormt = resf.FileTypes;
+            return responce;
         }
     }
 }

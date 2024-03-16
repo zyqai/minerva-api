@@ -8,7 +8,9 @@ using MinervaApi.BusinessLayer.Interface;
 using MinervaApi.ExternalApi;
 using MinervaApi.Models.Requests;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace MinervaApi.Controllers
 {
@@ -181,7 +183,7 @@ namespace MinervaApi.Controllers
         [HttpPut("updateProjectRequestSentTo")]
         [Authorize(Policy = "AdminPolicy")]
         [Authorize(Policy = "StaffPolicy")]
-        public async Task<IActionResult> ProjectProjectRequestDetails(ProjectRequestSentTo request)
+        public async Task<IActionResult> updateProjectRequestSentTo(ProjectRequestSentTo request)
         {
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             try
@@ -219,5 +221,29 @@ namespace MinervaApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "StaffPolicy")]
+        [HttpPost("projectRequestEmailDetails")]
+        public async Task<IActionResult> projectRequestEmailDetails(ProjectEmailDetails request)
+        { 
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
+            string toc=request.token;
+            //using (var rsa = new RSACryptoServiceProvider(2048))
+            //{
+            //    string decryptedText = Comman.DecryptDatastringNew(request.token, rsa.ExportParameters(false));
+            //    toc= decryptedText;
+            //}
+            
+            var res = await projectRequest.GetALLProjectRequestBytoken(toc);
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            else
+            {
+                return NotFound(); // or another appropriate status
+            }
+        }
     }
 }
