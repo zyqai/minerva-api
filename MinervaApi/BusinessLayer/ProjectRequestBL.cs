@@ -117,8 +117,18 @@ namespace MinervaApi.BusinessLayer
             responce.Project = await projectsrepositiry.GetProjects(prid);
             responce.ProjectRequestResponse = new List<ProjectRequestDetails?>();
             responce.ProjectRequestResponse = await repository.GetAllProjectRequestDetailsByProjectid(prid);
-            var resf= (await Filetyperepository.GetALLFileTypesAsync().ConfigureAwait(false));
+            var resf = (await Filetyperepository.GetALLFileTypesAsync().ConfigureAwait(false));
             responce.FileFormt = resf.FileTypes;
+            if (responce.ProjectRequestResponse == null)
+            {
+                responce.code = "204";
+                responce.message = "No content";
+            }
+            else
+            {
+                responce.code = "206";
+                responce.message = "response available";
+            }
             return responce;
         }
     }

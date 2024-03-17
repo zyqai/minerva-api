@@ -119,8 +119,8 @@ namespace MinervaApi.DataAccessLayer
                         LoanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
                         StatusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
                         ProjectFilesPath = reader["projectFilesPath"] == DBNull.Value ? string.Empty : reader["projectFilesPath"].ToString(),
-                        ProjectStartDate = reader["projectStartDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["projectStartDate"].ToString()),
-                        DesiredClosedDate = reader["desiredClosedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["desiredClosedDate"].ToString()),
+                        //ProjectStartDate = reader["projectStartDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["projectStartDate"].ToString()),
+                        //DesiredClosedDate = reader["desiredClosedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["desiredClosedDate"].ToString()),
                     };
                     bu.Add(user);
                 }
@@ -390,7 +390,7 @@ namespace MinervaApi.DataAccessLayer
                         string jsonDetails = JsonConvert.SerializeObject(request.RequestDetails);
                         string token = Comman.GenerateRandomString(6)+DateTime.Now.ToString("yyyyMMddHHmmss") + Comman.GenerateRandomString(6);
                         string requestURL = string.Empty;
-                        requestURL = Comman.EncryptDatastring(token);
+                        requestURL = Comman.EncryptString(token);
                         // Add parameters
                         command.Parameters.AddWithValue("@in_requestName", request.RequestName);
                         command.Parameters.AddWithValue("@in_requestDescription", request.RequestDescription);

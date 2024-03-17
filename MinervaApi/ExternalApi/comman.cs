@@ -105,85 +105,53 @@ namespace MinervaApi.ExternalApi
             }
             return result.ToString();
         }
-        public static string EncryptDatastring(string data)
+        public static string key = "minerva";
+        public static string EncryptString(string plainText)
         {
-            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-
-            using (RSA rsa = RSA.Create())
+            using (Aes aes = Aes.Create())
             {
-                RSAParameters rsaPublicKey= rsa.ExportParameters(false);
-                rsa.ImportParameters(rsaPublicKey);
-                byte[] encryptedData = rsa.Encrypt(dataBytes, RSAEncryptionPadding.OaepSHA256);
-                return Convert.ToBase64String(encryptedData);
+                aes.Key = DeriveKey(key, aes.KeySize / 8);
+                aes.IV = new byte[16]; // IV is 16 bytes for AES
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        byte[] dataBytes = Encoding.UTF8.GetBytes(plainText);
+                        cs.Write(dataBytes, 0, dataBytes.Length);
+                    }
+
+                    byte[] encryptedBytes = ms.ToArray();
+                    return Convert.ToBase64String(encryptedBytes);
+                }
             }
         }
 
-       
-
-        //public static byte[] DecryptData(byte[] encryptedData, RSAParameters rsaPrivateKey)
-        //{
-        //    using (RSA rsa = RSA.Create())
-        //    {
-        //        rsa.ImportParameters(rsaPrivateKey);
-        //        return rsa.Decrypt(encryptedData, RSAEncryptionPadding.OaepSHA256);
-        //    }
-        //}
-        public static string DecryptDatastring(string encryptedText)
+        public static string DecryptString(string encryptedText)
         {
-            byte[] encryptedData = Convert.FromBase64String(encryptedText);
-
-            using (RSA rsa = RSA.Create())
+            using (Aes aes = Aes.Create())
             {
-                RSAParameters rsaPrivateKey = rsa.ExportParameters(true);
-                rsa.ImportParameters(rsaPrivateKey);
-                byte[] decryptedData = rsa.Decrypt(encryptedData, RSAEncryptionPadding.OaepSHA256);
-                return Encoding.UTF8.GetString(decryptedData);
+                aes.Key = DeriveKey(key, aes.KeySize / 8);
+                aes.IV = new byte[16]; // IV is 16 bytes for AES
+
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(encryptedText)))
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                    {
+                        using (StreamReader reader = new StreamReader(cs))
+                        {
+                            return reader.ReadToEnd();
+                        }
+                    }
+                }
             }
         }
-        //public static byte[] EncryptDatastring(string data)
-        //{
 
-        //        byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-
-        //    using (RSA rsa = RSA.Create())
-        //    {
-        //        RSAParameters rsaPublicKey = rsa.ExportParameters(false);
-        //        rsa.ImportParameters(rsaPublicKey);
-        //        return rsa.Encrypt(dataBytes, RSAEncryptionPadding.OaepSHA256);
-        //    }
-        //}
-
-
-        public static string EncryptDatastringNew(string data, RSAParameters rsaPublicKey)
+        public static byte[] DeriveKey(string key, int keySize)
         {
-            using (var csp = new RSACryptoServiceProvider())
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key)))
             {
-                csp.ImportParameters(rsaPublicKey);
-
-                // Convert plaintext data to bytes
-                byte[] bytesPlainTextData = Encoding.Unicode.GetBytes(data);
-
-                // Encrypt bytes
-                byte[] bytesCypherText = csp.Encrypt(bytesPlainTextData, false);
-
-                // Convert encrypted bytes to Base64 string
-                return Convert.ToBase64String(bytesCypherText);
-            }
-        }
-        public static string DecryptDatastringNew(string cypherText, RSAParameters rsaPrivateKey)
-        {
-            using (var csp = new RSACryptoServiceProvider())
-            {
-                csp.ImportParameters(rsaPrivateKey);
-
-                // Convert Base64 string to encrypted bytes
-                byte[] bytesCypherText = Convert.FromBase64String(cypherText);
-
-                // Decrypt bytes
-                byte[] bytesPlainTextData = csp.Decrypt(bytesCypherText, false);
-
-                // Convert decrypted bytes to plaintext string
-                return Encoding.Unicode.GetString(bytesPlainTextData);
+                return hmac.ComputeHash(Encoding.UTF8.GetBytes(key));
             }
         }
 

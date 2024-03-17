@@ -308,8 +308,8 @@ namespace MinervaApi.DataAccessLayer
                 using (MySqlCommand command = connection.CreateCommand())
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                   
-                    command.Parameters.AddWithValue("@in_token", token);
+                    string tok=Comman.DecryptString(token);
+                    command.Parameters.AddWithValue("@in_token", tok);
                     command.CommandText = "USP_GetProjectURL ";
                     using (MySqlDataReader reader = await command.ExecuteReaderAsync())
                     {
