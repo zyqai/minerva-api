@@ -231,7 +231,7 @@ namespace MinervaApi.Controllers
 
 
         [HttpPost("createProjectRequest")]
-        [Authorize(Policy = "StaffPolicy")]
+        //[Authorize(Policy = "StaffPolicy")]
         public async Task<IActionResult> createProjectRequest(ProjectRequestData request)
         {
             string? emails = User.FindFirstValue(ClaimTypes.Email);

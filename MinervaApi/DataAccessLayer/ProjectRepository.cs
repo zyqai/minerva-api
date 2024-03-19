@@ -422,7 +422,8 @@ namespace MinervaApi.DataAccessLayer
                         {
                             foreach (var recipient in request?.RequestSendTo)
                             {
-                                var res = Keycloak.Sendemails(recipient?.SendTo,recipient?.SendCC, "testemail", "testemail");
+                                await Comman.SendEmail(requestURL, recipient?.SendTo.ToString(), "browser", recipient?.SendCC.ToString());
+                                //var res = Keycloak.Sendemails(recipient?.SendTo,recipient?.SendCC, "testemail", "testemail");
                             }
                         }
                     }

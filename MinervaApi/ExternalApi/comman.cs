@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using System.Text;
 using System.Security.Cryptography;
+using SendGrid.Helpers.Mail;
+using SendGrid;
 namespace MinervaApi.ExternalApi
 {
     public class Comman
@@ -153,6 +155,56 @@ namespace MinervaApi.ExternalApi
             {
                 return hmac.ComputeHash(Encoding.UTF8.GetBytes(key));
             }
+        }
+
+
+
+        public async static Task SendEmail(string uploadLink, string ToEmail,string Name,string ccEmailAddress)
+        {
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("noreply@zyq.ai", "Upload your document");
+            var subject = "Upload Your Documents";
+            var to = new EmailAddress(ToEmail, "Upload Docs");
+            var plainTextContent = "Dear "+ Name;
+            var htmlContent = @"
+                <!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Upload Documents</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #04AA6D;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-text {
+            color: #000; /* Black color */
+        }
+    </style>
+</head>
+<body>
+    <H2>Dear Borrower
+    <h2>Upload Your Documents</h2>
+    <p>Please click on the following link to upload your documents:</p>
+    <p><a href=""https://dev.minerva.zyq.ai/upload/~link~"" class=""button"">Upload Documents</a></p>
+</body>
+</html>
+            ";
+            htmlContent = htmlContent.Replace("~link~", uploadLink);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+
+            if (!string.IsNullOrEmpty(ccEmailAddress))
+            {
+                msg.AddCc(new EmailAddress(ccEmailAddress));
+            }
+            var response = await client.SendEmailAsync(msg);
         }
 
     }
