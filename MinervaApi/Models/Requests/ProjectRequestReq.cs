@@ -41,6 +41,7 @@ namespace MinervaApi.Models.Requests
 
     public class ProjectRequestData
     {
+        public int? peopleId { get; set; }
         public string? RequestName { get; set; }
         public string? RequestDescription { get; set; }
         public int? ProjectId { get; set; }

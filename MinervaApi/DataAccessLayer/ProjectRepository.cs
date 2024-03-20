@@ -402,8 +402,7 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.AddWithValue("@in_createdBy", Userid);
                         command.Parameters.AddWithValue("@in_token", token);
                         command.Parameters.AddWithValue("@in_requestURL", requestURL);
-
-
+                        command.Parameters.AddWithValue("@in_peopleId", request.peopleId);
                         // Add output parameter to get the response from the stored procedure
                         MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
                         {
