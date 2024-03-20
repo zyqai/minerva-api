@@ -317,6 +317,7 @@ namespace MinervaApi.DataAccessLayer
                         {
                             response.TenantId= reader.IsDBNull("tenantId") ? null : (int?)reader.GetInt32("tenantId");
                             response.ProjectId= reader.IsDBNull("projectId") ? null : (int?)reader.GetInt32("projectId");
+                            response.PeopleId= reader.IsDBNull("peopleId") ? null : (int?)reader.GetInt32("peopleId");
                             response.ProjectRequestId = reader.IsDBNull("projectRequestId") ? null : (int?)reader.GetInt32("projectRequestId");
                             response.Token=reader.IsDBNull("token") ?null: (string)reader.GetValue("token");
                             response.RequestURL = reader.IsDBNull("requestURL") ?null: (string)reader.GetValue("requestURL");

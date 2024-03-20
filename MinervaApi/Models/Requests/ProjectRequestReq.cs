@@ -98,12 +98,14 @@ namespace MinervaApi.Models.Requests
         public Project? Project { get; set; }
         public List<ProjectRequestDetails?>? ProjectRequestResponse { get;set;}
         public List<FileType?>? FileFormt { get; set; }
+        public Client? people { get; set; }
     }
     public class ProjectRequestUrl
     {
         public int? RequestUrlId { get; set; }
         public int? ProjectId { get; set; }
         public int? TenantId { get; set; }
+        public int? PeopleId { get; set; }
         public int? ProjectRequestId { get; set; }
         public string? RequestURL { get; set; }
         public string? Token { get; set; }

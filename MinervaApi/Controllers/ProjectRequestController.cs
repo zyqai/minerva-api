@@ -222,19 +222,11 @@ namespace MinervaApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "AdminPolicy")]
-        [Authorize(Policy = "StaffPolicy")]
         [HttpPost("projectRequestEmailDetails")]
         public async Task<IActionResult> projectRequestEmailDetails(ProjectEmailDetails request)
         { 
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
             string toc=request.token;
-            //using (var rsa = new RSACryptoServiceProvider(2048))
-            //{
-            //    string decryptedText = Comman.DecryptDatastringNew(request.token, rsa.ExportParameters(false));
-            //    toc= decryptedText;
-            //}
-            
             var res = await projectRequest.GetALLProjectRequestBytoken(toc);
             if (res != null)
             {

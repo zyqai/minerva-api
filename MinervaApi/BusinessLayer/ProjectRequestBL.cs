@@ -18,12 +18,14 @@ namespace MinervaApi.BusinessLayer
         IProjectsBL projectsrepositiry;
         IProjectRequestRepository repository;
         IUserRepository userRepository;
-        public ProjectRequestBL(IProjectRequestRepository _repository, IUserRepository _user, IProjectsBL _projectsrepositiry, IFileTypeRepository _Filetyperepository)
+        IClientRepository clientRepository;
+        public ProjectRequestBL(IProjectRequestRepository _repository, IUserRepository _user, IProjectsBL _projectsrepositiry, IFileTypeRepository _Filetyperepository, IClientRepository _clientRepository)
         {
             this.repository = _repository;
             userRepository = _user;
             projectsrepositiry = _projectsrepositiry;
             Filetyperepository = _Filetyperepository;
+            this.clientRepository = _clientRepository;
         }
         public Task<ProjectRequestDetailsResponse> GetALLAsync(int projectId)
         {
@@ -113,8 +115,10 @@ namespace MinervaApi.BusinessLayer
             ProjectRequestUrl res = new ProjectRequestUrl();
             res = await repository.GetAllProjectRequestBytoken(token);
             ProjectEmailResponce responce = new ProjectEmailResponce();
+            int peopleId = (int)(res.PeopleId == null ? 0 : res.PeopleId);
             int prid = (int)(res.ProjectId == null ? 0 : res.ProjectId);
             responce.Project = await projectsrepositiry.GetProjects(prid);
+            responce.people = await clientRepository.GetClientAsync(peopleId);
             responce.ProjectRequestResponse = new List<ProjectRequestDetails?>();
             responce.ProjectRequestResponse = await repository.GetAllProjectRequestDetailsByProjectid(prid);
             var resf = (await Filetyperepository.GetALLFileTypesAsync().ConfigureAwait(false));
