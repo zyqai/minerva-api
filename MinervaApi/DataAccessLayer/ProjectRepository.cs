@@ -1,4 +1,5 @@
-﻿using Minerva.BusinessLayer;
+﻿using IdentityModel.Client;
+using Minerva.BusinessLayer;
 using Minerva.IDataAccessLayer;
 using Minerva.Models;
 using Minerva.Models.Requests;
@@ -8,9 +9,12 @@ using MinervaApi.IDataAccessLayer;
 using MinervaApi.Models.Requests;
 using MySqlConnector;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MinervaApi.DataAccessLayer
@@ -115,8 +119,8 @@ namespace MinervaApi.DataAccessLayer
                         LoanTypeAutoId = reader["loanTypeAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["loanTypeAutoId"]),
                         StatusAutoId = reader["statusAutoId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["statusAutoId"]),
                         ProjectFilesPath = reader["projectFilesPath"] == DBNull.Value ? string.Empty : reader["projectFilesPath"].ToString(),
-                        ProjectStartDate = reader["projectStartDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["projectStartDate"].ToString()),
-                        DesiredClosedDate = reader["desiredClosedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["desiredClosedDate"].ToString()),
+                        //ProjectStartDate = reader["projectStartDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["projectStartDate"].ToString()),
+                        //DesiredClosedDate = reader["desiredClosedDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["desiredClosedDate"].ToString()),
                     };
                     bu.Add(user);
                 }
@@ -384,7 +388,9 @@ namespace MinervaApi.DataAccessLayer
                         // Convert requestSendTo and requestDetails to JSON
                         string jsonSendTo = JsonConvert.SerializeObject(request.RequestSendTo);
                         string jsonDetails = JsonConvert.SerializeObject(request.RequestDetails);
-
+                        string token = Comman.GenerateRandomString(6)+DateTime.Now.ToString("yyyyMMddHHmmss") + Comman.GenerateRandomString(6);
+                        string requestURL = string.Empty;
+                        requestURL = Comman.EncryptString(token);
                         // Add parameters
                         command.Parameters.AddWithValue("@in_requestName", request.RequestName);
                         command.Parameters.AddWithValue("@in_requestDescription", request.RequestDescription);
@@ -394,7 +400,9 @@ namespace MinervaApi.DataAccessLayer
                         command.Parameters.AddWithValue("@in_requestSendTo", jsonSendTo);
                         command.Parameters.AddWithValue("@in_requestDetails", jsonDetails);
                         command.Parameters.AddWithValue("@in_createdBy", Userid);
-
+                        command.Parameters.AddWithValue("@in_token", token);
+                        command.Parameters.AddWithValue("@in_requestURL", requestURL);
+                        command.Parameters.AddWithValue("@in_peopleId", request.peopleId);
                         // Add output parameter to get the response from the stored procedure
                         MySqlParameter outputParameter = new MySqlParameter("@out_message", MySqlDbType.VarChar, 1000)
                         {
@@ -413,7 +421,8 @@ namespace MinervaApi.DataAccessLayer
                         {
                             foreach (var recipient in request?.RequestSendTo)
                             {
-                                var res = Keycloak.Sendemails(recipient?.SendTo,recipient?.SendCC, "testemail", "testemail");
+                                await Comman.SendEmail(requestURL, recipient?.SendTo.ToString(), "browser", recipient?.SendCC.ToString());
+                                //var res = Keycloak.Sendemails(recipient?.SendTo,recipient?.SendCC, "testemail", "testemail");
                             }
                         }
                     }
