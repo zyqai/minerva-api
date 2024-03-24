@@ -15,5 +15,6 @@ namespace MinervaApi.BusinessLayer.Interface
         public Task<APIStatus> SaveProjectRequestSentTo(Models.Requests.ProjectRequestSentTo request, string email);
         public Task<APIStatus> UpdateProjectRequestSentTo(Models.Requests.ProjectRequestSentTo request);
         public Task<ProjectEmailResponce> GetALLProjectRequestBytoken(string request);
+        public Task<APIStatus> projectRequestUpdateStatus(UpdateProjectRequestSentId request);
     }
 }

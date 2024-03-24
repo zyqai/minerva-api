@@ -29,6 +29,11 @@ namespace MinervaApi.Models.Requests
         public string? UniqueLink { get; set; }
         public int? StatusAutoId { get; set; }
     }
+    public class UpdateProjectRequestSentId
+    { 
+        public int? ProjectRequestSentId { get; set; }
+        public int? StatusAutoId { get; set; }
+    }
     public class ProjectRequestDetail
     {
         public int? ProjectRequestDetailsId { get; set; }
@@ -56,6 +61,7 @@ namespace MinervaApi.Models.Requests
         public string? SendTo { get; set; }
         public string? SendCC { get; set; }
         public int? Status { get; set; }
+        public int? DocumentTypeAutoId { get; set; }
     }
 
     public class RequestDetailData

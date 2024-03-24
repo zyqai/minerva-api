@@ -366,5 +366,32 @@ namespace MinervaApi.DataAccessLayer
             }
             return projectRequestDetails;
         }
+
+        public async Task<APIStatus> projectRequestUpdateStatus(UpdateProjectRequestSentId request)
+        {
+            APIStatus status = new APIStatus();
+            using (MySqlConnection connection = database.OpenConnection())
+            {
+                using (MySqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.CommandText = "Usp_projectRequestUpdateStatus";
+                    command.Parameters.AddWithValue("@in_projectRequestSentId", request.ProjectRequestSentId);
+                    command.Parameters.AddWithValue("@in_statusAutoId", request.StatusAutoId);
+                    int i=await command.ExecuteNonQueryAsync();
+                    if (i > 0)
+                    {
+                        status.Code = "200";
+                        status.Message = "Update request status";
+                    }
+                    else
+                    {
+                        status.Code = "204";
+                        status.Message = "No content";
+                    }
+                }
+            }
+            return status;
+        }
     }
 }

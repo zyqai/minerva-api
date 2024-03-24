@@ -16,5 +16,6 @@ namespace MinervaApi.IDataAccessLayer
         public Task<APIStatus> UpdateProjectRequestSentTo(Models.ProjectRequestSentTo prst);
         public Task<Models.Requests.ProjectRequestUrl> GetAllProjectRequestBytoken(string? token);
         public Task<List<Models.Requests.ProjectRequestDetails?>> GetAllProjectRequestDetailsByProjectid(int prid);
+        public Task<APIStatus> projectRequestUpdateStatus(Models.Requests.UpdateProjectRequestSentId request);
     }
 }

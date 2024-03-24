@@ -221,12 +221,11 @@ namespace MinervaApi.Controllers
             }
         }
 
-        [HttpPost]
         [HttpPost("projectRequestEmailDetails")]
         public async Task<IActionResult> projectRequestEmailDetails(ProjectEmailDetails request)
-        { 
+        {
             Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
-            string toc=request.token;
+            string toc = request.token;
             var res = await projectRequest.GetALLProjectRequestBytoken(toc);
             if (res != null)
             {
@@ -235,6 +234,45 @@ namespace MinervaApi.Controllers
             else
             {
                 return NotFound(); // or another appropriate status
+            }
+        }
+
+        [HttpPut("updateProjectRequestStatus")]
+        public async Task<IActionResult> projectRequestUpdateStatus(UpdateProjectRequestSentId request)
+        {
+            Comman.logEvent(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request));
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    APIStatus aPIStatus = new APIStatus();
+
+                    aPIStatus = await projectRequest.projectRequestUpdateStatus(request);
+                    if (aPIStatus != null)
+                    {
+                        if (aPIStatus.Code == "200")
+                        {
+                            return StatusCode(StatusCodes.Status201Created, aPIStatus);
+                        }
+                        else
+                        {
+                            return StatusCode(StatusCodes.Status400BadRequest, aPIStatus);
+                        }
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, request);
+                    }
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                Comman.logError(ControllerContext.ActionDescriptor.ActionName, JsonConvert.SerializeObject(request)+ex.ToString());
+                return BadRequest();
             }
         }
     }

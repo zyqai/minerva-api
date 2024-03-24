@@ -135,5 +135,10 @@ namespace MinervaApi.BusinessLayer
             }
             return responce;
         }
+
+        public async Task<APIStatus> projectRequestUpdateStatus(UpdateProjectRequestSentId request)
+        {
+            return await repository.projectRequestUpdateStatus(request);
+        }
     }
 }
