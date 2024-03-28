@@ -136,6 +136,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.Authority = authority;
     options.MetadataAddress = metada_address;
+    options.RequireHttpsMetadata = false;
     options.ClientId = client_id;
     options.ClientSecret = client_secret;
 })
@@ -151,6 +152,7 @@ builder.Services.AddAuthentication(options =>
                     ValidateIssuer = true,
                     ValidateLifetime = true,
                 };
+                options.RequireHttpsMetadata = false;
                 // options.Audience = authorizationConfig["Audience"];
                 options.IncludeErrorDetails = true;
 
